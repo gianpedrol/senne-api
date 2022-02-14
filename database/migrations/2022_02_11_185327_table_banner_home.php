@@ -14,7 +14,11 @@ class TableBannerHome extends Migration
     public function up()
     {
         Schema::create('banner', function (Blueprint $table){
+<<<<<<< HEAD
             $table->string('image');
+=======
+            $table->text('banner_home');
+>>>>>>> e45d571f8764261b9d5d5f06b988635eea5ee68e
         });
     }
 

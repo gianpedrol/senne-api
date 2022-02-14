@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-class BannerHome extends Seeder
+class UserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,13 +13,6 @@ class BannerHome extends Seeder
      */
     public function run()
     {
-        DB::table('banner')->insert(
-            [
-
-                "image" =>  "",
-
-            ]
-        );
-        
+        //
     }
 }

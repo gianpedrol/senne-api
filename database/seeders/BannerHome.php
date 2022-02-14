@@ -15,11 +15,7 @@ class BannerHome extends Seeder
     {
         DB::table('banner')->insert(
             [
-<<<<<<< HEAD
                 "image" =>  "",
-=======
-                "banner_home" =>  "",
->>>>>>> e45d571f8764261b9d5d5f06b988635eea5ee68e
             ]
         );
         

@@ -4,14 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersTable extends Migration
+class CreatePermissoesTable extends Migration
 {
     /**
      * Schema table name to migrate
      * @var string
      */
-    public $tableName = 'users';
-    
+    public $tableName = 'permissoes';
+
     /**
      * Run the migrations.
      *
@@ -25,13 +25,8 @@ class CreateUsersTable extends Migration
             $table->collation = 'utf8_general_ci';
 
             $table->bigIncrements('id');
-            $table->string('name');
-            $table->tinyinteger('status')->default(1)->comment('0 => Inativo, 1 => Ativo');
-            $table->integer('role_id');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->text('descricao');
+            $table->tinyinteger('nivel')->comment('Definimos com algum numero para identificar o id dessa permissão');
             $table->timestamps();
         });
     }

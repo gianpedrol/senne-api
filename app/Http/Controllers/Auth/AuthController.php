@@ -4,26 +4,26 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use JWTAuth;
-use Hash;
+use Illuminate\Support\Facades\Auth;
 
-use Auth;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
     {
+      $array = ['message' => ''];
 
-        $credentials = $request->only('email', 'password');
-        $user = User::where('email', $credentials['email'])->first();
-  
+      $creds = $request->only('email','password');
+      $token = Auth::attempt($creds);
 
-        return response()->json([
-          'user' => $user,
-          'message' => 'parabéns você conseguiu!'
-        ]);
-        
+      if($token){
+        $array['token'] = $token;
+      }else{
+        $array['message'] = 'Login Errado';
+      }
+      
+      return $array;
+     
 
 
     }

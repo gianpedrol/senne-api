@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use DB;
 
 class UserSeeder extends Seeder
 {
@@ -15,11 +16,12 @@ class UserSeeder extends Seeder
     {
         DB::table('users')->insert(
             [
+                'name' => 'Senne Liquor',
                 'role_id' => '1',
-                'name' => "Admin APP",
-                'email' => "admin@admin.com",
                 'status' => 1,
-                'password' => Hash::make('12345678')
+                'email' => 'dev@senne.com',
+                'password' => bcrypt('123456'),
+                'remember_token' => '',
             ]
         );
     }

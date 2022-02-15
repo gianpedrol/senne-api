@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +31,7 @@ Route::get('/401', [AuthController::class, 'unauthorized'])->name('login');
 
 //ROTA DE LOGIN
 
-Route::post('auth/login',[\App\Http\Controllers\Auth\AuthController::class, 'login']);
+Route::post('auth/login',[AuthController::class, 'login']);
 
 
 

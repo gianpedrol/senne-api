@@ -30,8 +30,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/401', [AuthController::class, 'unauthorized'])->name('login');
 
 //ROTA DE LOGIN
-
 Route::post('auth/login',[AuthController::class, 'login']);
+Route::post('auth/register',[AuthController::class, 'create']);
 
 
 

@@ -32,55 +32,32 @@ class AuthController extends Controller
       return $array;  
     }
 
-    public function create (Request $request){
+    public function create(Request $request){
 
-          $array = ['error' => ''];
+        $array = ['error' => ''];
 
-          $rules = [
-            'name' => 'required',
-            'email' =>'required|email|unique:users,email',
-          ];
-      
-          $validator = Validator::make($request->all(),$rules);
-          $user = User::where('name')->get();
-         dd($user);
+        $data = $request->only(['cpfcnpj','email','nivel']);
 
-          
+        $user = User::where('cpfcnpj', $data['cpfcnpj'])->orWhere('email', $data['email'])->first();
 
-          if($validator->fails()){
-              $array['error'] = $validator->errors();    
-              
-              
-              
-              return $array;
-          } else if($user) {
+        if(!empty($user)){
+          return response()->json(['error'=>"User already exists!"],200);
+        }
 
+        //Define
+        $role_id = $data['nivel'];
+        $senha_temp= bcrypt(md5('123456'));
 
-            $message = 'name exists';
+        $newUser = new User();
+        $newUser->name = $data['name'];
+        $newUser->email = $data['email'];
+        $newUser->cpfcnpj = $data['cpfcnpj'];
+        $newUser->role_id = $role_id;
+        $newUser->password = $senha_temp;
 
-            return $message;
+        $newUser->save();
 
-          }else{            
-            $name = $request->input('name');
-            $email = $request->input('email');
-            $role_id = 1;
-            $senha_temp= bcrypt(md5('123456'));
-
-
-            $newUser = new User();
-            $newUser->name = $name;
-            $newUser->email = $email;
-            $newUser->role_id = $role_id;
-            $newUser->password = $senha_temp;
-            
-            $newUser->save();
-   
-            $message = ['message' => 'Parabéns você conseguiu, não desista amanhã é sexta feira!'];
-            
-            return $message;
-          }
-
-
+        return response()->json(['error'=>"User registered successfully!"],200);
 
     }
 }

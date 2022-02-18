@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
+use DB;
+
+use App\Models\User;
+
 
 class AuthController extends Controller
 {
@@ -22,39 +26,61 @@ class AuthController extends Controller
         $user['email'] = $creds;  
         $array['token'] = $token;
       }else{ 
-        $array['message'] = 'Login Errado';
+        $array['message'] = 'Incorrect username or password';
       }
       
       return $array;  
     }
 
     public function create (Request $request){
+
           $array = ['error' => ''];
 
           $rules = [
-              'email' =>'required|email|unique:users,email',
-              'password' => 'required'
+            'name' => 'required',
+            'email' =>'required|email|unique:users,email',
           ];
-
+      
           $validator = Validator::make($request->all(),$rules);
+          $user = User::where('name')->get();
+         dd($user);
+
+          
 
           if($validator->fails()){
-              $array['error'] = $validator->errors();
-
+              $array['error'] = $validator->errors();    
+              
+              
+              
               return $array;
+          } else if($user) {
+
+
+            $message = 'name exists';
+
+            return $message;
+
+          }else{            
+            $name = $request->input('name');
+            $email = $request->input('email');
+            $role_id = 1;
+            $senha_temp= bcrypt(md5('123456'));
+
+
+            $newUser = new User();
+            $newUser->name = $name;
+            $newUser->email = $email;
+            $newUser->role_id = $role_id;
+            $newUser->password = $senha_temp;
+            
+            $newUser->save();
+   
+            $message = ['message' => 'Parabéns você conseguiu, não desista amanhã é sexta feira!'];
+            
+            return $message;
           }
 
-          $email = $request->input('email');
-          $password = $request->input('password');
 
 
-          $newUser = new User();
-          $newUser->email = $email;
-          $newUser->password = password_hash($password, PASSWORD_DEFAULT);
-          $newUser->token = '';
-          $newUser->save();
-
-
-          return $array;
     }
 }

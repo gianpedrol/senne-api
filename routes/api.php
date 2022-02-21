@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,12 @@ Route::post('auth/login',[AuthController::class, 'login']);
 Route::post('auth/register',[AuthController::class, 'create']);
 
 
+// password reset
+Route::prefix('password')->group(function () {
+    Route::post('send', [UserController::class, 'sendResetPassword']);
+    Route::get('validation/', [UserController::class, 'verifyResetRoute'])->name('verifyResetRoute');
+    Route::post('reset/{id}', [UserController::class, 'reset'])->name('reset');
+});
 
 
 

@@ -36,7 +36,7 @@ class AuthController extends Controller
 
         $array = ['error' => ''];
 
-        $data = $request->only(['cpfcnpj','email','nivel']);
+        $data = $request->only(['name','cpfcnpj','email','nivel']);
 
         $user = User::where('cpfcnpj', $data['cpfcnpj'])->orWhere('email', $data['email'])->first();
 

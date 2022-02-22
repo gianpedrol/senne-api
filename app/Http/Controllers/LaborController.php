@@ -5,39 +5,64 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-
+use App\Models\UsersLabors;
 use App\Models\User;
+use App\Models\Labors;
 
 class LaborController extends Controller
 {
 
     public function __construct()
     {
-        //$this->middleware('auth:api');
+        $this->middleware('auth:api');
 
-
-        //dd(auth()->user()->role_id);
-
+    	/* 1 = Administrador Senne | 2 = User Labor | 3 = User Hospital | 4 = Médico | 5 = Paciente */
+        if(auth()->user()->role_id != 1) {
+            return response()->json(['error'=>'Unauthorized access'],401);
+        }
         
     }
 
 
     public function store(Request $request){
 
-    	/*$user= User::where('id',$request->user_id)->first();
+        $data= $request->only('name');
 
-        if(!$user){
-            return response()->json(['message'=>'user not found'],404);
-        }*/
 
-    	//dd($user);
+        $labor= Labors::create(['name'=>$data['name']]);
+        //UsersLabors::create(['id_labor'=>$labor->id, 'id_user'=>$user->id]);
 
-    	/* 1 = Administrador Senne | 2 = User Labor | 3 = User Hospital | 4 = Médico | 5 = Paciente */
-        /*if($user->role_id != 1) {
-            return response()->json(['message'=>'Unauthorized access'],401);
+        return response()->json(['message'=>'Labor create successfully'],200);
+    	
+    }
+
+
+    public function storeUser(Request $request){
+
+        //Definimos ID do user como 2 (Usuário laboratorio)
+        $role_id= 2;
+
+        $data = $request->only(['name','telefone','cpfcnpj']);
+
+        $user = User::where('cpfcnpj', $data['cpfcnpj'])->first();
+
+        if(!empty($user)){
+          return response()->json(['error'=>"User already exists!"],200);
         }
 
-    	dd('AQUI');*/
+        //Define
+        $senha_temp= bcrypt(md5('123456'));
+
+        $newUser = new User();
+        $newUser->name = $data['name'];
+        $newUser->cpfcnpj = $data['cpfcnpj'];
+        $newUser->role_id = $role_id;
+        $newUser->password = $senha_temp;
+
+        $newUser->save();
+
+        return response()->json(['message'=>"User registered successfully!"],200);
+
     }
 
 

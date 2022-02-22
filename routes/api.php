@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\LaborController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,4 +38,12 @@ Route::post('auth/register',[AuthController::class, 'create']);
     Route::post('labor/store',[\App\Http\Controllers\LaborController::class,'store']);
 });*/
 
-Route::middleware('auth:api')->post('labor/store', [\App\Http\Controllers\LaborController::class, 'store']);
+//Route::middleware('auth:api')->post('labor/store', [\App\Http\Controllers\LaborController::class, 'store']);
+
+//Rota relacionada ao laboratório via usuario Senni
+Route::middleware('auth')->group(function() {
+	Route::post('labor/store', [LaborController::class, 'store']);
+	Route::post('labor/store/user', [LaborController::class, 'storeUser']);
+});
+
+

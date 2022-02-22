@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Labors extends Model
+class RoleUser extends Model
 {
-    protected $table = 'labors';
+    protected $table = 'role_users';
 
-    protected $fillable = ['name'];
+    protected $fillable = ['id_user', 'type'];
 }

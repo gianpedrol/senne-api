@@ -27,7 +27,8 @@ class CreateUsersTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('cpfcnpj')->unique();
-            $table->string('email')->unique();
+            $table->string('email')->nullable();
+            $table->string('telefone')->nullable();
             $table->tinyinteger('status')->default(1)->comment('0 => Inativo, 1 => Ativo');
             $table->integer('role_id');
             $table->timestamp('email_verified_at')->nullable();

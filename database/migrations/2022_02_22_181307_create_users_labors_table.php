@@ -4,14 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRoleUsersTable extends Migration
+class CreateUsersLaborsTable extends Migration
 {
 
     /**
      * Schema table name to migrate
      * @var string
      */
-    public $tableName = 'role_users';
+    public $tableName = 'users_labors';
 
     /**
      * Run the migrations.
@@ -26,11 +26,12 @@ class CreateRoleUsersTable extends Migration
             $table->collation = 'utf8_general_ci';
 
             $table->bigIncrements('id');
-            $table->enum('type', ['administrador', 'resultados', 'agendamentos'])->default('agendamentos');
-            $table->unsignedBigInteger('id_user')->nullable();
+            $table->unsignedBigInteger('id_user');
+            $table->unsignedBigInteger('id_labor');
             $table->timestamps();
 
             $table->foreign('id_user')->references('id')->on('users')->onUpdate('NO ACTION')->onDelete('CASCADE');
+            $table->foreign('id_labor')->references('id')->on('labors')->onUpdate('NO ACTION')->onDelete('CASCADE');
         });
     }
 
@@ -39,7 +40,7 @@ class CreateRoleUsersTable extends Migration
      *
      * @return void
      */
-     public function down()
+    public function down()
      {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         Schema::dropIfExists($this->tableName);

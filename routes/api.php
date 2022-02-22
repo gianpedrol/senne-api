@@ -33,7 +33,8 @@ Route::get('/401', [AuthController::class, 'unauthorized'])->name('login');
 Route::post('auth/login',[AuthController::class, 'login']);
 Route::post('auth/register',[AuthController::class, 'create']);
 
+/*Route::middleware('auth')->group(function() {
+    Route::post('labor/store',[\App\Http\Controllers\LaborController::class,'store']);
+});*/
 
-
-
-
+Route::middleware('auth:api')->post('labor/store', [\App\Http\Controllers\LaborController::class, 'store']);

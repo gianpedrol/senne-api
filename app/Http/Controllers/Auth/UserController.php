@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
 use App\Jobs\sendEmailPasswordReset;
 use App\Jobs\sendEmailVerification;
 use App\Mail\emailPasswordReset;
@@ -20,58 +18,6 @@ use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
-    public function store(Request $request){
-
-        $data = $request->only(['name','cpf','email',]);
-        if($request->get('password')){
-            $data['password'] = Hash::make($request->get('password'));
-        }
-
-        try {
-            $user = User::where('email',$data['email'])->get();
-
-           if(count($user) > 0 ){
-               if($request->get('password')){
-                   User::where('email',$data['email'])->update(['password'=>$data['password']]);
-               }
-              return response()->json(['user'=>$user]);
-           }
-
-               $user =  User::create($data);
-
-        }catch (Exception $e){
-            return response()->json(['error'=>"Fail to create a user"],400);
-        }
-
-        return response()->json(['user'=>$user],201);
-
-    }
-
-    public function update(Request $request)
-    {
-        $id = $request->id;
-        $data = $request->all();
-
-        try {
-            $user = User::findOrFail($id)->update($data);
-        }catch (\Exception $e){
-            return response()->json(['message'=>'Fail on update a user'],400);
-        }
-
-        return response()->json(['message'=>'user updated']);
-
-    }
-
-    public function delete(Request $request){
-        $id = $request->id;
-
-        try {
-            $user = User::findOrFail($id)->delete();
-        }catch (\Exception $e){
-            return response()->json(['message'=>'Fail on delete a user'],400);
-        }
-
-    }
 
     public function sendResetPassword(Request $request){
 
@@ -80,6 +26,7 @@ class UserController extends Controller
 
         $email = $request->get('email');
         $user = User::where('email',$email)->get();
+
 
         if( count($user) > 0){
             $urlTemp = $frontUrl . $frontRoute. URL::temporarySignedRoute(
@@ -93,7 +40,7 @@ class UserController extends Controller
         }else{
             return response()->json(['message'=>'User not found'],404);
         }
-    }
+    } 
 
     public function verifyResetRoute(Request $request){
 

@@ -28,7 +28,7 @@ class AuthController extends Controller
       }else{ 
         $array['message'] = 'Incorrect username or password';
       }
-      
+
       return $array;  
     }
 

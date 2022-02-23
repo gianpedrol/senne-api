@@ -26,6 +26,9 @@ class CreateLaborsTable extends Migration
             $table->collation = 'utf8_general_ci';
 
             $table->bigIncrements('id');
+            $table->string('cnpj')->unique();
+            $table->string('telefone')->nullable();
+            $table->string('image')->nullable();
             $table->text('name');
             $table->timestamps();
         });

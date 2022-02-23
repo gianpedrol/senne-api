@@ -4,13 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePermissoesTable extends Migration
+class CreateLaborsTable extends Migration
 {
+
     /**
      * Schema table name to migrate
      * @var string
      */
-    public $tableName = 'permissoes';
+    public $tableName = 'labors';
 
     /**
      * Run the migrations.
@@ -25,8 +26,7 @@ class CreatePermissoesTable extends Migration
             $table->collation = 'utf8_general_ci';
 
             $table->bigIncrements('id');
-            $table->text('descricao');
-            $table->tinyinteger('nivel')->comment('Definimos com algum numero para identificar o id dessa permissão');
+            $table->text('name');
             $table->timestamps();
         });
     }
@@ -36,7 +36,7 @@ class CreatePermissoesTable extends Migration
      *
      * @return void
      */
-     public function down()
+    public function down()
      {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         Schema::dropIfExists($this->tableName);

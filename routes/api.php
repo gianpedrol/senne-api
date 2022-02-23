@@ -3,7 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+<<<<<<< HEAD
 use App\Http\Controllers\LaborController;
+=======
+use App\Http\Controllers\Auth\UserController;
+>>>>>>> 2f0cae8cbbab7177aa09adf35c0e51f343b887e7
 
 /*
 |--------------------------------------------------------------------------
@@ -38,7 +42,16 @@ Route::post('auth/register',[AuthController::class, 'create']);
     Route::post('labor/store',[\App\Http\Controllers\LaborController::class,'store']);
 });*/
 
+<<<<<<< HEAD
 //Route::middleware('auth:api')->post('labor/store', [\App\Http\Controllers\LaborController::class, 'store']);
+=======
+// password reset
+Route::prefix('password')->group(function () {
+    Route::post('send', [UserController::class, 'sendResetPassword']);
+    Route::get('validation/', [UserController::class, 'verifyResetRoute'])->name('verifyResetRoute');
+    Route::post('reset/{id}', [UserController::class, 'reset'])->name('reset');
+});
+>>>>>>> 2f0cae8cbbab7177aa09adf35c0e51f343b887e7
 
 //Rota relacionada ao laboratório via usuario Senni
 Route::middleware('auth')->group(function() {

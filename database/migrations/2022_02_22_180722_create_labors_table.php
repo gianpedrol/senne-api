@@ -24,7 +24,6 @@ class CreateLaborsTable extends Migration
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
             $table->collation = 'utf8_general_ci';
-
             $table->bigIncrements('id');
             $table->string('cnpj')->unique();
             $table->string('telefone')->nullable();

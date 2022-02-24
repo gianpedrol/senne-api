@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
 use App\Jobs\sendEmailPasswordReset;
 use App\Jobs\sendEmailVerification;
 use App\Mail\emailPasswordReset;
@@ -82,6 +80,7 @@ class UserController extends Controller
         $email = $request->get('email');
         $user = User::where('email',$email)->get();
 
+
         if( count($user) > 0){
             $urlTemp = $frontUrl . $frontRoute. URL::temporarySignedRoute(
                     'verifyResetRoute', now()->addMinutes(30), ['user' => $user[0]['id']]
@@ -94,7 +93,7 @@ class UserController extends Controller
         }else{
             return response()->json(['message'=>'User not found'],404);
         }
-    }
+    } 
 
     public function verifyResetRoute(Request $request){
 

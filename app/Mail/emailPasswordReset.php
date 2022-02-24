@@ -36,5 +36,6 @@ class emailPasswordReset extends Mailable
         $this->subject('Senne troca de senha');
         $this->to($this->user->email,$this->user->name);
         return $this->markdown('mail.emailResetPassword',['user'=>$this->user,'url'=>$this->url]);
+        return response()->json('Email Enviado');
     }
 }

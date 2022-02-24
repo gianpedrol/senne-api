@@ -20,6 +20,7 @@ use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
+
     public function store(Request $request){
 
         $data = $request->only(['name','cpf','email',]);

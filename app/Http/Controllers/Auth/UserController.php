@@ -19,6 +19,59 @@ use App\Http\Controllers\Controller;
 class UserController extends Controller
 {
 
+    public function store(Request $request){
+
+        $data = $request->only(['name','cpf','email',]);
+        if($request->get('password')){
+            $data['password'] = Hash::make($request->get('password'));
+        }
+
+        try {
+            $user = User::where('email',$data['email'])->get();
+
+           if(count($user) > 0 ){
+               if($request->get('password')){
+                   User::where('email',$data['email'])->update(['password'=>$data['password']]);
+               }
+              return response()->json(['user'=>$user]);
+           }
+
+               $user =  User::create($data);
+
+        }catch (Exception $e){
+            return response()->json(['error'=>"Fail to create a user"],400);
+        }
+
+        return response()->json(['user'=>$user],201);
+
+    }
+
+    public function update(Request $request)
+    {
+        $id = $request->id;
+        $data = $request->all();
+
+        try {
+            $user = User::findOrFail($id)->update($data);
+        }catch (\Exception $e){
+            return response()->json(['message'=>'Fail on update a user'],400);
+        }
+
+        return response()->json(['message'=>'user updated']);
+
+    }
+
+    public function delete(Request $request){
+        $id = $request->id;
+
+        try {
+            $user = User::findOrFail($id)->delete();
+        }catch (\Exception $e){
+            return response()->json(['message'=>'Fail on delete a user'],400);
+        }
+
+    }
+
     public function sendResetPassword(Request $request){
 
         $frontUrl = env('FRONTEND_URL');

@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\LaborController;
-use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\HospitalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +34,7 @@ Route::get('/401', [AuthController::class, 'unauthorized'])->name('login');
 //ROTA DE LOGIN
 Route::post('auth/login',[AuthController::class, 'login']);
 Route::post('auth/register',[AuthController::class, 'create']);
+Route::post('auth/logout', [AuthController::class,'logout']);
 
 /*Route::middleware('auth')->group(function() {
     Route::post('labor/store',[\App\Http\Controllers\LaborController::class,'store']);
@@ -51,6 +52,7 @@ Route::prefix('password')->group(function () {
 Route::middleware('auth')->group(function() {
 	Route::post('labor/store', [LaborController::class, 'store']);
 	Route::post('labor/store/user', [LaborController::class, 'storeUser']);
+	Route::post('hospital/store', [HospitalController::class, 'storeHospital']);
 });
 
 

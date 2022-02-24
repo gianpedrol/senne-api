@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
+use Illuminate\Support\Str;
+
 use DB;
 
 use App\Models\User;
@@ -17,36 +19,46 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-      $array = ['message' => ''];
+        $array = ['message' => ''];
 
-      $creds = $request->only('email','password');
-      $token = Auth::attempt($creds);
+        $creds = $request->only('email','password');
+        $token = Auth::attempt($creds);
 
-      if($token){
+        if($token){
         $user['email'] = $creds;  
         $array['token'] = $token;
-      }else{ 
+        }else{ 
         $array['message'] = 'Incorrect username or password';
-      }
+        }
 
-      return $array;  
+        return $array;  
     }
+
+
 
     public function create(Request $request){
 
+        /*
+            Método responsável por gravar os usuários da Senne, esses uauários possui permissão role_id 1
+            ele tem acesso a todo o conteudo do sistema
+        */
+
         $array = ['error' => ''];
 
-        $data = $request->only(['name','cpfcnpj','email','nivel']);
+        $data = $request->only(['name','cpfcnpj','email']);
 
-        $user = User::where('cpfcnpj', $data['cpfcnpj'])->orWhere('email', $data['email'])->first();
+        $user = User::where('email', $data['email'])->first();
 
         if(!empty($user)){
-          return response()->json(['error'=>"User already exists!"],200);
+            return response()->json(['error'=>"User already exists!"],200);
         }
 
-        //Define
-        $role_id = $data['nivel'];
-        $senha_temp= bcrypt(md5('123456'));
+        //Define nivel user Senne
+        $role_id = 1;
+
+        //$senha_md5= Str::random(8);//Descomentar após testes
+        $senha_md5= '654321';
+        $senha_temp= bcrypt($senha_md5);
 
         $newUser = new User();
         $newUser->name = $data['name'];
@@ -60,4 +72,19 @@ class AuthController extends Controller
         return response()->json(['error'=>"User registered successfully!"],200);
 
     }
+
+    /**
+     * Log the user out (Invalidate the token).
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout()
+    {
+
+        if (auth()->check()){
+            auth()->logout();
+        }
+
+        return response()->json(['message' => 'Successfully logged out']);
+    }   
 }

@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
                 'role_id' => '1',
                 'status' => 1,
                 'email' => 'dev@senne.com',
-                'password' => bcrypt('123456'),
+                'password' => bcrypt('654321'),
                 'remember_token' => '',
             ]
         );

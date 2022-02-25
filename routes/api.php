@@ -52,7 +52,19 @@ Route::prefix('password')->group(function () {
 Route::middleware('auth')->group(function() {
 	Route::post('labor/store', [LaborController::class, 'store']);
 	Route::post('labor/store/user', [LaborController::class, 'storeUser']);
+
+    //lista laboratórios
+    Route::get('list/labors', [LaborController::class, 'listLabors']);
+
+    //salva hospitais
 	Route::post('hospital/store', [HospitalController::class, 'storeHospital']);
+    //lista hospitais
+    Route::get('list/hospitals', [HospitalController::class, 'listHospitals']);
+    //cria usuarios hospital
+    Route::post('hospital/store/user', [HospitalController::class, 'storeUserHospital']);
+
 });
+
+
 
 

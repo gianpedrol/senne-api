@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
         DB::table('users')->insert(
             [
                 'name' => 'Senne Liquor',
-                'cpfcnpj' => '30188106006',
+                'cpf' => '30188106006',
                 'role_id' => '1',
                 'status' => 1,
                 'email' => 'dev@senne.com',

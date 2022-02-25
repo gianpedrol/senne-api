@@ -60,6 +60,9 @@ Route::middleware('auth')->group(function() {
     //Salva Usuário Laboratório
 	Route::post('labor/store/user', [LaborController::class, 'storeUser']);
 
+    //Lista Usuários Laboratórios
+    Route::get('list/labor/users', [LaborController::class, 'listUserLabors']);
+
     //lista laboratórios
     Route::get('list/labors', [LaborController::class, 'listLabors']);
 

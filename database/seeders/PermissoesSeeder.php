@@ -16,8 +16,9 @@ class PermissoesSeeder extends Seeder
     {
 
          $permissao = [
-            ['descricao' => 'Agendamento','nivel' => 1],
-            ['descricao' => 'Resultados','nivel' => 2],
+            ['descricao' => 'Administrador','nivel' => 1],
+            ['descricao' => 'Agendamento','nivel' => 2],
+            ['descricao' => 'Resultados','nivel' => 3],
         ];
 
         DB::table('permissoes')->insert($permissao);

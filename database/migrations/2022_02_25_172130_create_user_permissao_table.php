@@ -27,10 +27,12 @@ class CreateUserPermissaoTable extends Migration
 
             $table->bigIncrements('id');
             $table->unsignedBigInteger('id_user');
+            $table->unsignedBigInteger('id_hospital');
             $table->unsignedBigInteger('id_permissao');
             $table->timestamps();
 
             $table->foreign('id_user')->references('id')->on('users')->onUpdate('NO ACTION')->onDelete('CASCADE');
+            $table->foreign('id_hospital')->references('id')->on('hospitais')->onUpdate('NO ACTION')->onDelete('CASCADE');
             $table->foreign('id_permissao')->references('id')->on('permissoes')->onUpdate('NO ACTION')->onDelete('CASCADE');
         });
     }

@@ -83,5 +83,11 @@ class AuthController extends Controller
         Auth::logout();
 
         return response()->json(['message' => 'Successfully logged out']);
-    }   
+    } 
+
+
+    public function unauthorized()
+    {
+        return response()->json(['error'=>"Unauthorized user!"],401);
+    }  
 }

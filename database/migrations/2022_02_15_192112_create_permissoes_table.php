@@ -26,7 +26,7 @@ class CreatePermissoesTable extends Migration
 
             $table->bigIncrements('id');
             $table->text('descricao');
-            $table->tinyinteger('nivel')->comment('Definimos com algum numero para identificar o id dessa permissão / 1 =>  Agendamento / 2 => Resultados');
+            $table->tinyinteger('nivel')->comment('Definimos com algum numero para identificar o id dessa permissão / 1 =>  Administrador / 2 =>  Agendamento / 3 => Resultados');
             $table->timestamps();
         });
     }

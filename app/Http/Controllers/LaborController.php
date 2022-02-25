@@ -57,7 +57,7 @@ class LaborController extends Controller
         //Definimos ID do user como 2 (Usuário Hospital)
         $role_id= 2;
 
-        $data = $request->only(['name','telefone','cpf']);
+        $data = $request->only(['name','telefone','cpf','id_labor']);
 
         $user = User::where('cpf', $data['cpf'])->first();
 
@@ -73,10 +73,14 @@ class LaborController extends Controller
         $newUserLabor->cpf = $data['cpf'];
         $newUserLabor->role_id = $role_id;
         $newUserLabor->password = $senha_temp;
-
-
         $newUserLabor->save();
-    
+        
+
+        $userLabor = new UsersLabors();
+        $userLabor->id_user = $newUserLabor->id;
+        $userLabor->id_labor = $data['id_labor'];
+        $userLabor->save();
+
 
         return response()->json(['message'=>"User registered successfully!"],200);
 

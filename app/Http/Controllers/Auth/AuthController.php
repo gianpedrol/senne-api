@@ -45,7 +45,7 @@ class AuthController extends Controller
 
         $array = ['error' => ''];
 
-        $data = $request->only(['name','cpfcnpj','email']);
+        $data = $request->only(['name','cpf','email','cnpj','telefone']);
 
         $user = User::where('email', $data['email'])->first();
 
@@ -63,13 +63,15 @@ class AuthController extends Controller
         $newUser = new User();
         $newUser->name = $data['name'];
         $newUser->email = $data['email'];
-        $newUser->cpfcnpj = $data['cpfcnpj'];
+        $newUser->cpf = $data['cpf'];
+        $newUser->cnpj = $data['cnpj'];
+        $newUser->telefone = $data['telefone'];
         $newUser->role_id = $role_id;
         $newUser->password = $senha_temp;
 
         $newUser->save();
 
-        return response()->json(['error'=>"User registered successfully!"],200);
+        return response()->json(['message'=>"User registered successfully!", 'data'=>$newUser],200);
 
     }
 

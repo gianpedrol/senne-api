@@ -4,16 +4,17 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersHospitalsTable extends Migration
+class CreateHospitalGroupTable extends Migration
 {
-
-    public $tableName = 'users_hospitals';
+    /**
+     * Schema table name to migrate
+     * @var string
+     */
+    public $tableName = 'hospital_group';
 
     /**
      * Run the migrations.
      *
-     * 
-
      * @return void
      */
     public function up()
@@ -24,11 +25,11 @@ class CreateUsersHospitalsTable extends Migration
             $table->collation = 'utf8_general_ci';
 
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('id_user');
+            $table->unsignedBigInteger('id_group');
             $table->unsignedBigInteger('id_hospital');
             $table->timestamps();
 
-            $table->foreign('id_user')->references('id')->on('users')->onUpdate('NO ACTION')->onDelete('CASCADE');
+            $table->foreign('id_group')->references('id')->on('groups')->onUpdate('NO ACTION')->onDelete('CASCADE');
             $table->foreign('id_hospital')->references('id')->on('hospitais')->onUpdate('NO ACTION')->onDelete('CASCADE');
         });
     }
@@ -38,7 +39,7 @@ class CreateUsersHospitalsTable extends Migration
      *
      * @return void
      */
-    public function down()
+     public function down()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         Schema::dropIfExists($this->tableName);

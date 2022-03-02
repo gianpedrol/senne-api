@@ -4,14 +4,13 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserPermissaoTable extends Migration
+class CreateGroupTable extends Migration
 {
-
     /**
      * Schema table name to migrate
      * @var string
      */
-    public $tableName = 'user_permissao';
+    public $tableName = 'groups';
 
     /**
      * Run the migrations.
@@ -26,16 +25,13 @@ class CreateUserPermissaoTable extends Migration
             $table->collation = 'utf8_general_ci';
 
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('id_user');
-            $table->unsignedBigInteger('id_permissao');
+            $table->string('id_api')->nullable();
+            $table->string('name');
             $table->timestamps();
-
-            $table->foreign('id_user')->references('id')->on('users')->onUpdate('NO ACTION')->onDelete('CASCADE');
-            $table->foreign('id_permissao')->references('id')->on('permissoes')->onUpdate('NO ACTION')->onDelete('CASCADE');
         });
     }
 
-    /**
+     /**
      * Reverse the migrations.
      *
      * @return void

@@ -4,18 +4,16 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserPermissaoTable extends Migration
+class CreateUsersGroupsTable extends Migration
 {
 
-    /**
-     * Schema table name to migrate
-     * @var string
-     */
-    public $tableName = 'user_permissao';
+    public $tableName = 'users_groups';
 
     /**
      * Run the migrations.
      *
+     * 
+
      * @return void
      */
     public function up()
@@ -27,11 +25,11 @@ class CreateUserPermissaoTable extends Migration
 
             $table->bigIncrements('id');
             $table->unsignedBigInteger('id_user');
-            $table->unsignedBigInteger('id_permissao');
+            $table->unsignedBigInteger('id_group');
             $table->timestamps();
 
             $table->foreign('id_user')->references('id')->on('users')->onUpdate('NO ACTION')->onDelete('CASCADE');
-            $table->foreign('id_permissao')->references('id')->on('permissoes')->onUpdate('NO ACTION')->onDelete('CASCADE');
+            $table->foreign('id_group')->references('id')->on('groups')->onUpdate('NO ACTION')->onDelete('CASCADE');
         });
     }
 
@@ -40,7 +38,7 @@ class CreateUserPermissaoTable extends Migration
      *
      * @return void
      */
-     public function down()
+    public function down()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         Schema::dropIfExists($this->tableName);

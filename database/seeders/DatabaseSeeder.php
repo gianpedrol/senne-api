@@ -16,5 +16,8 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(PermissoesSeeder::class);
         $this->call(HospitaisSeeder::class);
+        $this->call(GroupSeeder::class);
+        $this->call(UsersGroupsSeeder::class);
+        $this->call(HospitalGroupSeeder::class);
     }
 }

@@ -43,8 +43,6 @@ class AuthController extends Controller
             ele tem acesso a todo o conteudo do sistema
         */
 
-        $array = ['error' => ''];
-
         $data = $request->only(['name','cpf','email','cnpj','telefone']);
 
         $user = User::where('email', $data['email'])->first();

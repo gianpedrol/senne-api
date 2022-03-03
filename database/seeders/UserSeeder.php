@@ -44,6 +44,16 @@ class UserSeeder extends Seeder
                 'email' => 'dev@samaritano.com.br',
                 'password' => bcrypt('654321'),
                 'remember_token' => '',
+            ],
+            [
+                'id' => 4,
+                'name' => 'Usuário Comum Grupo Samaritano',
+                'cpf' => '30188106006',
+                'role_id' => '3',
+                'status' => 1,
+                'email' => 'dev@samaritano.com.br',
+                'password' => bcrypt('654321'),
+                'remember_token' => '',
             ]
             
         ];

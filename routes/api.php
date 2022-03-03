@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\LaborController;
 use App\Http\Controllers\HospitalController;
+use App\Http\Controllers\UserGroupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,6 +75,10 @@ Route::middleware('auth')->group(function() {
 
     //cria usuarios hospital
     Route::post('hospital/store/user', [HospitalController::class, 'storeUserHospital']);
+
+
+    //rota para criação de usuário comum
+    Route::post('create/user/store', [UserGroupController::class, 'createUserGroup']);
 
 });
 

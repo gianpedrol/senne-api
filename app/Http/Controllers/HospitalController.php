@@ -20,7 +20,7 @@ class HospitalController extends Controller
         	return response()->json(['error'=>'Unauthorized access'],401);
         }
 
-    	/* 1 = Administrador Senne | 2 = User Labor | 3 = User Hospital | 4 = Médico | 5 = Paciente */
+    	/* 1 = Administrador Senne | 2 = Usuario */
         if(auth()->user()->role_id != 1) {
             return response()->json(['error'=>'Unauthorized access'],401);
         }
@@ -31,6 +31,13 @@ class HospitalController extends Controller
     public function storeHospital(Request $request){
 
         $data= $request->only('name', 'id_api');
+
+        if(!empty($data['id_pai'])){
+            $hospital_db= Hospitais::where('id_api', $data['id_pai'])->first();
+            if(!empty($hospital_db)){
+                return response()->json(['message'=>'Hospital already exists!'],400);
+            }
+        }
 
 
         Hospitais::create(['name'=>$data['name'], 'id_api'=>$data['id_api']]);

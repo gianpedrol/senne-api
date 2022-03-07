@@ -26,6 +26,7 @@ class CreateHospitaisTable extends Migration
             $table->collation = 'utf8_general_ci';
 
             $table->bigIncrements('id');
+            $table->string('id_pai')->nullable();
             $table->string('name')->nullable();
             $table->string('id_api')->nullable();
             $table->timestamps();

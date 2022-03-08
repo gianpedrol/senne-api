@@ -53,7 +53,7 @@ Route::prefix('password')->group(function () {
 });
 
 //Rota relacionada ao laboratório via usuario Senne
-Route::middleware('auth')->group(function() {
+Route::middleware('auth:api')->group(function() {
 
     //Salva Laboratórios
 	Route::post('labor/store', [LaborController::class, 'store']);
@@ -76,9 +76,21 @@ Route::middleware('auth')->group(function() {
     //cria usuarios hospital
     Route::post('hospital/store/user', [HospitalController::class, 'storeUserHospital']);
 
-
     //rota para criação de usuário comum
     Route::post('create/user/store', [UserGroupController::class, 'createUserGroup']);
+
+    //rota para listar de usuários
+    Route::get('list/users', [UserGroupController::class, 'listUserGroup']);
+
+    //rota para listar de usuários
+    Route::get('list/user/{id}', [UserGroupController::class, 'listUserGroup']);
+
+    
+
+    //rota para edição de usuário comum
+    Route::put('edit/user/{id}', [UserGroupController::class, 'updateUserGroup']);
+
+    
 
 });
 

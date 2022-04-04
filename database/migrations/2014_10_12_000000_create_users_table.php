@@ -27,8 +27,8 @@ class CreateUsersTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('cpf')->nullable();
-            $table->string('cnpj')->nullable();
-            $table->string('crm')->nullable();
+            $table->string('id_group');
+            $table->string('id_hospital');
             $table->string('email')->nullable();
             $table->string('telefone')->nullable();
             $table->tinyinteger('status')->default(1)->comment('0 => Inativo, 1 => Ativo');
@@ -37,6 +37,9 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+
+            $table->foreign('id_group')->references('id')->on('groups')->onUpdate('NO ACTION')->onDelete('CASCADE');
+            $table->foreign('id_hospital')->references('id')->on('hospitais')->onUpdate('NO ACTION')->onDelete('CASCADE');
         });
     }
 

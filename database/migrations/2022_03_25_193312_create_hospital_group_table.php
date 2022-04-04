@@ -4,14 +4,13 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateHospitaisTable extends Migration
+class CreateHospitalGroupTable extends Migration
 {
-
     /**
      * Schema table name to migrate
      * @var string
      */
-    public $tableName = 'hospitais';
+    public $tableName = 'hospital_group';
 
     /**
      * Run the migrations.
@@ -26,10 +25,12 @@ class CreateHospitaisTable extends Migration
             $table->collation = 'utf8_general_ci';
 
             $table->bigIncrements('id');
-            $table->string('id_pai')->nullable();
-            $table->string('name')->nullable();
-            $table->string('id_api')->nullable();
+            $table->unsignedBigInteger('id_group');
+            $table->unsignedBigInteger('id_hospital');
             $table->timestamps();
+
+            $table->foreign('id_group')->references('id')->on('groups')->onUpdate('NO ACTION')->onDelete('CASCADE');
+            $table->foreign('id_hospital')->references('id')->on('hospitais')->onUpdate('NO ACTION')->onDelete('CASCADE');
         });
     }
 
@@ -38,10 +39,10 @@ class CreateHospitaisTable extends Migration
      *
      * @return void
      */
-     public function down()
-     {
+    public function down()
+    {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         Schema::dropIfExists($this->tableName);
         DB::statement('SET FOREIGN_KEY_CHECKS = 1');
-     }
+    }
 }

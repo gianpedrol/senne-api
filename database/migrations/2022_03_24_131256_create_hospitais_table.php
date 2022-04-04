@@ -4,13 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateHospitalGroupTable extends Migration
+class CreateHospitaisTable extends Migration
 {
+
     /**
      * Schema table name to migrate
      * @var string
      */
-    public $tableName = 'hospital_group';
+    public $tableName = 'hospitais';
 
     /**
      * Run the migrations.
@@ -23,14 +24,16 @@ class CreateHospitalGroupTable extends Migration
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
             $table->collation = 'utf8_general_ci';
-
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('id_group');
-            $table->unsignedBigInteger('id_hospital');
-            $table->timestamps();
+            $table->string('name');
+            $table->string('email')->nullable();
+            $table->string('cnpj')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('image')->nullable();
 
-            $table->foreign('id_group')->references('id')->on('groups')->onUpdate('NO ACTION')->onDelete('CASCADE');
-            $table->foreign('id_hospital')->references('id')->on('hospitais')->onUpdate('NO ACTION')->onDelete('CASCADE');
+            $table->unsignedBigInteger('grupo_id')->default(1);
+            $table->foreign('grupo_id')->references('id')->on('groups')->onDelete('CASCADE');
+            $table->timestamps();
         });
     }
 
@@ -39,7 +42,8 @@ class CreateHospitalGroupTable extends Migration
      *
      * @return void
      */
-     public function down()
+
+    public function down()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         Schema::dropIfExists($this->tableName);

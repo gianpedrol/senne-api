@@ -1,0 +1,42 @@
+{
+   "items":[
+      {
+         "codprocedencia":7,
+         "nomeprocedencia":"HOSPITAL SAO LUIZ ITAIM",
+         "unidade":"SP",
+         "grupo":"REDE DOR"
+      },
+      {
+         "codprocedencia":8,
+         "nomeprocedencia":"HOSPITAL SOROCABA",
+         "unidade":"SOROCABA",
+         "grupo":"UNIMED"
+      },
+      {
+         "codprocedencia":9,
+         "nomeprocedencia":"HOSPITAL MAGEDA",
+         "unidade":"SOROCABA",
+         "grupo":"MAGEDA"
+      },
+      {
+         "codprocedencia":10,
+         "nomeprocedencia":"HOSPITAL ITAPEVA",
+         "unidade":"ITAPEVA",
+         "grupo":"UNIMED"
+      }
+   ],
+   "hasMore":false,
+   "limit":0,
+   "offset":0,
+   "count":189,
+   "links":[
+      {
+         "rel":"self",
+         "href":"http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/procedencia"
+      },
+      {
+         "rel":"describedby",
+         "href":"http://sistemas.senneliquor.com.br:8804/ords/gateway/metadata-catalog/apoio/item"
+      }
+   ]
+}

@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\UsersLabors;
 use App\Models\User;
 use App\Models\Labors;
+use Illuminate\Support\Facades\Http;
+
+use GuzzleHttp\Client as GuzzleHttpClient;
 
 class LaborController extends Controller
 {
@@ -137,6 +140,7 @@ class LaborController extends Controller
             400);
         }       
     }
+
 
 
 }

@@ -23,20 +23,22 @@ class CreateGroupTable extends Migration
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
             $table->collation = 'utf8_general_ci';
-
             $table->bigIncrements('id');
-            $table->string('id_api')->nullable();
+    
             $table->string('name');
+            $table->string('cnpj')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
 
-     /**
+    /**
      * Reverse the migrations.
      *
      * @return void
      */
-     public function down()
+    public function down()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         Schema::dropIfExists($this->tableName);

@@ -266,9 +266,15 @@ class HospitalController extends Controller
             ], 404);
         } else {
 
-            return response()->json(
+            $users = $hospital->users_hospitals;
+            $data = [];
 
-                ['status' => 'success', $hospital->users_hospitals],
+            foreach ($users as $user) {
+                $data[] = $user->usersHospital;
+            }
+
+            return response()->json(
+                ['status' => 'success', $data],
                 200
             );
         }

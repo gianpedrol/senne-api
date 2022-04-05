@@ -86,6 +86,21 @@ Route::middleware('auth:api')->group(function () {
     Route::get('list/hospitals/users/{id}', [HospitalController::class, 'getUsersHospital']);
     //Rota de edição do Usuário do Hospital
     Route::put('edit/hospital/user/{id}', [HospitalController::class, 'updateUserHospital']);
+    //Lista procedencias vindo da api
+    Route::get('list/procedencia', [HospitalController::class, 'getProcedencia']);
+
+    /**USUÁRIOS */
+
+    //rota para criação de usuário comum
+    Route::post('create/user/store', [UserGroupController::class, 'createUserGroup']);
+    //rota para listar de usuários
+    Route::get('list/users', [UserGroupController::class, 'listUserGroup']);
+    //rota para listar de usuários
+    Route::get('list/user/{id}', [UserGroupController::class, 'listUserGroup']);
+    //rota para edição de usuário comum
+    Route::put('edit/user/{id}', [UserGroupController::class, 'updateUserGroup']);
+    //Lista Resultados de um usuario
+    Route::post('list/results/user', [UserGroupController::class, 'getResultsUser']);
 
 
     //Salva Laboratórios
@@ -99,22 +114,4 @@ Route::middleware('auth:api')->group(function () {
 
     //lista laboratórios
     Route::get('list/labors', [LaborController::class, 'listLabors']);
-
-
-
-    //rota para criação de usuário comum
-    Route::post('create/user/store', [UserGroupController::class, 'createUserGroup']);
-
-    //rota para listar de usuários
-    Route::get('list/users', [UserGroupController::class, 'listUserGroup']);
-
-    //rota para listar de usuários
-    Route::get('list/user/{id}', [UserGroupController::class, 'listUserGroup']);
-
-
-
-    //rota para edição de usuário comum
-    Route::put('edit/user/{id}', [UserGroupController::class, 'updateUserGroup']);
-    //Lista procedencias vindo da api
-    Route::get('list/procedencia', [HospitalController::class, 'getProcedencia']);
 });

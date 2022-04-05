@@ -18,6 +18,6 @@ class UsersHospitals extends Model
 
     public function usersHospital()
     {
-        return $this->hasMany(User::class, 'id');
+        return $this->hasMany(User::class, 'id', 'id_user');
     }
 }

@@ -100,7 +100,6 @@ class UserGroupController extends Controller
 
     public function showUserGroup($id)
     {
-
         $user = User::where('id', $id)->first();
 
         return $user;
@@ -143,48 +142,13 @@ class UserGroupController extends Controller
         $userPermissao->save();
     }
 
-    public function getDoctors()
+
+    public function getResultsUser(Request $request)
     {
-        /* CONSULTA API DE SISTEMA DA SENNE */
-        $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/medico');
+        $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/resultado');
 
-        $items = json_decode($response->getBody());
+        $result = json_decode($response->getBody());
 
-        /* SEPARA OS DADOS DA API */
-        foreach ($items->items as $item) {
-
-            $data[] = [
-                'id_api' => $item->codprocedencia,
-                'name' => $item->nomeprocedencia,
-                'grupo' => $item->grupo
-            ];
-        }
-        /* CASO NÃO TENHA NENHUM MEDICO CADASTRADO NO BANCO ELE IRÁ CRIAR*/
-        foreach ($data as $name) {
-            UsersHospitals::firstOrCreate(['name' => $name['name'], 'id_api' => $name['id_api']]);
-        }
-
-        /* LISTA TODOS OS MÉDICOS APÓS CONSULTA E SALVAR NOVOS DADOS  */
-        $medicos = UsersHospitals::all();
-
-        if (count($medicos) > 0) {
-            foreach ($medicos as $medico) {
-
-                $medicos[] = [
-                    'id' => $medico->id,
-                    'name' => $medico->name,
-                ];
-            }
-
-            return response()->json(
-                ['status' => 'success', 'Médicos' => $medicos],
-                200
-            );
-        } else {
-            return response()->json(
-                ['status' => 'Users is empty!'],
-                404
-            );
-        }
+        return $result;
     }
 }

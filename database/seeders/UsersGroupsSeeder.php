@@ -14,13 +14,13 @@ class UsersGroupsSeeder extends Seeder
      */
     public function run()
     {
-        $users_hospitals = [
+       /* $users_hospitals = [
             ['id' => 1, 'id_user'=> 2,'id_group' => 2, 'id_permissao' => 1],
             ['id' => 2, 'id_user'=> 3,'id_group' => 1, 'id_permissao' => 1],
             ['id' => 3, 'id_user'=> 4,'id_group' => 1, 'id_permissao' => 3],
 
         ];
 
-        DB::table('users_groups')->insert($users_hospitals);
+        DB::table('users_groups')->insert($users_hospitals);*/
     }
 }

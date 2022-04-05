@@ -14,11 +14,11 @@ class HospitaisSeeder extends Seeder
      */
     public function run()
     {
-        $hospitais = [
+       /* $hospitais = [
             ['id'=> 1, 'name' => 'Hospital Samaritano'],
             ['id'=> 2, 'name' => 'Hospital Unimed'],
-        ];
+        ];*/
 
-        DB::table('hospitais')->insert($hospitais);
+       // DB::table('hospitais')->insert($hospitais);
     }
 }

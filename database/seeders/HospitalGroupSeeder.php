@@ -14,11 +14,11 @@ class HospitalGroupSeeder extends Seeder
      */
     public function run()
     {
-        $hospital_group = [
+     /*   $hospital_group = [
             ['id_group'=> 1,'id_hospital' => 1],
             ['id_group'=> 2,'id_hospital' => 2],
         ];
 
-        DB::table('hospital_group')->insert($hospital_group);
+        DB::table('hospital_group')->insert($hospital_group); */
     }
 }

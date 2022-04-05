@@ -25,37 +25,7 @@ class UserSeeder extends Seeder
                 'password' => bcrypt('654321'),
                 'remember_token' => '',
             ],
-            [
-                'id' => 2,
-                'name' => 'Administrador Grupo Unimed',
-                'cpf' => '30188106006',
-                'role_id' => '2',
-                'status' => 1,
-                'email' => 'dev@unimed.com.br',
-                'password' => bcrypt('654321'),
-                'remember_token' => '',
-            ],
-            [
-                'id' => 3,
-                'name' => 'Administrador Grupo Samaritano',
-                'cpf' => '30188106006',
-                'role_id' => '2',
-                'status' => 1,
-                'email' => 'dev@samaritano.com.br',
-                'password' => bcrypt('654321'),
-                'remember_token' => '',
-            ],
-            [
-                'id' => 4,
-                'name' => 'Usuário Comum Grupo Samaritano',
-                'cpf' => '30188106006',
-                'role_id' => '3',
-                'status' => 1,
-                'email' => 'dev@samaritano.com.br',
-                'password' => bcrypt('654321'),
-                'remember_token' => '',
-            ]
-            
+                
         ];
 
         DB::table('users')->insert($users);

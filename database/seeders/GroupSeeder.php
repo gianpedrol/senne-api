@@ -14,11 +14,11 @@ class GroupSeeder extends Seeder
      */
     public function run()
     {
-        $groups = [
+      /*  $groups = [
             ['id'=> 1,'name' => 'Grupo Samaritano'],
             ['id'=> 2,'name' => 'Grupo Unimed'],
         ];
 
-        DB::table('groups')->insert($groups);
+        DB::table('groups')->insert($groups);*/
     }
 }

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\URL;
 use League\Flysystem\Exception;
 
 use App\Http\Controllers\Controller;
+use App\Models\UserLog;
 
 class UserController extends Controller
 {
@@ -26,71 +27,75 @@ class UserController extends Controller
 
         try {
             $user = User::findOrFail($id)->update($data);
-        }catch (\Exception $e){
-            return response()->json(['message'=>'Fail on update a user'],400);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Fail on update a user'], 400);
         }
 
-        return response()->json(['message'=>'user updated']);
-
+        return response()->json(['message' => 'user updated']);
     }
 
-    public function delete(Request $request){
+    public function delete(Request $request)
+    {
         $id = $request->id;
 
         try {
             $user = User::findOrFail($id)->delete();
-        }catch (\Exception $e){
-            return response()->json(['message'=>'Fail on delete a user'],400);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Fail on delete a user'], 400);
         }
-
     }
 
-    public function sendResetPassword(Request $request){
+    public function sendResetPassword(Request $request)
+    {
 
         $frontUrl = env('FRONTEND_URL');
-        $frontRoute= env('FRONTEND_RESET_PASSWORD_URL');
+        $frontRoute = env('FRONTEND_RESET_PASSWORD_URL');
 
         $email = $request->get('email');
-        $user = User::where('email',$email)->get();
+        $user = User::where('email', $email)->get();
 
 
-        if( count($user) > 0){
-            $urlTemp = $frontUrl . $frontRoute. URL::temporarySignedRoute(
-                    'verifyResetRoute', now()->addMinutes(30), ['user' => $user[0]['id']]
-                );
+        if (count($user) > 0) {
+            $urlTemp = $frontUrl . $frontRoute . URL::temporarySignedRoute(
+                'verifyResetRoute',
+                now()->addMinutes(30),
+                ['user' => $user[0]['id']]
+            );
 
-            sendEmailPasswordReset::dispatch($user[0],$urlTemp);
+            sendEmailPasswordReset::dispatch($user[0], $urlTemp);
 
-            return response()->json(['message'=>'email reset password send']);
-
-        }else{
-            return response()->json(['message'=>'User not found'],404);
+            return response()->json(['message' => 'email reset password send']);
+        } else {
+            return response()->json(['message' => 'User not found'], 404);
         }
-    } 
+    }
 
-    public function verifyResetRoute(Request $request){
+    public function verifyResetRoute(Request $request)
+    {
 
-        if (! $request->hasValidSignature()) {
+        if (!$request->hasValidSignature()) {
             abort(401);
         }
 
-        return response()->json(['message'=>'valid url']);
+        return response()->json(['message' => 'valid url']);
     }
 
-    public function reset(Request $request){
+    public function reset(Request $request)
+    {
         $id = $request->id;
         $password = Hash::make($request->get('password'));
 
         try {
-            User::findOrFail($id)->update(['password'=>$password]);
-        }catch (\Exception $e){
-            return response()->json(['message'=>'Fail to reset password'],400);
+            User::findOrFail($id)->update(['password' => $password]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Fail to reset password'], 400);
         }
 
-        return response()->json(['message'=>'Password reset successful']);
+        return response()->json(['message' => 'Password reset successful']);
     }
 
-    public function verification(Request $request){
+    public function verification(Request $request)
+    {
         $user_id = $request->route('user');
 
         if (!$request->hasValidSignature()) {
@@ -102,31 +107,56 @@ class UserController extends Controller
 
             $user->markEmailAsVerified();
 
-            return response()->json(['message'=>'verified user email']);
-        }catch (\Exception $e){
-            return response()->json(['message'=>'erro on try to validade user'],400);
+            return response()->json(['message' => 'verified user email']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'erro on try to validade user'], 400);
         }
     }
 
-    public function resend(Request $request){
+    public function resend(Request $request)
+    {
         $id = $request->get('id');
 
         $frontUrl = env('FRONTEND_URL');
-        $frontRoute= env('FRONTEND_EMAIL_VERIFY_URL');
+        $frontRoute = env('FRONTEND_EMAIL_VERIFY_URL');
 
         $user = User::find($id);
 
-        if($user){
-            $urlTemp = $frontUrl . $frontRoute. URL::temporarySignedRoute(
-                    'verification', now()->addMinutes(30), ['user' => $user->id]
-                );
+        if ($user) {
+            $urlTemp = $frontUrl . $frontRoute . URL::temporarySignedRoute(
+                'verification',
+                now()->addMinutes(30),
+                ['user' => $user->id]
+            );
 
-            sendEmailVerification::dispatch($user,$urlTemp);
-        }else{
-            response()->json(['message'=>'User not found'],404);
+            sendEmailVerification::dispatch($user, $urlTemp);
+        } else {
+            response()->json(['message' => 'User not found'], 404);
         }
-
     }
 
+    public function logsUser(Request $request)
+    {
+        $user = User::find($request->id);
 
+        if (!$user) {
+            return response()->json([
+                'message'   => 'The User can t be found',
+            ], 404);
+        } else {
+
+            $logs = $user->logsUser;
+            $data = [];
+
+            foreach ($logs as $log) {
+
+                $data[] = $log;
+            }
+
+            return response()->json(
+                ['status' => 'success', $data],
+                200
+            );
+        }
+    }
 }

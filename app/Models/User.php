@@ -14,7 +14,7 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    protected $fillable = ['name','email','id_hospital'];
+    protected $fillable = ['id', 'name', 'email', 'id_hospital'];
 
     /**
      * The attributes that are mass assignable.
@@ -57,5 +57,10 @@ class User extends Authenticatable implements JWTSubject
     public function hospital()
     {
         return $this->belongsTo(Hospitais::class, 'id');
+    }
+
+    public function logsUser()
+    {
+        return $this->hasMany(UserLog::class, 'id_user');
     }
 }

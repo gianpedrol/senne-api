@@ -101,6 +101,8 @@ Route::middleware('auth:api')->group(function () {
     Route::put('edit/user/{id}', [UserGroupController::class, 'updateUserGroup']);
     //Lista Resultados de um usuario
     Route::post('list/results/user', [UserGroupController::class, 'getResultsUser']);
+    //Lista Resultados de um usuario
+    Route::get('list/logs/user/{id}', [UserController::class, 'logsUser']);
 
 
     //Salva Laboratórios

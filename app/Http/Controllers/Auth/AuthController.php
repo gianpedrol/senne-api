@@ -7,13 +7,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Str;
 
 use DB;
 
 use App\Models\User;
-
+use App\Models\UserLog;
 
 class AuthController extends Controller
 {
@@ -30,6 +31,15 @@ class AuthController extends Controller
         } else {
             $array['message'] = 'Incorrect username or password';
         }
+
+
+        $log = User::where('email', $user['email'])->first();
+
+        $saveLog = new UserLog();
+        $saveLog->id_user = $log->id;
+        $saveLog->Log = 'Usuário Logou';
+        $saveLog->save();
+
 
         return $array;
     }
@@ -80,6 +90,14 @@ class AuthController extends Controller
      */
     public function logout()
     {
+
+
+        $log = Auth::user();
+        $saveLog = new UserLog();
+        $saveLog->id_user = $log->id;
+        $saveLog->Log = 'Usuário Deslogou';
+        $saveLog->save();
+
         Auth::logout();
 
         return response()->json(['message' => 'Successfully logged out']);

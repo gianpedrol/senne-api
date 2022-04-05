@@ -26,7 +26,7 @@ class CreateUserPermissaoTable extends Migration
             $table->collation = 'utf8_general_ci';
 
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('id_user');
+            $table->unsignedBigInteger('id_user');            
             $table->unsignedBigInteger('id_permissao');
             $table->timestamps();
 

@@ -25,8 +25,8 @@ class CreatePermissoesTable extends Migration
             $table->collation = 'utf8_general_ci';
 
             $table->bigIncrements('id');
-            $table->text('descricao');
-            $table->tinyinteger('nivel')->comment('Definimos com algum numero para identificar o id dessa permissão / 1 =>  Administrador / 2 =>  Agendamento / 3 => Resultados');
+            $table->text('descricao')->nullable();
+            $table->tinyinteger('nivel')->comment('Definimos com algum numero para identificar o id dessa permissão / 1 =>  Administrador / 2 =>  Agendamento / 3 => Resultados')->default(1);
             $table->timestamps();
         });
     }
@@ -36,10 +36,10 @@ class CreatePermissoesTable extends Migration
      *
      * @return void
      */
-     public function down()
-     {
+    public function down()
+    {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         Schema::dropIfExists($this->tableName);
         DB::statement('SET FOREIGN_KEY_CHECKS = 1');
-     }
+    }
 }

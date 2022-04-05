@@ -25,7 +25,7 @@ class CreateUsersGroupsTable extends Migration
 
             $table->bigIncrements('id');
             $table->unsignedBigInteger('id_user');
-            $table->unsignedBigInteger('id_group');
+            $table->unsignedBigInteger('id_group');            
             $table->unsignedBigInteger('id_permissao');
             $table->timestamps();
 

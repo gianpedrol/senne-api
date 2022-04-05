@@ -11,6 +11,7 @@ use App\Models\Hospitais;
 use App\Models\UsersHospitals;
 use App\Models\UserPermissoes;
 use PHPUnit\TextUI\XmlConfiguration\Group;
+use App\Models\UsersGroup;
 
 class GroupController extends Controller
 
@@ -43,6 +44,9 @@ class GroupController extends Controller
 
         $data = $request->only('name', 'cnpj', 'image', 'phone');
 
+        //Definimos ID do user como 2 (Usuário Hospital)
+        $role_id = 2;
+
         if (!empty($data['id_pai'])) {
             $group_db = Groups::where('id_api', $data['id_pai'])->first();
             if (!empty($group_db)) {
@@ -67,12 +71,19 @@ class GroupController extends Controller
             $newGroup->phone = $phoneGroup;
             $newGroup->save();
 
+            //Define
+            $senha_temp = bcrypt(md5('123456'));
+            $newUser = new User();
+            $newUser->name = $data['name'];
+            $newUser->cpf = $data['cnpj'];
+            $newUser->phone = $data['phone'];
+            $newUser->email = $data['email'];
+            $newUser->role_id = $role_id;
+            $newUser->password = $senha_temp;
+            $newUser->save();
+
             return response()->json(['message' => 'Group create successfully', $newGroup], 200);
         }
-
-
-
-        /*$newGroup = Groups::firstOrCreate(['name' => $data['name'],'cnpj' => $data['cnpj'], 'image' => $data['image'], 'telefone' => $data['telefone']]);*/
     }
 
 
@@ -151,12 +162,47 @@ class GroupController extends Controller
             return response()->json([
                 'message'   => 'The Group can t be found',
             ], 404);
-        }else{
+        } else {
             $hospitals = $group->hospitals;
 
-            return response()->json(['status' => 'success', $group],
-            200);
+            return response()->json(
+                ['status' => 'success', $group],
+                200
+            );
+        }
+    }
+
+    //Salva usuário Grupo
+    public function storeUser(Request $request)
+    {
+
+        //Definimos ID do user como 2 (Usuário Hospital)
+        $role_id = 2;
+
+        $data = $request->only(['name', 'telefone', 'cpf', 'id_group']);
+
+        $user = User::where('cpf', $data['cpf'])->first();
+
+        if (!empty($user)) {
+            return response()->json(['error' => "User already exists!"], 200);
         }
 
+        //Define
+        $senha_temp = bcrypt(md5('123456'));
+
+        $newUserGroup = new User();
+        $newUserGroup->name = $data['name'];
+        $newUserGroup->cpf = $data['cpf'];
+        $newUserGroup->role_id = $role_id;
+        $newUserGroup->password = $senha_temp;
+        $newUserGroup->save();
+
+
+        $userGroup = new UsersGroup();
+        $userGroup->id_user = $newUserGroup->id;
+        $userGroup->id_Group = $data['id_group'];
+        $userGroup->save();
+        
+        return response()->json(['message' => "User registered successfully!"], 200);
     }
 }

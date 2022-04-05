@@ -11,7 +11,7 @@ class CreateUsersTable extends Migration
      * @var string
      */
     public $tableName = 'users';
-    
+
     /**
      * Run the migrations.
      *
@@ -27,19 +27,19 @@ class CreateUsersTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('cpf')->nullable();
-            $table->string('id_group');
-            $table->string('id_hospital');
+            $table->string('cnpj')->nullable();
+            $table->string('crm')->nullable();
             $table->string('email')->nullable();
-            $table->string('telefone')->nullable();
+            $table->string('image')->nullable();
+            $table->string('phone')->nullable();
             $table->tinyinteger('status')->default(1)->comment('0 => Inativo, 1 => Ativo');
-            $table->integer('role_id')->comment('1 => Usuário master, 2 => Usuário sistema' );
+            $table->integer('role_id')->comment('1 => Usuário master, 2 => Usuário sistema');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
 
-            $table->foreign('id_group')->references('id')->on('groups')->onUpdate('NO ACTION')->onDelete('CASCADE');
-            $table->foreign('id_hospital')->references('id')->on('hospitais')->onUpdate('NO ACTION')->onDelete('CASCADE');
+            $table->rememberToken();
+
+            $table->timestamps();
         });
     }
 
@@ -48,10 +48,10 @@ class CreateUsersTable extends Migration
      *
      * @return void
      */
-     public function down()
-     {
+    public function down()
+    {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         Schema::dropIfExists($this->tableName);
         DB::statement('SET FOREIGN_KEY_CHECKS = 1');
-     }
+    }
 }

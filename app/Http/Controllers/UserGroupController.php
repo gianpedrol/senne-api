@@ -187,42 +187,4 @@ class UserGroupController extends Controller
             );
         }
     }
-
-    public function createUser(Request $request)
-    {
-
-        /*
-            Método responsável por gravar os usuários da Senne, esses uauários possui permissão role_id 1
-            ele tem acesso a todo o conteudo do sistema
-        */
-
-        $data = $request->only(['name', 'cpf', 'email', 'id_group', 'id_hospital', 'telefone']);
-
-        $user = User::where('email', $data['email'])->first();
-
-        if (!empty($user)) {
-            return response()->json(['error' => "User already exists!"], 200);
-        }
-
-        //Define nivel user Senne
-        $role_id = 1;
-
-        //$senha_md5= Str::random(8);//Descomentar após testes
-        $senha_md5 = '654321';
-        $senha_temp = bcrypt($senha_md5);
-
-        $newUser = new User();
-        $newUser->name = $data['name'];
-        $newUser->email = $data['email'];
-        $newUser->cpf = $data['cpf'];
-        $newUser->id_group = $data['id_group'];
-        $newUser->id_hospital = $data['id_hospital'];
-        $newUser->telefone = $data['telefone'];
-        $newUser->role_id = $role_id;
-        $newUser->password = $senha_temp;
-
-        $newUser->save();
-
-        return response()->json(['message' => "User registered successfully!", 'data' => $newUser], 200);
-    }
 }

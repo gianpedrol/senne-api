@@ -69,6 +69,8 @@ Route::middleware('auth:api')->group(function () {
     Route::put('edit/group/{id}', [GroupController::class, 'updateGroup']);
     //LISTA HOSPITAIS DE UM GRUPO
     Route::get('list/hospitals/group/{id}', [GroupController::class, 'getHospitalsGroup']);
+    //CRIA USUARIOS GRUPO
+    Route::post('group/store/user', [GroupController::class, 'storeUser']);
 
 
     /* HOSPITAIS */
@@ -78,10 +80,12 @@ Route::middleware('auth:api')->group(function () {
     Route::get('list/hospitals', [HospitalController::class, 'listHospitals']);
     //ATUALIZA HOSPITAL
     Route::put('hospital/{id}', [HospitalController::class, 'updateHospital']);
-
-
     //cria usuarios hospital
     Route::post('hospital/store/user', [HospitalController::class, 'storeUserHospital']);
+    //LISTA USUARIOS DE UM HOSPITAL
+    Route::get('list/hospitals/users/{id}', [HospitalController::class, 'getUsersHospital']);
+    //Rota de edição do Usuário do Hospital
+    Route::put('edit/hospital/user/{id}', [HospitalController::class, 'updateUserHospital']);
 
 
     //Salva Laboratórios

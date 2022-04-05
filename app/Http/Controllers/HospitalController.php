@@ -11,9 +11,12 @@ use Illuminate\Support\Facades\Validator;
 use PHPUnit\Exception;
 use App\Models\User;
 use App\Models\Hospitais;
+use App\Models\Permissoes;
 use App\Models\UsersHospitals;
 use App\Models\UserPermissoes;
 use PHPUnit\TextUI\XmlConfiguration\Group;
+use App\Models\UsersGroup;
+
 
 class HospitalController extends Controller
 {
@@ -186,7 +189,7 @@ class HospitalController extends Controller
         //Definimos o tipo do usuario por padrão administrador
         $nivel_user = 1;
 
-        $data = $request->only(['name', 'telefone', 'cpf', 'email', 'id_hospital']);
+        $data = $request->only(['name', 'phone', 'cpf', 'email', 'id_hospital', 'id_group']);
 
         if (empty($data['id_hospital'])) {
             return response()->json(['error' => 'ID Hospital cannot be empty'], 404);
@@ -206,24 +209,68 @@ class HospitalController extends Controller
         $newUser = new User();
         $newUser->name = $data['name'];
         $newUser->cpf = $data['cpf'];
-        $newUser->telefone = $data['telefone'];
+        $newUser->phone = $data['phone'];
         $newUser->email = $data['email'];
         $newUser->role_id = $role_id;
         $newUser->password = $senha_temp;
         $newUser->save();
+
+
 
         $userHospital = new UsersHospitals();
         $userHospital->id_user = $newUser->id;
         $userHospital->id_hospital = $data['id_hospital'];
         $userHospital->save();
 
+        $userPermissoes = new Permissoes();
+        $userPermissoes->nivel = 1;
+        $userPermissoes->save();
+
+
         $userPermissao = new UserPermissoes();
         $userPermissao->id_user = $newUser->id;
-        $userPermissao->id_hospital =  $data['id_hospital'];
         $userPermissao->id_permissao = $nivel_user;
         $userPermissao->save();
 
 
         return response()->json(['message' => "User registered successfully!"], 200);
+    }
+    public function updateUserHospital($id, Request $request)
+    {
+        $data = $request->only(['name', 'cpf', 'image', 'phone']);
+
+        //atualizando o item
+        $user = User::find($id);
+        if ($user) {
+            if ($data) {
+                $user->name = $data['name'];
+                $user->cnpj = $data['cpf'];
+                $user->image = $data['image'];
+                $user->phone = $data['phone'];
+            }
+            $user->save();
+            return response()->json(['error' => "Edited Successfully!", $user], 200);
+        } else {
+            $array['message'] = 'The User can t be found';
+        }
+    }
+
+
+    public function getUsersHospital(Request $request)
+    {
+        $hospital = Hospitais::find($request->id);
+
+        if (!$hospital) {
+            return response()->json([
+                'message'   => 'The Hospital can t be found',
+            ], 404);
+        } else {
+
+            return response()->json(
+
+                ['status' => 'success', $hospital->users_hospitals],
+                200
+            );
+        }
     }
 }

@@ -38,6 +38,7 @@ class GroupController extends Controller
         return response()->json($groups);
     }
 
+
     //Salva Grupo no DB
     public function storeGroup(Request $request)
     {
@@ -63,25 +64,6 @@ class GroupController extends Controller
         if ($group_db) {
             return response()->json(['message' => 'Group already exists!'], 400);
         } else {
-            //Aqui criamos o registro no banco de dados
-            $newGroup = new Groups();
-            $newGroup->name = $nameGroup;
-            $newGroup->cnpj = $cnpjGroup;
-            $newGroup->image = $imageGroup;
-            $newGroup->phone = $phoneGroup;
-            $newGroup->save();
-
-            //Define
-            $senha_temp = bcrypt(md5('123456'));
-            $newUser = new User();
-            $newUser->name = $data['name'];
-            $newUser->cpf = $data['cnpj'];
-            $newUser->phone = $data['phone'];
-            $newUser->email = $data['email'];
-            $newUser->role_id = $role_id;
-            $newUser->password = $senha_temp;
-            $newUser->save();
-
             return response()->json(['message' => 'Group create successfully', $newGroup], 200);
         }
     }
@@ -135,19 +117,20 @@ class GroupController extends Controller
     {
         $data = $request->only(['name', 'cnpj', 'image', 'phone']);
 
+        if(empty($data['name'])){
+            return response()->json(['error' => "Name cannot be null"], 200);
+        }
+
         //atualizando o item
         $group = Groups::find($id);
+        //dd($group);
         if ($group) {
-            if ($data) {
-                $group->name = $data['name'];
-                $group->cnpj = $data['cnpj'];
-                $group->image = $data['image'];
-                $group->phone = $data['phone'];
-            }
-            $group->save();
-            return response()->json(['error' => "Edited Successfully!", $group], 200);
+            
+            $group->update($data);
+
+            return response()->json(['msg' => "Edited Successfully!", $group], 200);
         } else {
-            $array['message'] = 'The Group ' . $id . ' can t be found';
+            return response()->json(['error' => "Group not found"], 404);
         }
     }
 
@@ -176,33 +159,70 @@ class GroupController extends Controller
     public function storeUser(Request $request)
     {
 
-        //Definimos ID do user como 2 (Usuário Hospital)
-        $role_id = 2;
+        
 
-        $data = $request->only(['name', 'telefone', 'cpf', 'id_group']);
+        $data = $request->only(['name', 'email', 'telefone', 'cpf', 'id_group']);
 
-        $user = User::where('cpf', $data['cpf'])->first();
+        if (empty($data['email'])) {
+            return response()->json(['error' => "E-mail cannot be null!"], 200);
+        }
+
+        if (empty($data['id_group'])) {
+            return response()->json(['error' => "Id group cannot be null!"], 200);
+        }
+
+        $user = User::where('email', $data['email'])->first();
 
         if (!empty($user)) {
             return response()->json(['error' => "User already exists!"], 200);
         }
 
-        //Define
-        $senha_temp = bcrypt(md5('123456'));
 
-        $newUserGroup = new User();
-        $newUserGroup->name = $data['name'];
-        $newUserGroup->cpf = $data['cpf'];
-        $newUserGroup->role_id = $role_id;
-        $newUserGroup->password = $senha_temp;
-        $newUserGroup->save();
+        try {
+                \DB::beginTransaction();
 
 
-        $userGroup = new UsersGroup();
-        $userGroup->id_user = $newUserGroup->id;
-        $userGroup->id_Group = $data['id_group'];
-        $userGroup->save();
+                    //Define
+                    //$senha_temp = bcrypt(md5('123456'));
+                    $senha_temp = bcrypt('123456789');
+
+                    //Definimos ID do user como 2 (Usuário Grupo)
+                    $role_id = 2;
+                    $newUserGroup = new User();
+                    $newUserGroup->name = $data['name'];
+                    $newUserGroup->email = $data['email'];
+                    $newUserGroup->cpf = $data['cpf'];
+                    $newUserGroup->role_id = $role_id;
+                    $newUserGroup->password = $senha_temp;
+                    $newUserGroup->save();
+
+
+                    //Definimos id da permissão como administrador de um grupo
+                    $id_permissao = 1;
+                    $userGroup = new UsersGroup();
+                    $userGroup->id_user = $newUserGroup->id;
+                    $userGroup->id_Group = $data['id_group'];
+                    $userGroup->id_permissao = $id_permissao;
+                    $userGroup->save();
+
+
+                \DB::commit();
+
+            } catch (\Throwable $th) {
+                    dd($th->getMessage());
+                    \DB::rollback();
+                    return ['error'=>'Could not write data', 400];
+            }
+
+        
         
         return response()->json(['message' => "User registered successfully!"], 200);
+        
+    }
+
+
+    public function getGroupsUser(Request $request, $id)
+    {
+        dd($id);
     }
 }

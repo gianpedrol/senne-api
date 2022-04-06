@@ -145,9 +145,10 @@ class GroupController extends Controller
                 $group->phone = $data['phone'];
             }
             $group->save();
-            return response()->json(['error' => "Edited Successfully!", $group], 200);
+            return response()->json(['message' => "Edited Successfully!", $group], 200);
         } else {
-            $array['message'] = 'The Group ' . $id . ' can t be found';
+            $array['error'] = 'The Group ' . $id . ' can t be found';
+            return $array;
         }
     }
 

@@ -72,6 +72,11 @@ Route::middleware('auth:api')->group(function () {
     //CRIA USUARIOS GRUPO
     Route::post('group/store/user', [GroupController::class, 'storeUser']);
 
+    Route::prefix('groupuser')->group(function () {
+        //Lista Grupos da api
+        Route::get('list/groups/{id}', [GroupController::class, 'getGroupsUser']);
+    });
+
 
     /* HOSPITAIS */
     //salva hospitais

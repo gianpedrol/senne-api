@@ -10,7 +10,7 @@ class Groups extends Model
 {
     protected $table = 'groups';
 
-    protected $fillable = ['name', 'id_api'];
+    protected $fillable = ['name', 'cnpj', 'image', 'phone'];
 
     public function hospitals()
     {

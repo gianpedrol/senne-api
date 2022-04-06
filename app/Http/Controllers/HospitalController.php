@@ -215,8 +215,6 @@ class HospitalController extends Controller
         $newUser->password = $senha_temp;
         $newUser->save();
 
-
-
         $userHospital = new UsersHospitals();
         $userHospital->id_user = $newUser->id;
         $userHospital->id_hospital = $data['id_hospital'];

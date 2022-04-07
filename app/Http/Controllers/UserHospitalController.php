@@ -26,6 +26,14 @@ class UserHospitalController extends Controller
             return response()->json(['error' => 'Unauthorized access'], 401);
         }
     }
+    /* RETORNA APENAS HOSPITAL SELECIONADO */
+    public function getHospital($id)
+    {
+        $hospital = Hospitais::where('id', $id)->first();
+
+        return $hospital;
+    }
+    
     //salva usuario hospital
     public function storeUserHospital(Request $request)
     {

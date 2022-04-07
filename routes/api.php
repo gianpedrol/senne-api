@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\ExameController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\LaborController;
 use App\Http\Controllers\HospitalController;
@@ -106,8 +107,16 @@ Route::middleware('auth:api')->group(function () {
     });
 
 
+    /*EXAMES E RESULTADOS */
+    //Lista de exames
+    Route::get('list/exames', [ExameController::class, 'listExame']);
+    //Lista de exames
+    Route::post('list/results', [ExameController::class, 'resultExame']);
+
+
     //Lista Resultados de um usuario
     Route::get('list/logs/user/{id}', [UserController::class, 'logsUser']);
-    //Lista de exames
-    Route::get('list/exames/user', [UserController::class, 'listExame']);
+
+    //Lista Resultados de um usuario
+    Route::get('list/users', [UserController::class, 'listAllUser']);
 });

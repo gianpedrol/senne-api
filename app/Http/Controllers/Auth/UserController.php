@@ -220,13 +220,13 @@ class UserController extends Controller
         }
     }
 
-    public function listExame()
+    public function listAllUser()
     {
-        /* CONSULTA API DE SISTEMA DA SENNE */
-        $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/exame');
+        $user = User::all();
 
-        $items = json_decode($response->getBody());
-
-        return $items;
+        return response()->json(
+            ['status' => 'success', 'Users' => $user],
+            200
+        );
     }
 }

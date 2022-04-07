@@ -50,12 +50,11 @@ class HospitalController extends Controller
 
 
 
-
         /* SEPARA OS DADOS DA API */
         foreach ($items->items as $item) {
-            // $grupo_id = Groups::where('name')->get();
 
             $data[] = [
+                'codprocedencia' => $item->codprocedencia,
                 'id_api' => $item->codprocedencia,
                 'name' => $item->nomeprocedencia,
                 'grupo' => $item->grupo
@@ -207,7 +206,7 @@ class HospitalController extends Controller
             $saveLog->id_user = $log->id;
             $saveLog->Log = 'Usuário Atualizou um Hospital';
             $saveLog->save();
-            
+
             return response()->json(['message' => "Edited Successfully!", $hospital], 200);
         } else {
             return response()->json(['error' => "The Hospital  can t be found"], 404);

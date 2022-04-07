@@ -32,7 +32,7 @@ class AuthController extends Controller
             $array['message'] = 'Incorrect username or password';
         }
 
-
+        $user = User::where('email', $user['email'])->first();
         $log = User::where('email', $user['email'])->first();
 
         $saveLog = new UserLog();
@@ -40,8 +40,7 @@ class AuthController extends Controller
         $saveLog->Log = 'Usuário Logou';
         $saveLog->save();
 
-
-        return $array;
+        return response()->json(['message' => "User Logged in!", 'token' => $array['token'], 'user' => $user], 200);
     }
 
 

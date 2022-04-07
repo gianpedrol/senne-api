@@ -16,4 +16,9 @@ class Groups extends Model
     {
         return $this->hasMany(Hospitais::class, 'grupo_id');
     }
+
+    public function usersGroup()
+    {
+        return $this->hasMany(UsersGroup::class, 'id_group');
+    }
 }

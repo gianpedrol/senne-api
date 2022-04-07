@@ -16,10 +16,70 @@ use League\Flysystem\Exception;
 
 use App\Http\Controllers\Controller;
 use App\Models\UserLog;
+use App\Models\UserPermissoes;
+use App\Models\UsersHospitals;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class UserController extends Controller
 {
+    public function createUser(Request $request)
+    {
 
+        $data = $request->only(['name', 'cpf', 'email', 'id_hospital', 'unidade', 'permissao']);
+        $user = User::where('email', $data['email'])->first();
+
+        if (!empty($user)) {
+            return response()->json(['error' => "User already exists!"], 200);
+        }
+
+        try {
+            \DB::beginTransaction();
+
+            //Define nivel user Senne
+            $role_id = 1;
+
+            //$senha_md5= Str::random(8);//Descomentar após testes
+            $senha_md5 = '654321';
+            $senha_temp = bcrypt($senha_md5);
+
+            $newUser = new User();
+            $newUser->name = $data['name'];
+            $newUser->email = $data['email'];
+            $newUser->cpf = $data['cpf'];
+            $newUser->telefone = $data['telefone'];
+            $newUser->role_id = $role_id;
+            $newUser->password = $senha_temp;
+            $newUser->save();
+
+            $userHospital = new UsersHospitals();
+            $userHospital->id_user = $newUser->id;
+            $userHospital->id_hospital = $data['id_hospital'];
+            $userHospital->save();
+
+            $userPermissao = new UserPermissoes();
+            $userPermissao->id_user = $newUser->id;
+            $userPermissao->id_hospital =  $data['id_hospital'];
+            $userPermissao->id_permissao = $data['permissao'];
+            $userPermissao->save();
+
+            //GERA LOG
+            $log = Auth::user();
+            $saveLog = new UserLog();
+            $saveLog->id_user = $log->id;
+            $saveLog->Log = 'Usuário Criou um usuário';
+            $saveLog->save();
+
+
+
+            \DB::commit();
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+            \DB::rollback();
+            return ['error' => 'Could not write data', 400];
+        }
+        return response()->json(['message' => "User registered successfully!", 'data' => $newUser], 200);
+    }
     public function update(Request $request)
     {
         $id = $request->id;
@@ -158,5 +218,15 @@ class UserController extends Controller
                 200
             );
         }
+    }
+
+    public function listExame()
+    {
+        /* CONSULTA API DE SISTEMA DA SENNE */
+        $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/exame');
+
+        $items = json_decode($response->getBody());
+
+        return $items;
     }
 }

@@ -12,6 +12,7 @@ use PHPUnit\Exception;
 use App\Models\User;
 use App\Models\Hospitais;
 use App\Models\Permissoes;
+use App\Models\UserLog;
 use App\Models\UsersHospitals;
 use App\Models\UserPermissoes;
 use PHPUnit\TextUI\XmlConfiguration\Group;
@@ -101,15 +102,45 @@ class HospitalController extends Controller
 
         $data = $request->only('name', 'email', 'cnpj', 'image', 'phone', 'grupo_id');
 
+        if (empty($data['grupo_id'])) {
+            return response()->json(['error' => 'grupo_id cant be null'], 400);
+        }
+
         if (!empty($data['name'])) {
             $hospital_db = Hospitais::where('email', $data['email'])->first();
             if (!empty($hospital_db)) {
                 return response()->json(['message' => 'Hospital email already exists!'], 400);
             }
         }
+        try {
+            \DB::beginTransaction();
 
 
-        Hospitais::create(['name' => $data['name'], 'email' => $data['email'], 'cnpj' => $data['cnpj'], 'image' => $data['phone'], 'grupo_id' => $data['grupo_id']]);
+            //Define
+            $newHospital = new Hospitais();
+            $newHospital->name = $data['name'];
+            $newHospital->email =  $data['email'];
+            $newHospital->image = $data['image'];
+            $newHospital->cnpj =  $data['cnpj'];
+            $newHospital->phone = $data['phone'];
+            $newHospital->grupo_id = $data['grupo_id'];
+            $newHospital->save();
+
+            //GERA LOG
+            $log = Auth::user();
+            $saveLog = new UserLog();
+            $saveLog->id_user = $log->id;
+            $saveLog->Log = 'Usuário Criou um Hospital';
+            $saveLog->save();
+
+            \DB::commit();
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+            \DB::rollback();
+            return ['error' => 'Could not write data', 400];
+        }
+
+
 
         return response()->json(['message' => 'Hospital create successfully'], 200);
     }
@@ -161,120 +192,25 @@ class HospitalController extends Controller
     {
         $data = $request->only('name', 'email', 'cnpj', 'image', 'phone', 'grupo_id');
 
+        if (empty($data['name'])) {
+            return response()->json(['error' => "Name cannot be null"], 200);
+        }
         //atualizando o HOSPITAL
         $hospital = Hospitais::where('id', $id)->first();
         if ($hospital) {
-            if ($data) {
-                $hospital->name = $data['name'];
-                $hospital->email = $data['email'];
-                $hospital->cnpj = $data['cnpj'];
-                $hospital->image = $data['image'];
-                $hospital->phone = $data['phone'];
-                $hospital->grupo_id = $data['grupo_id'];
-            }
-            $hospital->save();
-            return response()->json(['error' => "Edited Successfully!", $hospital], 200);
+
+            $hospital->update($data);
+
+            //GERA LOG
+            $log = Auth::user();
+            $saveLog = new UserLog();
+            $saveLog->id_user = $log->id;
+            $saveLog->Log = 'Usuário Atualizou um Hospital';
+            $saveLog->save();
+            
+            return response()->json(['message' => "Edited Successfully!", $hospital], 200);
         } else {
-            return 'The Hospital  can t be found';
-        }
-    }
-
-    //salva usuario hospital
-    public function storeUserHospital(Request $request)
-    {
-
-        //Definimos ID do user como 2 (Usuário Hospital)
-        $role_id = 2;
-
-        //Definimos o tipo do usuario por padrão administrador
-        $nivel_user = 1;
-
-        $data = $request->only(['name', 'phone', 'cpf', 'email', 'id_hospital', 'id_group']);
-
-        if (empty($data['id_hospital'])) {
-            return response()->json(['error' => 'ID Hospital cannot be empty'], 404);
-        } else if (empty($this->getHospital($data['id_hospital']))) {
-            return response()->json(['error' => 'Hospital not found'], 404);
-        }
-
-        $user = User::where('email', $data['email'])->first();
-
-        if (!empty($user)) {
-            return response()->json(['error' => "User already exists!"], 200);
-        }
-
-        //Define
-        $senha_temp = bcrypt(md5('123456'));
-
-        $newUser = new User();
-        $newUser->name = $data['name'];
-        $newUser->cpf = $data['cpf'];
-        $newUser->phone = $data['phone'];
-        $newUser->email = $data['email'];
-        $newUser->role_id = $role_id;
-        $newUser->password = $senha_temp;
-        $newUser->save();
-
-        $userHospital = new UsersHospitals();
-        $userHospital->id_user = $newUser->id;
-        $userHospital->id_hospital = $data['id_hospital'];
-        $userHospital->save();
-
-        $userPermissoes = new Permissoes();
-        $userPermissoes->nivel = 1;
-        $userPermissoes->save();
-
-
-        $userPermissao = new UserPermissoes();
-        $userPermissao->id_user = $newUser->id;
-        $userPermissao->id_permissao = $nivel_user;
-        $userPermissao->save();
-
-
-        return response()->json(['message' => "User registered successfully!"], 200);
-    }
-    public function updateUserHospital($id, Request $request)
-    {
-        $data = $request->only(['name', 'cpf', 'image', 'phone']);
-
-        //atualizando o item
-        $user = User::find($id);
-        if ($user) {
-            if ($data) {
-                $user->name = $data['name'];
-                $user->cnpj = $data['cpf'];
-                $user->image = $data['image'];
-                $user->phone = $data['phone'];
-            }
-            $user->save();
-            return response()->json(['error' => "Edited Successfully!", $user], 200);
-        } else {
-            $array['message'] = 'The User can t be found';
-        }
-    }
-
-
-    public function getUsersHospital(Request $request)
-    {
-        $hospital = Hospitais::find($request->id);
-
-        if (!$hospital) {
-            return response()->json([
-                'message'   => 'The Hospital can t be found',
-            ], 404);
-        } else {
-
-            $users = $hospital->users_hospitals;
-            $data = [];
-
-            foreach ($users as $user) {
-                $data[] = $user->usersHospital;
-            }
-
-            return response()->json(
-                ['status' => 'success', $data],
-                200
-            );
+            return response()->json(['error' => "The Hospital  can t be found"], 404);
         }
     }
 }

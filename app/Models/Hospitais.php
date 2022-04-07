@@ -11,7 +11,7 @@ class Hospitais extends Model
 {
     protected $table = 'hospitais';
 
-    protected $fillable = ['name', 'id_api', 'grupo_id'];
+    protected $fillable = ['name', 'email', 'cnpj', 'image', 'phone', 'grupo_id'];
 
     public function group()
     {
@@ -22,5 +22,4 @@ class Hospitais extends Model
     {
         return $this->hasMany(UsersHospitals::class, 'id_hospital');
     }
-
 }

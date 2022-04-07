@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-
+use PHPUnit\TextUI\XmlConfiguration\Group;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -57,6 +57,11 @@ class User extends Authenticatable implements JWTSubject
     public function hospital()
     {
         return $this->belongsTo(Hospitais::class, 'id');
+    }
+
+    public function group()
+    {
+        return $this->belongsTo(Groups::class, 'id');
     }
 
     public function logsUser()

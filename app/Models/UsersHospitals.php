@@ -16,6 +16,7 @@ class UsersHospitals extends Model
         return $this->belongsTo(Hospitais::class, 'id', 'id_hospital');
     }
 
+
     public function usersHospital()
     {
         return $this->hasMany(User::class, 'id', 'id_user');

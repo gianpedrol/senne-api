@@ -152,14 +152,13 @@ class UserHospitalController extends Controller
 
             foreach ($users as $user) {
                 $data[] = [
-                    'hospital' => $hospital,
                     'users' => $user->usersHospital,
                 ];
             }
 
 
             return response()->json(
-                ['status' => 'success', $data],
+                ['status' => 'success', 'hospital' => $hospital, 'users' => $data,],
                 200
             );
         }

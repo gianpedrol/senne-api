@@ -232,10 +232,24 @@ class UserController extends Controller
         
       $title = "Listando Entregas";*/
         $users = User::all();
+        $data = [];
 
+
+        foreach ($users as $user) {
+
+            if ($user->role_id >= 2) {
+                $data[] = [
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'hospital' => $user->hospitalUser
+                ];
+            }
+
+            //dd($user->hospital_user);
+        }
 
         return response()->json(
-            ['status' => 'success', 'Users' => $users],
+            ['status' => 'success', 'Users' => $data],
             200
         );
     }

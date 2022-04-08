@@ -18,6 +18,8 @@ class Hospitais extends Model
         return $this->belongsTo(Groups::class, 'id');
     }
 
+    
+
     public function users_hospitals()
     {
         return $this->hasMany(UsersHospitals::class, 'id_hospital');

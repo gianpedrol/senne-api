@@ -37,6 +37,7 @@ class GroupController extends Controller
     //
     public function index()
     {
+
         $groups = Groups::all();
         return response()->json($groups);
     }
@@ -139,8 +140,27 @@ class GroupController extends Controller
             );
         }
     }
-    public function listGroups()
+    public function listGroups(Request $request)
     {
+
+        /* 
+            Função que chega se o user é usuario Senne ou Usuario comum
+         */
+        if (!$request->user()->role_id != 1) {
+            return response()->json(['error' => "Unauthorized"], 401);
+        }
+
+
+        /* 
+            Função que checa se o usuario tem permissão para acessar este método.
+            ## Params ##
+            $id_user : passa o id do usuario
+            $id_permissão : passa o id da view { 2 -> para view de agendamentos, 3 -> para view de consultas }
+         */
+        if (!$request->user()->permission_user($request->user()->id, 3)) {
+            return response()->json(['error' => "Unauthorized"], 401);
+        }
+
         /* LISTA TODOS OS GRUPOS APÓS CONSULTA E SALVAR NOVOS DADOS  */
         $groups =  Groups::all();
 

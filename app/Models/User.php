@@ -68,4 +68,37 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(UserLog::class, 'id_user');
     }
+
+    public function permission_user($id_user, $id_permissao)
+    {
+        return UserPermissoes::where('id_user',  $id_user)->where('id_permissao', $id_permissao)->first();
+    }
+
+
+    /* Verificar e validar tipo do usuário */
+    public function authorizeRoles($roles)
+    {
+        if (is_array($roles)) {
+            return $this->hasAnyRole($roles);
+        }
+
+        return $this->hasRole($roles);
+    }
+
+     /* Atribuir USUÁRIO a uma ROLE. (Usuários são pertencentes a uma role - belongsTo) */
+    public function role(){
+        return $this->belongsTo('App\Models\Role');
+    }
+
+    /* Verificação de múltiplas roles */
+    public function hasAnyRole($roles)
+    {
+        return null !== $this->role()->whereIn('id', $roles)->first();
+    }
+
+    /* Verificação role única */
+    public function hasRole($role)
+    {
+        return null !== $this->role()->where('id', $role)->first();
+    }
 }

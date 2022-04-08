@@ -13,7 +13,7 @@ class UsersHospitals extends Model
 
     public function hospital()
     {
-        return $this->belongsTo(Hospitais::class, 'id');
+        return $this->belongsTo(Hospitais::class, 'id', 'id_hospital');
     }
 
     public function usersHospital()

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\URL;
 use League\Flysystem\Exception;
 
 use App\Http\Controllers\Controller;
+use App\Models\Hospitais;
 use App\Models\UserLog;
 use App\Models\UserPermissoes;
 use App\Models\UsersHospitals;
@@ -222,10 +223,19 @@ class UserController extends Controller
 
     public function listAllUser()
     {
-        $user = User::all();
+
+        /*  $entregas = Pedidosdata::
+                            join('pedidos as ped', 'pedidos_datas.pedido_id', '=', 'ped.id')
+                            ->select('pedidos_datas.*', 'ped.*')
+                            ->orderBy('data_entrega', 'ASC')
+                            ->paginate(25);
+        
+      $title = "Listando Entregas";*/
+        $users = User::all();
+
 
         return response()->json(
-            ['status' => 'success', 'Users' => $user],
+            ['status' => 'success', 'Users' => $users],
             200
         );
     }

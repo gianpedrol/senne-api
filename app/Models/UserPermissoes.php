@@ -9,5 +9,10 @@ class UserPermissoes extends Model
 {
     protected $table = 'user_permissao';
 
-    protected $fillable = ['id_user','id_permissao','id_hospital'];
+    protected $fillable = ['id_user', 'id_permissao', 'id_hospital'];
+
+    public function permissions()
+    {
+        return $this->belongsTo(User::class, 'id');
+    }
 }

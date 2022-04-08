@@ -33,7 +33,7 @@ class UserHospitalController extends Controller
 
         return $hospital;
     }
-    
+
     //salva usuario hospital
     public function storeUserHospital(Request $request)
     {
@@ -136,7 +136,7 @@ class UserHospitalController extends Controller
 
         return $user;
     }
-    public function getUsersHospital(Request $request)
+    public function getUsersHospital($id, Request $request)
     {
         $hospital = Hospitais::find($request->id);
 
@@ -147,11 +147,16 @@ class UserHospitalController extends Controller
         } else {
 
             $users = $hospital->users_hospitals;
+
             $data = [];
 
             foreach ($users as $user) {
-                $data[] = $user->usersHospital;
+                $data[] = [
+                    'hospital' => $hospital,
+                    'users' => $user->usersHospital,
+                ];
             }
+
 
             return response()->json(
                 ['status' => 'success', $data],

@@ -104,8 +104,6 @@ class UserGroupController extends Controller
     public function listUsersGroup(Request $request)
     {
 
-
-
         $users = User::all();
 
         if ($users) {

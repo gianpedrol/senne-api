@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\sendEmailPasswordReset;
+use App\Mail\emailPasswordReset;
 use App\Models\Hospitais;
 use App\Models\Permissoes;
 use App\Models\User;
 use App\Models\UserLog;
 use App\Models\UserPermissoes;
 use App\Models\UsersHospitals;
+use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 
 class UserHospitalController extends Controller
 {
@@ -72,6 +77,17 @@ class UserHospitalController extends Controller
             $newUser->password = $senha_temp;
             $newUser->save();
 
+            $frontUrl = env('FRONTEND_URL');
+            $frontRoute = env('FRONTEND_RESET_PASSWORD_URL');
+
+            $url = $frontUrl . $frontRoute . URL::signedRoute(
+                'verifyResetRoute'
+            );
+
+            $mail = User::findOrFail($newUser->id);
+
+            Mail::to($data['email'])->send(new emailPasswordReset($mail, $url));
+
             $userHospital = new UsersHospitals();
             $userHospital->id_user = $newUser->id;
             $userHospital->id_hospital = $data['id_hospital'];
@@ -101,6 +117,7 @@ class UserHospitalController extends Controller
             \DB::rollback();
             return ['error' => 'Could not write data', 400];
         }
+
 
 
 

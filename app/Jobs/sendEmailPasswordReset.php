@@ -25,7 +25,7 @@ class sendEmailPasswordReset implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(User $user,$url)
+    public function __construct(User $user, $url)
     {
         $this->user = $user;
         $this->url = $url;
@@ -38,6 +38,6 @@ class sendEmailPasswordReset implements ShouldQueue
      */
     public function handle()
     {
-        Mail::queue(new emailPasswordReset($this->user,$this->url));
+        Mail::queue(new emailPasswordReset($this->user, $this->url));
     }
 }

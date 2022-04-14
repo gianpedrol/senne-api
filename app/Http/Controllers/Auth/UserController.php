@@ -385,11 +385,25 @@ class UserController extends Controller
     public function showUser(Request $request)
     {
 
+
+        $user = [];
+        $user = User::findOrFail($request->id);
+
         if (!$user) {
             return response()->json([
                 'message'   => 'The user can t be found',
             ], 404);
         } else {
+
+
+            $user['hospitals'] = UsersHospitals::from('users_hospitals as userhos')
+                ->select('hos.name as name')
+                ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
+                ->where('id_user', $user->id)
+                ->get();
+
+
+            $user['permissoes'] = UserPermissoes::where('id_user', $user->id)->select('id_permissao as id')->get();
 
             return response()->json(
                 ['status' => 'success',  'users' => $user],

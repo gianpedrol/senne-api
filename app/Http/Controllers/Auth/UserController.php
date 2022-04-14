@@ -100,8 +100,8 @@ class UserController extends Controller
     {
 
         $data = $request->only(['name', 'cpf', 'phone', 'email']);
-        $permissions = $request->only('permissions');
-        $hospitals = $request->only('hospitals');
+        $permissions = $request->permissions;
+        $hospitals = $request->hospitals;
 
         $user = User::where('email', $data['email'])->first();
 
@@ -129,28 +129,20 @@ class UserController extends Controller
             $newUser->save();
 
             /* Salva mais de um hospital ao usuário*/
-            foreach ($hospitals as $hospital) {
-                $id_hospital[] = [
-                    'id' => $hospital
-                ];
+            if (!empty($hospitals)) {
+                foreach ($hospitals as $id_hospital) {
+                    UsersHospitals::create(['id_hospital' => $id_hospital, 'id_user' => $newUser->id]);
+                }
             }
-            $userHospital = new UsersHospitals();
-            $userHospital->id_user = $newUser->id;
-            $userHospital->id_hospital = $data['id_hospital'];
-            $userHospital->save();
+
 
             /* Salva permissões do Usuário */
-            $dataPermissions = [];
-            foreach ($permissions as $permission) {
-                $dataPermissions = [
-                    'id' => $permission
-                ];
+            if (!empty($permissions)) {
+                foreach ($permissions as $id_permission) {
+                    UserPermissoes::create(['id_permissao' => $id_permission, 'id_user' => $newUser->id]);
+                }
             }
-            //PERMISSOES
-            $userPermissao = new UserPermissoes();
-            $userPermissao->id_user = $user->id;
-            $userPermissao->id_permissao = $dataPermissions;
-            $userPermissao->save();
+
 
 
             //GERA LOG
@@ -174,13 +166,12 @@ class UserController extends Controller
     public function update(Request $request)
     {
 
-
-
         $id = $request->id;
         $data = $request->only('name', 'phone', 'cpf', 'email');
-        $permissions = $request->only('permissions');
+        $permissions = $request->permissions;
+        $hospitals = $request->hospitals;
 
-
+        //Validar se email existe!
 
 
         try {
@@ -192,37 +183,23 @@ class UserController extends Controller
             }
 
 
-            $dataPermission = [];
-            foreach ($permissions as $permission) {
+            /* Salva mais de um hospital ao usuário*/
+            UsersHospitals::where('id_user', $user->id)->delete(); //Deleta os registros
+            if (!empty($hospitals)) {
+                foreach ($hospitals as $id_hospital) {
+                    UsersHospitals::create(['id_hospital' => $id_hospital, 'id_user' => $user->id]);
+                }
+            }
 
-                $dataPermission = [
-                    'id' => $permission
-                ];
+
+            /* Salva permissões do Usuário */
+            UserPermissoes::where('id_user', $user->id)->delete(); //Deleta os registros
+            if (!empty($permissions)) {
+                foreach ($permissions as $id_permission) {
+                    UserPermissoes::create(['id_permissao' => $id_permission, 'id_user' => $user->id]);
+                }
             }
-            /* edita permissões do Usuário */
-            $userPermission =  UserPermissoes::where('id_user', $user->id)->first();
-            if (!empty($userPermission)) {
-                UserPermissoes::where('id_user', $user->id)
-                    ->update('id_permissao', $dataPermission);
-            } else {
-                //PERMISSOES
-                $userPermissao = new UserPermissoes();
-                $userPermissao->id_user = $user->id;
-                $userPermissao->id_permissao = $permissions;
-                $userPermissao->save();
-            }
-            /* edita HOSPITAIS do Usuário */
-            $hospitalsUser =  UsersHospitals::where('id_user', $user->id)->first();
-            if (!empty($hospitalsUser)) {
-                UsersHospitals::where('id_user', $user->id)
-                    ->update('id_hospital', $dataPermission['id']);
-            } else {
-                //hospitals  
-                $userHospital = new UsersHospitals();
-                $userHospital->id_user = $user->id;
-                $userHospital->id_hospital = $data['id_hospital'];
-                $userHospital->save();
-            }
+
 
             //GERA LOG
             $log = Auth::user();
@@ -375,39 +352,45 @@ class UserController extends Controller
     public function listAllUser()
     {
 
-        /*  $entregas = Pedidosdata::
-                            join('pedidos as ped', 'pedidos_datas.pedido_id', '=', 'ped.id')
-                            ->select('pedidos_datas.*', 'ped.*')
-                            ->orderBy('data_entrega', 'ASC')
-                            ->paginate(25);
-        
-      $title = "Listando Entregas";*/
-        $users = User::all();
-        $data = [];
+        $data = User::from('users as user')
+            ->select('user.name', 'user.email', 'hos.name as name_hospital')
+            ->join('users_hospitals as userhos', 'userhos.id_user', '=', 'user.id')
+            ->join('hospitais as hos', 'hos.id', '=', 'userhos.id_hospital')
+            ->where('user.role_id', '!=', 1)
+            ->get()
+            ->toArray();
 
 
-        foreach ($users as $user) {
+        $users = User::where('role_id', '!=', 1)->get();
 
-            if ($user->role_id >= 1) {
-                $data[] = [
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'hospital' => $user->hospitalsUser
+        // Juntamos usuários que não possui hospital vinculado
+        $user_db = [];
+        foreach ($users as $key => $user) {
+            $user_nothos = UsersHospitals::where('id_user', $user->id)->first();
 
-                ];
+            if (empty($user_nothos)) {
+                $user_db[$key]['name'] = $user->name;
+                $user_db[$key]['email'] = $user->email;
             }
-
-            //dd($user->hospital_user);
         }
 
+        $retorno = array_merge($data, $user_db);
+
         return response()->json(
-            ['status' => 'success', 'Users' => $data],
+            ['status' => 'success', 'Users' => $retorno],
             200
         );
     }
 
     public function showUser(Request $request)
     {
+
+        // $user = User::from('users as user')
+        //     ->select('user.name', 'user.email', 'hos.name as name_hospital')
+        //     ->join('users_hospitals as userhos', 'userhos.id_user', '=', 'user.id')
+        //     ->join('hospitais as hos', 'hos.id', '=', 'userhos.id_hospital')
+        //     ->where('user.id', '=', $request->id)
+        //     ->get();
 
         $user = User::findOrFail($request->id);
         $user->hospitalsUser;

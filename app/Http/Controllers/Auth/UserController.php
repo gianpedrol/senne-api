@@ -384,8 +384,6 @@ class UserController extends Controller
 
     public function showUser(Request $request)
     {
-
-
         $user = [];
         $user = User::findOrFail($request->id);
 

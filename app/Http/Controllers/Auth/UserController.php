@@ -385,16 +385,6 @@ class UserController extends Controller
     public function showUser(Request $request)
     {
 
-        // $user = User::from('users as user')
-        //     ->select('user.name', 'user.email', 'hos.name as name_hospital')
-        //     ->join('users_hospitals as userhos', 'userhos.id_user', '=', 'user.id')
-        //     ->join('hospitais as hos', 'hos.id', '=', 'userhos.id_hospital')
-        //     ->where('user.id', '=', $request->id)
-        //     ->get();
-
-        $user = User::findOrFail($request->id);
-        $user->hospitalsUser;
-
         if (!$user) {
             return response()->json([
                 'message'   => 'The user can t be found',

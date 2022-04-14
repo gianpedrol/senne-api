@@ -15,13 +15,15 @@ class Hospitais extends Model
 
     public function group()
     {
-        return $this->belongsTo(Groups::class, 'id');
+        return $this->hasOne(Groups::class, 'id');
     }
 
-    
-
-    public function users_hospitals()
+    public function users()
     {
-        return $this->hasMany(UsersHospitals::class, 'id_hospital');
+        return $this->hasMany(User::class, 'id');
+    }
+    public function users_hospital()
+    {
+        return $this->hasMany(UserHopital::class, 'id_user');
     }
 }

@@ -53,6 +53,8 @@ class HospitalController extends Controller
         /* SEPARA OS DADOS DA API */
         foreach ($items->items as $item) {
 
+
+
             $data[] = [
                 'codprocedencia' => $item->codprocedencia,
                 'id_api' => $item->codprocedencia,
@@ -64,7 +66,14 @@ class HospitalController extends Controller
         /* CASO NÃO TENHA NENHUM HOSPITAL CADASTRADO NO BANCO ELE IRÁ CRIAR*/
         foreach ($data as $name) {
 
-            Hospitais::firstOrCreate(['name' => $name['name']]);
+            $group = Groups::where('name', $name['grupo'])->first();
+
+            if ($name['grupo'] === $group->name) {
+
+                $id_group = $group->id;
+            }
+
+            Hospitais::firstOrCreate(['name' => $name['name'], 'grupo_id' => $id_group]);
         }
 
 
@@ -113,8 +122,6 @@ class HospitalController extends Controller
         }
         try {
             \DB::beginTransaction();
-
-
             //Define
             $newHospital = new Hospitais();
             $newHospital->name = $data['name'];

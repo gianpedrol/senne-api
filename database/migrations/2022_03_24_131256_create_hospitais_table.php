@@ -31,7 +31,7 @@ class CreateHospitaisTable extends Migration
             $table->string('phone')->nullable();
             $table->string('image')->nullable();
 
-            $table->unsignedBigInteger('grupo_id')->default(1);
+            $table->unsignedBigInteger('grupo_id');
             $table->foreign('grupo_id')->references('id')->on('groups')->onDelete('CASCADE');
             $table->timestamps();
         });

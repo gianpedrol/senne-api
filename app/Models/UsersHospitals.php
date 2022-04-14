@@ -13,12 +13,11 @@ class UsersHospitals extends Model
 
     public function hospital()
     {
-        return $this->belongsTo(Hospitais::class, 'id', 'id_hospital');
+        return $this->belongsTo(Hospitais::class, 'id');
     }
-
 
     public function usersHospital()
     {
-        return $this->hasMany(User::class, 'id', 'id_user');
+        return $this->belongsTo(User::class, 'id');
     }
 }

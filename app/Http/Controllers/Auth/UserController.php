@@ -353,29 +353,46 @@ class UserController extends Controller
     {
 
         $data = User::from('users as user')
-            ->select('user.id', 'user.name', 'user.email', 'hos.name as name_hospital', 'logs.Log', 'logs.created_at')
+            ->select('user.id', 'user.name', 'user.email', 'hos.name as name_hospital',)
             ->join('users_hospitals as userhos', 'userhos.id_user', '=', 'user.id')
             ->join('hospitais as hos', 'hos.id', '=', 'userhos.id_hospital')
-            ->join('logs_user as logs', 'logs.id_user', '=', 'logs.id_user')
             ->where('user.role_id', '!=', 1)
             ->get()
             ->toArray();
 
-        //dd($data);
         $users = User::where('role_id', '!=', 1)->get();
 
         // Juntamos usuários que não possui hospital vinculado
         $user_db = [];
         foreach ($users as $key => $user) {
+            // dd($user);
             $user_nothos = UsersHospitals::where('id_user', $user->id)->first();
-            $user_logs = UserLog::where('id_user', $user->id)->first();
-
-            if (empty($user_nothos) && empty($user_logs)) {
-                $user_db[$key]['id'] = $user->name;
+            $userLog = UserLog::where('id_user', $user->id)->orderBy('id', 'DESC')->first();
+            if (empty($user_nothos)) {
+                $user_db[$key]['id'] = $user->id;
                 $user_db[$key]['name'] = $user->name;
                 $user_db[$key]['email'] = $user->email;
+                $user_db[$key]['log'] = $userLog->created_at;
             }
         }
+
+        /*// Juntamos usuários que não possui hospital vinculado
+        $user_db_hos = [];
+        foreach ($users as $key => $user) {
+            // dd($user);
+            $user_hos = UsersHospitals::where('id_user', $user->id)->first();
+            $hospitais = Hospitais::where('id', $user_hos)->get();
+            $userLog = UserLog::where('id_user', $user->id)->orderBy('id', 'DESC')->first();
+            if (!empty($user_nothos)) {
+                $user_db_hos[$key]['id'] = $user->id;
+                $user_db_hos[$key]['name'] = $user->name;
+                $user_db_hos[$key]['email'] = $user->email;
+                $user_db_hos[$key]['hospitais'] = $hospitais;
+            }
+        }*/
+
+
+
 
         $retorno = array_merge($data, $user_db);
 

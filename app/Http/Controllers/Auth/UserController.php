@@ -368,7 +368,7 @@ class UserController extends Controller
         foreach ($users as $key => $user) {
             // dd($user);
             $user_nothos = UsersHospitals::where('id_user', $user->id)->first();
-            
+
             if (empty($user_nothos) || empty($userlog)) {
                 $user_db[$key]['id'] = $user->id;
                 $user_db[$key]['name'] = $user->name;
@@ -382,10 +382,10 @@ class UserController extends Controller
 
 
         //Rodamos o loop para trazer o ultimo log de cada usuário
-        $retorno= [];
+        $retorno = [];
         foreach ($all_users as $key1 => $user_only) {
-            $user_only['log']= UserLog::where('id_user', $user_only['id'])->orderBy('id', 'DESC')->first();
-            $retorno[]= $user_only;
+            $user_only['dateLogin'] = UserLog::where('id_user', $user_only['id'])->orderBy('id', 'DESC')->first('created_at');
+            $retorno[] = $user_only;
         }
 
         return response()->json(

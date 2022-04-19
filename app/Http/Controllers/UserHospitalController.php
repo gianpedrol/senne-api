@@ -155,7 +155,7 @@ class UserHospitalController extends Controller
     }
     public function getUsersHospital($id, Request $request)
     {
-        $hospital = Hospitais::find($request->id);
+        $hospital = Hospitais::find($id);
 
         if (!$hospital) {
             return response()->json([
@@ -163,19 +163,25 @@ class UserHospitalController extends Controller
             ], 404);
         } else {
 
-            $users = $hospital->users_hospitals;
+            $hospital['users'] = UsersHospitals::from('users_hospitals as userhos')
+                ->select('us.name', 'us.id', 'us.email')
+                ->join('users as us', 'us.id', '=', 'userhos.id_user')
+                ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
+                ->where('userhos.id_hospital', '=', $id)
+                ->get();
 
-            $data = [];
+            //Rodamos o loop para trazer o ultimo log de cada usuário
+            $all_users = $hospital['users'];
+            $retorno = [];
 
-            foreach ($users as $user) {
-                $data[] = [
-                    'users' => $user->usersHospital,
-                ];
+            foreach ($all_users as $key1 => $user_login) {
+                $user_login['dateLogin'] = UserLog::where('id_user', $user_login['id'])->orderBy('id', 'DESC')->first('created_at');
+                $retorno[] = $user_login;
             }
 
 
             return response()->json(
-                ['status' => 'success', 'hospital' => $hospital, 'users' => $data,],
+                ['status' => 'success', 'hospital' => $hospital],
                 200
             );
         }

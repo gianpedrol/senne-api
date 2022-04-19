@@ -82,7 +82,8 @@ class UserController extends Controller
             $log = Auth::user();
             $saveLog = new UserLog();
             $saveLog->id_user = $log->id;
-            $saveLog->Log = 'Usuário Criou um usuário';
+            $saveLog->ip_user = $request->ip();
+            $saveLog->id_log = 4;
             $saveLog->save();
 
 
@@ -149,7 +150,8 @@ class UserController extends Controller
             $log = Auth::user();
             $saveLog = new UserLog();
             $saveLog->id_user = $log->id;
-            $saveLog->Log = 'Usuário Criou um usuário';
+            $saveLog->ip_user = $request->ip();
+            $saveLog->id_log = 4;
             $saveLog->save();
 
 
@@ -205,7 +207,8 @@ class UserController extends Controller
             $log = Auth::user();
             $saveLog = new UserLog();
             $saveLog->id_user = $log->id;
-            $saveLog->Log = 'Usuário editou um usuário';
+            $saveLog->ip_user = $request->ip();
+            $saveLog->id_log = 3;
             $saveLog->save();
 
             \DB::commit();
@@ -229,6 +232,14 @@ class UserController extends Controller
 
         try {
             $user = User::findOrFail($id)->delete();
+
+            //GERA LOG
+            $log = Auth::user();
+            $saveLog = new UserLog();
+            $saveLog->id_user = $log->id;
+            $saveLog->ip_user = $request->ip();
+            $saveLog->id_log = 5;
+            $saveLog->save();
         } catch (\Exception $e) {
             return response()->json(['message' => 'Fail on delete a user'], 400);
         }
@@ -334,16 +345,13 @@ class UserController extends Controller
             ], 404);
         } else {
 
-            $logs = $user->logsUser;
-            $data = [];
-
-            foreach ($logs as $log) {
-
-                $data[] = $log;
-            }
-
+            $user['logs'] = UserLog::from('logs_user as log')
+                ->select('log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action')
+                ->join('logs_action as act', 'act.id_log', '=', 'log.id')
+                ->where('id_user', $user->id)
+                ->get();
             return response()->json(
-                ['status' => 'success', $data],
+                ['status' => 'success', 'User' => $user],
                 200
             );
         }

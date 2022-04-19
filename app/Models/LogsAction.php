@@ -5,17 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserLog extends Model
+class LogsAction extends Model
 {
     use HasFactory;
-    protected $table = 'logs_user';
 
     public function logs_user()
     {
-        return $this->belongsTo(User::class, 'id');
+        return $this->hasMany(User::class, 'id');
     }
     public function id_logs()
     {
-        return $this->belongsTo(LogsAction::class, 'id_log');
+        return $this->hasMany(LogsAction::class, 'id_log');
     }
 }

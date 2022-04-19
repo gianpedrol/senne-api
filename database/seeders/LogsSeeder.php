@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use DB;
 
 class LogsSeeder extends Seeder
 {
@@ -14,11 +15,11 @@ class LogsSeeder extends Seeder
     public function run()
     {
         $logs = [
-            ['log' => 'Usuário logou'],
-            ['log' => 'Usuário deslogou'],
-            ['log' => 'Usuário editou um usuário'],
-            ['log' => 'Usuário criou um usuário'],
-            ['log' => 'Usuário deletou um usuário'],
+            ['log_description' => 'Usuário logou', 'id_log' => 1],
+            ['log_description' => 'Usuário deslogou', 'id_log' => 2],
+            ['log_description' => 'Usuário editou um usuário', 'id_log' => 3],
+            ['log_description' => 'Usuário criou um usuário', 'id_log' => 4],
+            ['log_description' => 'Usuário deletou um usuário', 'id_log' => 5],
 
         ];
 

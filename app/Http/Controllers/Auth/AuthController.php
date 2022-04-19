@@ -37,7 +37,8 @@ class AuthController extends Controller
 
         $saveLog = new UserLog();
         $saveLog->id_user = $log->id;
-        $saveLog->Log = 'Usuário Logou';
+        $saveLog->ip_user = $request->ip();
+        $saveLog->id_log = 1;
         $saveLog->save();
 
         return response()->json(['message' => "User Logged in!", 'token' => $array['token'], 'user' => $user], 200);
@@ -87,14 +88,15 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout()
+    public function logout(Request $request)
     {
 
 
         $log = Auth::user();
         $saveLog = new UserLog();
         $saveLog->id_user = $log->id;
-        $saveLog->Log = 'Usuário Deslogou';
+        $saveLog->ip_user = $request->ip();
+        $saveLog->id_log = 2;
         $saveLog->save();
 
         Auth::logout();

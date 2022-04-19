@@ -22,6 +22,6 @@ class LogsSeeder extends Seeder
 
         ];
 
-        DB::table('permissoes')->insert($logs);
+        DB::table('logs_action')->insert($logs);
     }
 }

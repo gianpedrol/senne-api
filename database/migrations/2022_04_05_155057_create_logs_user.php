@@ -17,9 +17,10 @@ class CreateLogsUser extends Migration
             $table->id();
             $table->unsignedBigInteger('id_user');
             $table->unsignedBigInteger('id_log');
+            $table->string('ip_user');
             
             $table->foreign('id_user')->references('id')->on('users')->onUpdate('NO ACTION')->onDelete('CASCADE');
-            $table->foreign('id_log')->references('id')->on('logs_id')->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->foreign('id_log')->references('id')->on('logs_id')->onUpdate('NO ACTION')->onDelete('CASCADE');
 
             $table->timestamps();
         });

@@ -354,9 +354,7 @@ class UserController extends Controller
 
         //Trazemos os usuarios que possui vinculo com hospitais
         $data = User::from('users as user')
-            ->select('user.id', 'user.name', 'user.email', 'hos.name as name_hospital')
-            ->join('users_hospitals as userhos', 'userhos.id_user', '=', 'user.id')
-            ->join('hospitais as hos', 'hos.id', '=', 'userhos.id_hospital')
+            ->select('user.id', 'user.name', 'user.email')
             ->where('user.role_id', '!=', 1)
             ->get()
             ->toArray();
@@ -364,7 +362,7 @@ class UserController extends Controller
         $users = User::where('role_id', '!=', 1)->get();
 
         // Trazemos usuarios que não possui vinculo com hospitais
-        $user_db = [];
+        /*  $user_db = [];
         foreach ($users as $key => $user) {
             // dd($user);
             $user_nothos = UsersHospitals::where('id_user', $user->id)->first();
@@ -374,17 +372,23 @@ class UserController extends Controller
                 $user_db[$key]['name'] = $user->name;
                 $user_db[$key]['email'] = $user->email;
             }
-        }
+        }*/
 
 
         // Juntamos os usuários em uma só array
-        $all_users = array_merge($data, $user_db);
+        $all_users = array_merge($data);
 
 
         //Rodamos o loop para trazer o ultimo log de cada usuário
         $retorno = [];
         foreach ($all_users as $key1 => $user_only) {
             $user_only['dateLogin'] = UserLog::where('id_user', $user_only['id'])->orderBy('id', 'DESC')->first('created_at');
+            // $user_only['hospitais'] = UsersHospitals::where('id_user', $user_only['id'])->get();
+            $user_only['hospitais'] = UsersHospitals::from('users_hospitals as userhos')
+                ->select('hos.id as id_hospital', 'hos.name as name')
+                ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
+                ->where('id_user', $user_only['id'])
+                ->get();
             $retorno[] = $user_only;
         }
 
@@ -396,6 +400,7 @@ class UserController extends Controller
 
     public function showUser(Request $request)
     {
+
         $user = [];
         $user = User::findOrFail($request->id);
 

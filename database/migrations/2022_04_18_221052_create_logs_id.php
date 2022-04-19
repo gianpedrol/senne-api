@@ -13,7 +13,7 @@ class CreateLogsId extends Migration
      */
     public function up()
     {
-        Schema::create('logs_id', function (Blueprint $table) {
+        Schema::create('logs_action', function (Blueprint $table) {
             $table->id();
             $table->id_log();
             $table->text('log');

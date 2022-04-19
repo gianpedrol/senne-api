@@ -352,24 +352,23 @@ class UserController extends Controller
     public function listAllUser()
     {
 
+        //Trazemos os usuarios que possui vinculo com hospitais
         $data = User::from('users as user')
-            ->select('user.id', 'user.name', 'user.email', 'hos.name as name_hospital', 'logs.Log', 'logs.created_at')
+            ->select('user.id', 'user.name', 'user.email', 'hos.name as name_hospital')
             ->join('users_hospitals as userhos', 'userhos.id_user', '=', 'user.id')
             ->join('hospitais as hos', 'hos.id', '=', 'userhos.id_hospital')
-            ->join('logs_user as logs', 'logs.id_user', '=', 'user.id')
             ->where('user.role_id', '!=', 1)
-            ->where('logs.Log', '=', 'Usuário Logou')
             ->get()
             ->toArray();
 
         $users = User::where('role_id', '!=', 1)->get();
 
-        // Juntamos usuários que não possui hospital vinculado
+        // Trazemos usuarios que não possui vinculo com hospitais
         $user_db = [];
         foreach ($users as $key => $user) {
             // dd($user);
             $user_nothos = UsersHospitals::where('id_user', $user->id)->first();
-            $userlog = UserLog::where('id_user', $user->id)->first();
+            
             if (empty($user_nothos) || empty($userlog)) {
                 $user_db[$key]['id'] = $user->id;
                 $user_db[$key]['name'] = $user->name;
@@ -378,9 +377,16 @@ class UserController extends Controller
         }
 
 
+        // Juntamos os usuários em uma só array
+        $all_users = array_merge($data, $user_db);
 
 
-        $retorno = array_merge($data, $user_db);
+        //Rodamos o loop para trazer o ultimo log de cada usuário
+        $retorno= [];
+        foreach ($all_users as $key1 => $user_only) {
+            $user_only['log']= UserLog::where('id_user', $user_only['id'])->orderBy('id', 'DESC')->first();
+            $retorno[]= $user_only;
+        }
 
         return response()->json(
             ['status' => 'success', 'Users' => $retorno],

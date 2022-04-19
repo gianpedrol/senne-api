@@ -15,6 +15,7 @@ class CreateLogsId extends Migration
     {
         Schema::create('logs_id', function (Blueprint $table) {
             $table->id();
+            $table->id_log();
             $table->text('log');
             $table->timestamps();
         });

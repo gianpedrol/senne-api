@@ -15,7 +15,7 @@ class CreateLogsUser extends Migration
     {
         Schema::create('logs_user', function (Blueprint $table) {
             $table->unsignedBigInteger('id_user');
-            $table->unsignedBigInteger('id_log')->nullable();
+            $table->unsignedInteger('id_log')->nullable();
             $table->string('ip_user')->nullable();
 
             $table->foreign('id_user')->references('id')->on('users')->onUpdate('NO ACTION')->onDelete('CASCADE');

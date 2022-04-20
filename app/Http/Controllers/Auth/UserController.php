@@ -347,7 +347,7 @@ class UserController extends Controller
 
             $user['logs'] = UserLog::from('logs_user as log')
                 ->select('log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action')
-                ->join('logs_action as act', 'act.id_log', '=', 'log.id')
+                ->join('logs_action as act', 'act.id', '=', 'log.id_log')
                 ->where('id_user', $user->id)
                 ->get();
             return response()->json(

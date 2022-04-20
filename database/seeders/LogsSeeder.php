@@ -15,11 +15,11 @@ class LogsSeeder extends Seeder
     public function run()
     {
         $logs = [
-            ['log_description' => 'Usuário logou', 'id_log' => 1],
-            ['log_description' => 'Usuário deslogou', 'id_log' => 2],
-            ['log_description' => 'Usuário editou um usuário', 'id_log' => 3],
-            ['log_description' => 'Usuário criou um usuário', 'id_log' => 4],
-            ['log_description' => 'Usuário deletou um usuário', 'id_log' => 5],
+            ['log_description' => 'Usuário logou', 'id' => 1],
+            ['log_description' => 'Usuário deslogou', 'id' => 2],
+            ['log_description' => 'Usuário editou um usuário', 'id' => 3],
+            ['log_description' => 'Usuário criou um usuário', 'id' => 4],
+            ['log_description' => 'Usuário deletou um usuário', 'id' => 5],
 
         ];
 

@@ -14,7 +14,7 @@ class CreateLogsId extends Migration
     public function up()
     {
         Schema::create('logs_action', function (Blueprint $table) {
-            $table->integer('id_log')->nullable();
+            $table->bigInteger('id_log')->constrained('logs_user')->nullable();
             $table->text('log_description');
             $table->timestamps();
         });

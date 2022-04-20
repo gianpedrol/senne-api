@@ -28,6 +28,8 @@ class CreateLogsId extends Migration
      */
     public function down()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         Schema::dropIfExists('logs_id');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 }

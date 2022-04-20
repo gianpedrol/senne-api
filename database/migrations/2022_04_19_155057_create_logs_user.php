@@ -20,7 +20,7 @@ class CreateLogsUser extends Migration
             $table->string('ip_user')->nullable();
 
             $table->foreign('id_user')->references('id')->on('users')->onUpdate('NO ACTION')->onDelete('CASCADE');
-            $table->foreign('id_log')->references('id_log')->on('logs_action')->onUpdate('NO ACTION')->onDelete('CASCADE');
+            $table->foreign('id_log')->references('id')->on('logs_action')->onUpdate('NO ACTION')->onDelete('CASCADE');
 
             $table->timestamps();
         });
@@ -33,6 +33,8 @@ class CreateLogsUser extends Migration
      */
     public function down()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         Schema::dropIfExists('logs_user');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 }

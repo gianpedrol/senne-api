@@ -49,31 +49,27 @@ class HospitalController extends Controller
         $items = json_decode($response->getBody());
 
 
-
         /* SEPARA OS DADOS DA API */
         foreach ($items->items as $item) {
 
-
-
             $data[] = [
-                'codprocedencia' => $item->codprocedencia,
                 'id_api' => $item->codprocedencia,
                 'name' => $item->nomeprocedencia,
-                'grupo' => $item->grupo
+                'grupo' => $item->grupo,
+                'uuid' => $item->uuid
             ];
         }
 
+
         /* CASO NÃO TENHA NENHUM HOSPITAL CADASTRADO NO BANCO ELE IRÁ CRIAR*/
-        foreach ($data as $name) {
+        foreach ($data as $save_proc) {
+            $group = Groups::where('name', $save_proc['grupo'])->first();
 
-            $group = Groups::where('name', $name['grupo'])->first();
-
-            if ($name['grupo'] === $group->name) {
-
+            if ($save_proc['grupo'] === $group->name) {
                 $id_group = $group->id;
             }
 
-            Hospitais::firstOrCreate(['name' => $name['name'], 'grupo_id' => $id_group]);
+            Hospitais::firstOrCreate(['name' => $save_proc['name'], 'grupo_id' => $id_group, 'uuid' => $save_proc['uuid'], 'codprocedencia' =>  $save_proc['id_api']]);
         }
 
 
@@ -82,11 +78,12 @@ class HospitalController extends Controller
 
         if (count($hospitals) > 0) {
             foreach ($hospitals as $hospital) {
-
                 $procedencia[] = [
                     'id' => $hospital->id,
                     'name' => $hospital->name,
-                    'grupo' => $hospital->grupo_id
+                    'grupo' => $hospital->grupo_id,
+                    'uuid' => $hospital->uuid,
+                    'codprocedencia' => $hospital->codprocedencia
                 ];
             }
 

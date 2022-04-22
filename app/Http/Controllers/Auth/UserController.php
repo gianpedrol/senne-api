@@ -440,9 +440,13 @@ class UserController extends Controller
     {
 
 
-        $idAuthUser = Auth::user('id');
+        $idAuthUser = Auth::user();
         $user = User::where('id', $idAuthUser->id)->first();
-        $hospitalUser = UsersHospitals::where('id_user', $user->id)->get();
+
+        $id_hospital = UsersHospitals::from('users_hospitals as user')
+            ->select('user.id_hospital as id hospital')
+            ->where('user.id_user', '=', $idAuthUser->id)
+            ->get();
 
         if (!$user->permission_user($user->id, 1)) {
             return response()->json(['error' => "Unauthorized"], 401);
@@ -454,7 +458,7 @@ class UserController extends Controller
             ->join('user_permissao as per', 'per.id_user', '=', 'user.id')
             ->join('hospitais as hos', 'hos.id', '=', 'user_hos.id_hospital')
             ->where('user.role_id', '!=', 1)
-            ->where('user_hos.id_hospital', '=', $hospitalUser)
+            ->where('user_hos.id_hospital', '=', $id_hospital)
             ->get()
             ->toArray();
 

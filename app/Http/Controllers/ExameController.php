@@ -39,7 +39,7 @@ class ExameController extends Controller
         $atendimento = $request->query('atendimento');
 
         /* CONSULTA API DE SISTEMA DA SENNE */
-        $response = Http::get('http://192.168.0.245:8804/ords/gateway/apoio/atendimento/' . $uuid . '/' . $atendimento);
+        $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento/' . $uuid . '/' . $atendimento);
 
 
 

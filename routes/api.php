@@ -112,6 +112,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('list/exames', [ExameController::class, 'listExame']);
     //Lista de exames
     Route::post('list/results', [ExameController::class, 'resultExame']);
+    //Lista de exames
+    Route::get('/treatment/{uuid}/{atendimento}', [ExameController::class, 'listAtendimentos']);
 
 
     //Lista Resultados de um usuario
@@ -125,4 +127,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('user/create', [UserController::class, 'createUser']);
     //rota para mostrar usuário
     Route::get('show/user/{id}', [UserController::class, 'showUser']);
+
+    //rota para mostrar usuário
+    Route::get('adm/list/users', [UserController::class, 'listUsersAdm']);
 });

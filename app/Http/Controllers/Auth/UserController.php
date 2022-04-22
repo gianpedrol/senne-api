@@ -434,4 +434,33 @@ class UserController extends Controller
             );
         }
     }
+
+    public function listUsersAdm(Request $request)
+
+    {
+
+
+        $idAuthUser = Auth::user('id');
+        $user = User::where('id', $idAuthUser->id)->first();
+        $hospitalUser = UsersHospitals::where('id_user', $user->id)->get();
+
+        if (!$user->permission_user($user->id, 1)) {
+            return response()->json(['error' => "Unauthorized"], 401);
+        }
+
+        $data = User::from('users as user')
+            ->select('user.id', 'user.name', 'user.email', 'hos.name as hospital', 'hos.id as id_hospital')
+            ->join('users_hospitals as user_hos', 'user_hos.id_user', '=', 'user.id')
+            ->join('user_permissao as per', 'per.id_user', '=', 'user.id')
+            ->join('hospitais as hos', 'hos.id', '=', 'user_hos.id_hospital')
+            ->where('user.role_id', '!=', 1)
+            ->where('user_hos.id_hospital', '=', $hospitalUser)
+            ->get()
+            ->toArray();
+
+        return response()->json(
+            ['status' => 'success', 'Users' => $data],
+            200
+        );
+    }
 }

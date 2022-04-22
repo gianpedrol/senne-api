@@ -31,13 +31,8 @@ class ExameController extends Controller
 
         return $items;
     }
-    public function listAtendimentos(Request $request)
+    public function listAtendimentos($uuid, $atendimento)
     {
-
-
-
-        $uuid = $request->query('uuid');
-        $atendimento = $request->query('atendimento');
 
         /* CONSULTA API DE SISTEMA DA SENNE */
         $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento/' . $uuid . '/' . $atendimento);

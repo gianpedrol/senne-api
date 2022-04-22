@@ -11,6 +11,7 @@ use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\UserHospitalController;
 use App\Http\Provider\ServiceProviderApi;
+use Faker\Core\Uuid;
 use PHPUnit\TextUI\XmlConfiguration\Group;
 
 /*

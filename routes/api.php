@@ -113,8 +113,10 @@ Route::middleware('auth:api')->group(function () {
     Route::get('list/exames', [ExameController::class, 'listExame']);
     //Lista de exames
     Route::post('list/results', [ExameController::class, 'resultExame']);
-    //Lista de exames
+    //Lista de exames por atendimento
     Route::get('/treatment/{uuid}/{atendimento}', [ExameController::class, 'listAtendimentos']);
+    //Lista de exames por atendimento
+    Route::get('/hospitals/treatment/{uuid}/{startdate}/{finaldate}', [ExameController::class, 'listAtendimentosDate']);
 
 
     //Lista Resultados de um usuario

@@ -44,19 +44,11 @@ class ExameController extends Controller
         return $items;
     }
 
-    public function listAtendimentosDate(Request $request)
+    public function listAtendimentosDate($uuid, $startdate, $finaldate)
     {
-        $query = Hospitais::query();
-
-        if ($request->has('date_start')) {
-            $query->where('nome', 'LIKE', '%' . $request->date_start . '%');
-        }
-
-        $uuid = $request->query('uuid');
-        $atendimento = $request->query('atendimento');
 
         /* CONSULTA API DE SISTEMA DA SENNE */
-        $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento/' . $uuid . '/' . $atendimento);
+        $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/proced_atendimentos/' . $uuid . '/' . $startdate . '/' . $finaldate);
 
 
 

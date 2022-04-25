@@ -370,7 +370,7 @@ class UserController extends Controller
         $users = User::where('role_id', '!=', 1)->get();
 
         // Trazemos usuarios que não possui vinculo com hospitais
-        /*  $user_db = [];
+        $user_db = [];
         foreach ($users as $key => $user) {
             // dd($user);
             $user_nothos = UsersHospitals::where('id_user', $user->id)->first();
@@ -380,7 +380,7 @@ class UserController extends Controller
                 $user_db[$key]['name'] = $user->name;
                 $user_db[$key]['email'] = $user->email;
             }
-        }*/
+        }
 
 
         // Juntamos os usuários em uma só array
@@ -443,10 +443,21 @@ class UserController extends Controller
         $idAuthUser = Auth::user();
         $user = User::where('id', $idAuthUser->id)->first();
 
-        $id_hospital = UsersHospitals::from('users_hospitals as user')
+        $id_hospitals = UsersHospitals::from('users_hospitals as user')
             ->select('user.id_hospital as id hospital')
             ->where('user.id_user', '=', $idAuthUser->id)
-            ->get();
+            ->get()
+            ->toArray();
+
+
+
+        $item = [];
+        foreach ($id_hospitals as $key => $value) {
+            $item[] = [
+                'id' => $value
+            ];
+        }
+
 
         if (!$user->permission_user($user->id, 1)) {
             return response()->json(['error' => "Unauthorized"], 401);
@@ -458,9 +469,11 @@ class UserController extends Controller
             ->join('user_permissao as per', 'per.id_user', '=', 'user.id')
             ->join('hospitais as hos', 'hos.id', '=', 'user_hos.id_hospital')
             ->where('user.role_id', '!=', 1)
-            ->where('user_hos.id_hospital', '=', $id_hospital)
+            ->where('user_hos.id_hospital', '=', $item)
             ->get()
             ->toArray();
+
+
 
         return response()->json(
             ['status' => 'success', 'Users' => $data],

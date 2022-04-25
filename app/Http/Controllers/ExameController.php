@@ -31,7 +31,7 @@ class ExameController extends Controller
 
         return $items;
     }
-    public function listAtendimentos($uuid, $atendimento)
+    public function listAttendance($uuid, $atendimento)
     {
 
         /* CONSULTA API DE SISTEMA DA SENNE */
@@ -44,11 +44,24 @@ class ExameController extends Controller
         return $items;
     }
 
-    public function listAtendimentosDate($uuid, $startdate, $finaldate)
+    public function listAttendanceDate($uuid, $startdate, $finaldate)
     {
 
         /* CONSULTA API DE SISTEMA DA SENNE */
         $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/proced_atendimentos/' . $uuid . '/' . $startdate . '/' . $finaldate);
+
+
+
+        $items = json_decode($response->getBody());
+
+        return $items;
+    }
+
+    public function listAttendanceDetails($uuid, $atendimento)
+    {
+
+        /* CONSULTA API DE SISTEMA DA SENNE */
+        $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento_detalhe/' . $uuid . '/' . $atendimento);
 
 
 

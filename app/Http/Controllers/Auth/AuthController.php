@@ -15,6 +15,8 @@ use DB;
 
 use App\Models\User;
 use App\Models\UserLog;
+use App\Models\UserPermissoes;
+use App\Models\UsersHospitals;
 
 class AuthController extends Controller
 {
@@ -41,6 +43,25 @@ class AuthController extends Controller
         $saveLog->id_log = 1;
         $saveLog->save();
 
+        $user = [];
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json([
+                'message'   => 'The user can t be found',
+            ], 404);
+        } else {
+
+
+            $user['hospitals'] = UsersHospitals::from('users_hospitals as userhos')
+                ->select('hos.id', 'hos.grupo_id', 'hos.name as name',  'hos.uuid')
+                ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
+                ->where('id_user', $user->id)
+                ->get();
+
+
+            $user['permissoes'] = UserPermissoes::where('id_user', $user->id)->select('id_permissao as id')->get();
+        }
         return response()->json(['message' => "User Logged in!", 'token' => $array['token'], 'user' => $user], 200);
     }
 

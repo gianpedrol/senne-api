@@ -127,6 +127,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('list/users', [UserController::class, 'listAllUser']);
     //Edita Usuário
     Route::put('edit/user/{id}', [UserController::class, 'update']);
+    //Lista Usuário e Hospital
+    Route::get('list/user/{id}', [UserController::class, 'listUserHospitals']);
 
     //cria usuario
     Route::post('user/create', [UserController::class, 'createUser']);

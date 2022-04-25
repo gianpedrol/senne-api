@@ -232,7 +232,7 @@ class UserController extends Controller
 
         try {
             $user = User::findOrFail($id)->delete();
-
+            return response()->json(['message' => 'user successfully deleted'], 200);
             //GERA LOG
             $log = Auth::user();
             $saveLog = new UserLog();
@@ -471,7 +471,7 @@ class UserController extends Controller
             $user_only['dateLogin'] = UserLog::where('id_user', $user_only['id'])->orderBy('id_log', 'DESC')->first('created_at');
             // $user_only['hospitais'] = UsersHospitals::where('id_user', $user_only['id'])->get();
             $user_only['hospitais'] = UsersHospitals::from('users_hospitals as userhos')
-                ->select('hos.id as id_hospital', 'hos.name as name', 'hos.uuid','hos.grupo_id')
+                ->select('hos.id as id_hospital', 'hos.name as name', 'hos.uuid', 'hos.grupo_id')
                 ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
                 ->where('id_user', $user_only['id'])
                 ->get();

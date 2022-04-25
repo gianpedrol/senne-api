@@ -420,7 +420,7 @@ class UserController extends Controller
 
 
             $user['hospitals'] = UsersHospitals::from('users_hospitals as userhos')
-                ->select('hos.name as name')
+                ->select('hos.id', 'hos.name as name',  'hos.uuid')
                 ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
                 ->where('id_user', $user->id)
                 ->get();

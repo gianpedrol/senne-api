@@ -13,7 +13,7 @@ class UsersGroup extends Model
 
     public function group()
     {
-        return $this->belongsTo(Groups::class, 'id');
+        return $this->hasMany(Groups::class, 'id');
     }
 
     public function users_group()

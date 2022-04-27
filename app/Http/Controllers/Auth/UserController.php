@@ -22,6 +22,9 @@ use App\Models\UsersHospitals;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\Auth\DB;
+use App\Models\Groups;
+use App\Models\UsersGroup;
+use PHPUnit\TextUI\XmlConfiguration\Group;
 
 class UserController extends Controller
 {
@@ -136,7 +139,13 @@ class UserController extends Controller
                 }
             }
 
-
+            /* Salva mais de um hospital ao usuário*/
+            if (!empty($hospitals)) {
+                foreach ($hospitals as $id_hospital) {
+                    $info_hospital = Hospitais::where('id', $id_hospital)->first();
+                    UsersGroup::create(['id_group' => $info_hospital->grupo_id, 'id_user' => $newUser->id]);
+                }
+            }
             /* Salva permissões do Usuário */
             if (!empty($permissions)) {
                 foreach ($permissions as $id_permission) {
@@ -435,17 +444,16 @@ class UserController extends Controller
         }
     }
 
-    public function listUserHospitals($id)
+    public function listUserGroups($id)
     {
-
-        //Trazemos os usuarios que possui vinculo com hospitais
         $data = User::from('users as user')
             ->select('user.id', 'user.name', 'user.email')
-            ->where('user.id', '=', $id)
+            ->where('user.role_id', '!=', 1)
             ->get()
             ->toArray();
 
         $users = User::where('role_id', '!=', 1)->get();
+
 
         // Trazemos usuarios que não possui vinculo com hospitais
         $user_db = [];
@@ -453,17 +461,18 @@ class UserController extends Controller
             // dd($user);
             $user_nothos = UsersHospitals::where('id_user', $user->id)->first();
 
-            if (empty($user_nothos) || empty($userlog)) {
-                $user_db[$key]['id'] = $user->id;
-                $user_db[$key]['name'] = $user->name;
-                $user_db[$key]['email'] = $user->email;
+            if (empty($user_nothos)) {
+
+                return response()->json(
+                    ['status' => 'Error', 'User dont belongs to group'],
+                    400
+                );
             }
         }
 
 
         // Juntamos os usuários em uma só array
         $all_users = array_merge($data);
-
 
         //Rodamos o loop para trazer o ultimo log de cada usuário
         $retorno = [];
@@ -473,9 +482,13 @@ class UserController extends Controller
             $user_only['hospitais'] = UsersHospitals::from('users_hospitals as userhos')
                 ->select('hos.id as id_hospital', 'hos.name as name', 'hos.uuid', 'hos.grupo_id')
                 ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
-                ->where('id_user', $user_only['id'])
+                ->where('id_user', '=', $user_only['id'])
+                ->where('hos.grupo_id', $id)
                 ->get();
-            $retorno[] = $user_only;
+
+            if (count($user_only['hospitais']) > 0) {
+                $retorno[] = $user_only;
+            }
         }
 
         return response()->json(
@@ -483,7 +496,6 @@ class UserController extends Controller
             200
         );
     }
-
     public function listUsersAdm(Request $request)
 
     {

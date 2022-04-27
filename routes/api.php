@@ -89,8 +89,6 @@ Route::middleware('auth:api')->group(function () {
     /* HOSPITAIS */
     //salva hospitais
     Route::post('hospital/store', [HospitalController::class, 'storeHospital']);
-    //lista hospitais
-    Route::get('list/hospitals', [HospitalController::class, 'listHospitals']);
     //ATUALIZA HOSPITAL
     Route::put('hospital/{id}', [HospitalController::class, 'updateHospital']);
     //Lista procedencias vindo da api
@@ -119,6 +117,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/hospitals/treatment/{uuid}/{startdate}/{finaldate}', [ExameController::class, 'listAttendanceDate']);
     //Lista detalhes exames por atendimento
     Route::get('/treatment/details/{uuid}/{atendimento}', [ExameController::class, 'listAttendanceDetails']);
+    //PDF LAUDO PRINCIPAL
+    Route::get('/treatment/report/{atendimento}', [ExameController::class, 'principalReport']);
 
 
     //Lista Resultados de um usuario
@@ -128,9 +128,10 @@ Route::middleware('auth:api')->group(function () {
     //Edita Usuário
     Route::put('edit/user/{id}', [UserController::class, 'update']);
     //Lista Usuário e Hospital
-    Route::get('list/user/{id}', [UserController::class, 'listUserHospitals']);
-    //Lista Usuário e Hospital
     Route::delete('delete/user/{id}', [UserController::class, 'delete']);
+    //Lista Usuário e Hospitais de um grupo
+    Route::get('list/group/user/{id}', [UserController::class, 'listUserGroups']);
+
 
     //cria usuario
     Route::post('user/create', [UserController::class, 'createUser']);

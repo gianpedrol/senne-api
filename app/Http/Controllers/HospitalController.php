@@ -69,7 +69,18 @@ class HospitalController extends Controller
                 $id_group = $group->id;
             }
 
-            Hospitais::firstOrCreate(['name' => $save_proc['name'], 'grupo_id' => $id_group, 'uuid' => $save_proc['uuid'], 'codprocedencia' =>  $save_proc['id_api']]);
+            try {
+                \DB::beginTransaction();
+
+                Hospitais::firstOrCreate(['codprocedencia' => $save_proc['id_api'],'name' => $save_proc['name'], 'grupo_id' => $id_group, 'uuid' => $save_proc['uuid'], ]);
+
+
+                \DB::commit();
+            } catch (\Throwable $th) {
+                dd($th->getMessage());
+                \DB::rollback();
+                return ['error' => 'Could not write data', 400];
+            }
         }
 
 
@@ -83,7 +94,6 @@ class HospitalController extends Controller
                     'name' => $hospital->name,
                     'grupo' => $hospital->grupo_id,
                     'uuid' => $hospital->uuid,
-                    'codprocedencia' => $hospital->codprocedencia
                 ];
             }
 
@@ -146,40 +156,6 @@ class HospitalController extends Controller
 
 
         return response()->json(['message' => 'Hospital create successfully'], 200);
-    }
-
-
-    //LISTA HOSPITAIS CADASTRADOS EM NOSSO BANCO DE DADOS
-    public function listHospitals()
-    {
-
-        /* 1 = Administrador Senne | 2 = User Labor | 3 = User Hospital | 4 = Médico | 5 = Paciente */
-        if (auth()->user()->role_id != 1) {
-            return response()->json(['error' => 'Unauthorized access!'], 401);
-        }
-
-        $hospitals = Hospitais::all();
-
-        if (count($hospitals) > 0) {
-            foreach ($hospitals as $hospital) {
-
-                $data[] = [
-                    'id' => $hospital->id,
-                    'name' => $hospital->name,
-                    'grupo_id' => $hospital->grupo_id
-                ];
-            }
-
-            return response()->json(
-                ['status' => 'success', 'data' => $data],
-                200
-            );
-        } else {
-            return response()->json(
-                ['status' => 'hospital is empty!'],
-                404
-            );
-        }
     }
 
     /* RETORNA APENAS HOSPITAL SELECIONADO */

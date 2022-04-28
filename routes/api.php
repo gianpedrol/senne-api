@@ -98,7 +98,7 @@ Route::middleware('auth:api')->group(function () {
         //cria usuarios hospital
         Route::post('/store', [UserHospitalController::class, 'storeUserHospital']);
         //LISTA USUARIOS DE UM HOSPITAL
-        Route::get('/list/{id}', [UserHospitalController::class, 'getUsersHospital']);
+        Route::get('/list/{id}', [UserController::class, 'getUsersHospital']);
         //rota para mostrar usuário
         Route::get('show/{id}', [UserHospitalController::class, 'showUserGroup']);
         //Rota de edição do Usuário do Hospital
@@ -121,9 +121,9 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/treatment/report/{atendimento}', [ExameController::class, 'principalReport']);
 
 
-    //Lista Resultados de um usuario
+    //Lista LOGS de um usuario
     Route::get('list/logs/user/{id}', [UserController::class, 'logsUser']);
-    //Lista Resultados de um usuario
+    //Lista TODOS 
     Route::get('list/users', [UserController::class, 'listAllUser']);
     //Edita Usuário
     Route::put('edit/user/{id}', [UserController::class, 'update']);
@@ -131,13 +131,12 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('delete/user/{id}', [UserController::class, 'delete']);
     //Lista Usuário e Hospitais de um grupo
     Route::get('list/group/user/{id}', [UserController::class, 'listUserGroups']);
-
-
+    //LISTA USUARIOS DE UM HOSPITAL
+    Route::get('/list/{id}', [UserController::class, 'getUsersHospital']);
+    //rota para mostrar usuários atrelados ao Adm
+    Route::get('adm/list/users', [UserController::class, 'listUsersAdm']);
     //cria usuario
     Route::post('user/create', [UserController::class, 'createUser']);
     //rota para mostrar usuário
     Route::get('show/user/{id}', [UserController::class, 'showUser']);
-
-    //rota para mostrar usuário
-    Route::get('adm/list/users', [UserController::class, 'listUsersAdm']);
 });

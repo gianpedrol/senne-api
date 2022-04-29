@@ -207,10 +207,10 @@ class GroupController extends Controller
             }
         }
 
-        $data = $request->only(['name', 'cnpj', 'image', 'phone']);
+        $data = $request->only(['cnpj', 'image', 'phone']);
 
-        if (empty($data['name'])) {
-            return response()->json(['error' => "Name cannot be null"], 200);
+        if (empty($data['cnpj'])) {
+            return response()->json(['error' => "cnpj cannot be null"], 200);
         }
 
         //atualizando o item

@@ -25,9 +25,11 @@ use App\Http\Controllers\Auth\DB;
 use App\Models\Groups;
 use App\Models\UsersGroup;
 use Illuminate\Auth\Events\Validated;
+use Illuminate\Support\Facades\Password;
 use PHPUnit\TextUI\XmlConfiguration\Group;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -112,7 +114,7 @@ class UserController extends Controller
     public function createUser(Request $request)
     {
 
-        if (!$request->user()->role_id != 1) {
+        if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
                 return response()->json(['error' => "Unauthorized"], 401);
             }
@@ -178,8 +180,19 @@ class UserController extends Controller
             $saveLog->id_log = 4;
             $saveLog->save();
 
+            $status = Password::sendResetLink(
+                $request->only('email')
+            );
 
+            if ($status == Password::RESET_LINK_SENT) {
+                return [
+                    'status' => __($status)
+                ];
+            }
 
+            throw ValidationException::withMessages([
+                'email' => [trans($status)],
+            ]);
 
             \DB::commit();
         } catch (\Throwable $th) {

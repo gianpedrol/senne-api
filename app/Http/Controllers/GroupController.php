@@ -14,6 +14,7 @@ use App\Models\UserPermissoes;
 use PHPUnit\TextUI\XmlConfiguration\Group;
 use App\Models\UsersGroup;
 use Illuminate\Support\Facades\Auth;
+use Intervention\Image\Facades\Image;
 
 
 class GroupController extends Controller
@@ -98,6 +99,12 @@ class GroupController extends Controller
     {
         /* 1 = Administrador Senne | 2 = Usuario */
         if (auth()->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 2)) {
+                return response()->json(['error' => "Unauthorized"], 401);
+            }
+            if (!$request->user()->permission_user($request->user()->id, 3)) {
+                return response()->json(['error' => "Unauthorized"], 401);
+            }
             return response()->json(['error' => 'Unauthorized access'], 401);
         }
         /* 
@@ -106,16 +113,12 @@ class GroupController extends Controller
             $id_user : passa o id do usuario
             $id_permissão : passa o id da view { 2 -> para view de agendamentos, 3 -> para view de consultas }
          */
-        if (!$request->user()->permission_user($request->user()->id, 2)) {
-            return response()->json(['error' => "Unauthorized"], 401);
-        }
-        if (!$request->user()->permission_user($request->user()->id, 3)) {
-            return response()->json(['error' => "Unauthorized"], 401);
-        }
+
         /* CONSULTA API DE SISTEMA DA SENNE */
         $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/procedencia');
 
         $items = json_decode($response->getBody());
+
 
         /* SEPARA OS DADOS DA API */
         foreach ($items->items as $item) {
@@ -195,7 +198,7 @@ class GroupController extends Controller
             ->where('usergroup.id_user', $user_auth->id)
             ->first();
 
-        if (!$request->user()->role_id != 1) {
+        if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
                 return response()->json(['error' => "Unauthorized "], 401);
             }
@@ -287,6 +290,36 @@ class GroupController extends Controller
             return response()->json(
                 ['status' => 'success', $data],
                 200
+            );
+        }
+    }
+
+    public function updateImageGroup(Request $request)
+    {
+        $array = ['error' => ''];
+
+
+        $imageGroup = $request->file('image');
+
+        $dest = public_path('media/groups/');
+        $image_name = md5(time() . rand(0, 9999)) . '.jpg';
+
+        $img = Image::make($imageGroup->getRealPath());
+        $img->fit(300, 300)->save($dest . '/' . $image_name);
+
+        $group = Groups::where('id', $request->id_group)->first();
+
+        if ($group) {
+            $group->image = $image_name;
+            $group->update();
+            return response()->json(
+                ['status' => 'success', 'Image uploaded succesfully'],
+                200
+            );
+        } else {
+            return response()->json(
+                ['error' => 'Group Not found'],
+                404
             );
         }
     }

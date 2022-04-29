@@ -12,6 +12,13 @@ class Groups extends Model
 
     protected $fillable = ['name', 'cnpj', 'image', 'phone'];
 
+    public function getImageAttribute($value)
+    {
+        if ($value) {
+            return config('app.url') . '/media/groups/' . $value;
+        }
+    }
+
     public function hospitals()
     {
         return $this->hasMany(Hospitais::class, 'grupo_id');

@@ -27,6 +27,7 @@ use App\Models\UsersGroup;
 use Illuminate\Auth\Events\Validated;
 use PHPUnit\TextUI\XmlConfiguration\Group;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -277,30 +278,6 @@ class UserController extends Controller
         }
     }
 
-    public function sendResetPassword(Request $request)
-    {
-
-        $frontUrl = env('FRONTEND_URL');
-        $frontRoute = env('FRONTEND_RESET_PASSWORD_URL');
-
-        $email = $request->get('email');
-        $user = User::where('email', $email)->get();
-
-
-        if (count($user) > 0) {
-            $urlTemp = $frontUrl . $frontRoute . URL::temporarySignedRoute(
-                'verifyResetRoute',
-                now()->addMinutes(30),
-                ['user' => $user[0]['id']]
-            );
-
-            sendEmailPasswordReset::dispatch($user[0], $urlTemp);
-
-            return response()->json(['message' => 'email reset password send']);
-        } else {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-    }
 
     public function verifyResetRoute(Request $request)
     {
@@ -312,19 +289,6 @@ class UserController extends Controller
         return response()->json(['message' => 'valid url']);
     }
 
-    public function reset(Request $request)
-    {
-        $id = $request->id;
-        $password = Hash::make($request->get('password'));
-
-        try {
-            User::findOrFail($id)->update(['password' => $password]);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Fail to reset password'], 400);
-        }
-
-        return response()->json(['message' => 'Password reset successful']);
-    }
 
     public function verification(Request $request)
     {
@@ -475,12 +439,12 @@ class UserController extends Controller
 
     public function listAllUser(Request $request)
     {
-        if (!$request->user()->role_id != 1) {
+        if ($request->user()->role_id != 1) {
             return response()->json(['error' => "Unauthorized "], 401);
         }
         //Trazemos os usuarios que possui vinculo com hospitais
         $data = User::from('users as user')
-            ->select('user.id', 'user.name', 'user.email')
+            ->select('user.id', 'user.name', 'user.email', 'user.role_id')
             ->where('user.role_id', '!=', 1)
             ->get()
             ->toArray();
@@ -508,6 +472,7 @@ class UserController extends Controller
         //Rodamos o loop para trazer o ultimo log de cada usuário
         $retorno = [];
         foreach ($all_users as $key1 => $user_only) {
+            $user_only['permissoes'] = UserPermissoes::where('id_user', $user_only['id'])->select('id_permissao as id')->get();
             $user_only['dateLogin'] = UserLog::where('id_user', $user_only['id'])->orderBy('id_log', 'DESC')->first('created_at');
             // $user_only['hospitais'] = UsersHospitals::where('id_user', $user_only['id'])->get();
             $user_only['hospitais'] = UsersHospitals::from('users_hospitals as userhos')
@@ -526,7 +491,7 @@ class UserController extends Controller
 
     public function showUser(Request $request)
     {
-        if (!$request->user()->role_id != 1) {
+        if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
                 return response()->json(['error' => "Unauthorized "], 401);
             }
@@ -559,6 +524,7 @@ class UserController extends Controller
 
     public function listUserGroups($id, Request $request)
     {
+        $group = Groups::where('id', $id)->first();
         $user_auth = Auth::user();
         $user_group = UsersGroup::from('users_groups as usergroup')
             ->select('usergroup.id_group')
@@ -623,7 +589,7 @@ class UserController extends Controller
         }
 
         return response()->json(
-            ['status' => 'success', 'Users' => $retorno],
+            ['status' => 'success', 'Group' => $group, 'Users' => $retorno],
             200
         );
     }
@@ -713,10 +679,33 @@ class UserController extends Controller
 
     public function updateImageUser(Request $request)
     {
-        $rules = [
-            'image' => '|image|mimes:png,jpg,jpeg'
-        ];
+        $array = ['error' => ''];
 
-        $validator = Validator::make()
+        //dd($request->all());
+
+
+        $imageUser = $request->file('image');
+
+        $dest = public_path('media/users/');
+        $image_name = md5(time() . rand(0, 9999)) . '.jpg';
+
+        $img = Image::make($imageUser->getRealPath());
+        $img->fit(300, 300)->save($dest . '/' . $image_name);
+
+        $user = User::where('id', $request->id_user)->first();
+
+        if ($user) {
+            $user->image = $image_name;
+            $user->update();
+            return response()->json(
+                ['status' => 'success', 'Image uploaded succesfully'],
+                200
+            );
+        } else {
+            return response()->json(
+                ['error' => 'User Not found'],
+                404
+            );
+        }
     }
 }

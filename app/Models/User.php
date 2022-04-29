@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\ResetPasswordNotification;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Laravel\Sanctum\HasApiTokens;
 use PHPUnit\TextUI\XmlConfiguration\Group;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -55,13 +57,20 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+    public function sendPasswordResetNotification($token)
+    {
+
+        $url = 'https://spa.test/reset-password?token=' . $token;
+
+        $this->notify(new ResetPasswordNotification($url));
+    }
 
     /* Função para adicionar a URL do site automaticamente na imagem após puxar do banco
     URL determinada no .env */
     public function getImageAttribute($value)
     {
         if ($value) {
-            return config('app.url') . 'uploads/user/' . $value;
+            return config('app.url') . '/media/user/' . $value;
         }
     }
 

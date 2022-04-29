@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\Auth\EmailVerificationController;
+use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\ExameController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\LaborController;
@@ -33,9 +35,16 @@ Route::get('/ping', function () {
 /* TESTE DE API FIM */
 
 
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('email/verification-notification', [EmailVerificationController::class, 'sendVerificationEmail'])->middleware('auth:sanctum');
+Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify')->middleware('auth:sanctum');
+
+
+
 
 //ROTA DE NÃO AUTORIZADO
 Route::get('/401', [AuthController::class, 'unauthorized'])->name('login');
@@ -43,11 +52,11 @@ Route::get('/401', [AuthController::class, 'unauthorized'])->name('login');
 Route::post('auth/login', [AuthController::class, 'login']);
 Route::post('auth/logout', [AuthController::class, 'logout']);
 
+
 // password reset
 Route::prefix('password')->group(function () {
-    Route::post('send', [UserController::class, 'sendResetPassword']);
-    Route::get('validation/', [UserController::class, 'verifyResetRoute'])->name('verifyResetRoute');
-    Route::post('reset/{id}', [UserController::class, 'reset'])->name('reset');
+    Route::post('forgot', [NewPasswordController::class, 'forgotPassword']);
+    Route::post('reset', [NewPasswordController::class, 'resetPassword']);
 });
 
 //Rota de registro de usuario Master
@@ -65,6 +74,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('list/groups', [GroupController::class, 'listGroups']);
     //Rota de edição do Grupo
     Route::put('edit/group/{id}', [GroupController::class, 'updateGroup']);
+    //upload Imagem Group
+    Route::post('upload/group/image', [GroupController::class, 'updateImageGroup']);
     //LISTA HOSPITAIS DE UM GRUPO
     Route::get('list/hospitals/group/{id}', [GroupController::class, 'getHospitalsGroup']);
 
@@ -121,14 +132,17 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/treatment/report/{atendimento}', [ExameController::class, 'principalReport']);
 
 
+
     //Lista LOGS de um usuario
     Route::get('list/logs/user/{id}', [UserController::class, 'logsUser']);
-      //Lista LOGS de um usuario
-      Route::get('list/logs/users', [UserController::class, 'logsUserAll']);
+    //Lista LOGS de um usuario
+    Route::get('list/logs/users', [UserController::class, 'logsUserAll']);
     //Lista TODOS 
     Route::get('list/users', [UserController::class, 'listAllUser']);
     //Edita Usuário
     Route::put('edit/user/{id}', [UserController::class, 'update']);
+    //Edita Usuário
+    Route::post('upload/user/image', [UserController::class, 'updateImageUser']);
     //Lista Usuário e Hospital
     Route::delete('delete/user/{id}', [UserController::class, 'delete']);
     //Lista Usuário e Hospitais de um grupo

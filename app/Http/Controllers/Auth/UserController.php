@@ -291,62 +291,9 @@ class UserController extends Controller
         }
     }
 
-
-    public function verifyResetRoute(Request $request)
-    {
-
-        if (!$request->hasValidSignature()) {
-            abort(401);
-        }
-
-        return response()->json(['message' => 'valid url']);
-    }
-
-
-    public function verification(Request $request)
-    {
-        $user_id = $request->route('user');
-
-        if (!$request->hasValidSignature()) {
-            abort(401);
-        }
-
-        try {
-            $user = User::find($user_id);
-
-            $user->markEmailAsVerified();
-
-            return response()->json(['message' => 'verified user email']);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'erro on try to validade user'], 400);
-        }
-    }
-
-    public function resend(Request $request)
-    {
-        $id = $request->get('id');
-
-        $frontUrl = env('FRONTEND_URL');
-        $frontRoute = env('FRONTEND_EMAIL_VERIFY_URL');
-
-        $user = User::find($id);
-
-        if ($user) {
-            $urlTemp = $frontUrl . $frontRoute . URL::temporarySignedRoute(
-                'verification',
-                now()->addMinutes(30),
-                ['user' => $user->id]
-            );
-
-            sendEmailVerification::dispatch($user, $urlTemp);
-        } else {
-            response()->json(['message' => 'User not found'], 404);
-        }
-    }
-
     public function logsUser(Request $request)
     {
-        if (!$request->user()->role_id != 1) {
+        if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
                 return response()->json(['error' => "Unauthorized 1"], 401);
             }
@@ -397,11 +344,9 @@ class UserController extends Controller
     }
     public function logsUserAll(Request $request)
     {
-        /* if (!$request->user()->role_id != 1) {
-            if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Unauthorized 1"], 401);
-            }
-        }*/
+        if ($request->user()->role_id != 1) {
+            return response()->json(['error' => "Unauthorized "], 401);
+        }
 
 
         $data = $request->all();
@@ -609,7 +554,7 @@ class UserController extends Controller
 
     public function getUsersHospital($id, Request $request)
     {
-        if (!$request->user()->role_id != 1) {
+        if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
                 return response()->json(['error' => "Unauthorized 1"], 401);
             }
@@ -692,6 +637,11 @@ class UserController extends Controller
 
     public function updateImageUser(Request $request)
     {
+        if ($request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
+                return response()->json(['error' => "Unauthorized "], 401);
+            }
+        }
         $array = ['error' => ''];
 
         //dd($request->all());

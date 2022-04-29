@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Hospitais;
+use App\Models\UserLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
 class ExameController extends Controller
@@ -31,13 +33,20 @@ class ExameController extends Controller
 
         return $items;
     }
-    public function listAttendance($uuid, $atendimento)
+    public function listAttendance($uuid, $atendimento,  Request $request)
     {
 
         /* CONSULTA API DE SISTEMA DA SENNE */
         $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento/' . $uuid . '/' . $atendimento);
 
-
+        //GERA LOG
+        $log = Auth::user();
+        $saveLog = new UserLog();
+        $saveLog->id_user = $log->id;
+        $saveLog->ip_user = $request->ip();
+        $saveLog->id_log = 10;
+        $saveLog->save();
+        $items = json_decode($response->getBody());
 
         $items = json_decode($response->getBody());
 
@@ -52,31 +61,45 @@ class ExameController extends Controller
 
 
 
-        $items = json_decode($response->getBody());
+
 
         return $items;
     }
 
-    public function listAttendanceDetails($uuid, $atendimento)
+    public function listAttendanceDetails($uuid, $atendimento,  Request $request)
     {
 
         /* CONSULTA API DE SISTEMA DA SENNE */
         $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento_detalhe/' . $uuid . '/' . $atendimento);
 
 
+        //GERA LOG
+        $log = Auth::user();
+        $saveLog = new UserLog();
+        $saveLog->id_user = $log->id;
+        $saveLog->ip_user = $request->ip();
+        $saveLog->id_log = 9;
+        $saveLog->save();
 
         $items = json_decode($response->getBody());
 
         return $items;
     }
 
-    public function principalReport($atendimento)
+    public function principalReport($atendimento,  Request $request)
     {
 
         /* CONSULTA API DE SISTEMA DA SENNE */
         $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudo/' . $atendimento);
 
 
+        //GERA LOG
+        $log = Auth::user();
+        $saveLog = new UserLog();
+        $saveLog->id_user = $log->id;
+        $saveLog->ip_user = $request->ip();
+        $saveLog->id_log = 8;
+        $saveLog->save();
 
         return $response;
     }

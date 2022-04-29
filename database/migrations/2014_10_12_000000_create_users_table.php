@@ -36,9 +36,7 @@ class CreateUsersTable extends Migration
             $table->integer('role_id')->comment('1 => Usuário master, 2 => Usuário Grupo');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-
             $table->rememberToken();
-
             $table->timestamps();
         });
     }

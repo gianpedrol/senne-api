@@ -41,8 +41,20 @@ class HospitalController extends Controller
     /*
         RECEBE API E SALVA NO BANCO    
     */
-    public function getProcedencia()
+    public function getProcedencia(Request $request)
     {
+
+        /* 1 = Administrador Senne | 2 = Usuario */
+        if (auth()->user()->role_id != 1) {
+            return response()->json(['error' => 'Unauthorized access'], 401);
+        }
+        if (!$request->user()->permission_user($request->user()->id, 2)) {
+            return response()->json(['error' => "Unauthorized"], 401);
+        }
+        if (!$request->user()->permission_user($request->user()->id, 3)) {
+            return response()->json(['error' => "Unauthorized"], 401);
+        }
+
         /* CONSULTA API DE SISTEMA DA SENNE */
         $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/procedencia');
 
@@ -72,7 +84,7 @@ class HospitalController extends Controller
             try {
                 \DB::beginTransaction();
 
-                Hospitais::firstOrCreate(['codprocedencia' => $save_proc['id_api'],'name' => $save_proc['name'], 'grupo_id' => $id_group, 'uuid' => $save_proc['uuid'], ]);
+                Hospitais::firstOrCreate(['codprocedencia' => $save_proc['id_api'], 'name' => $save_proc['name'], 'grupo_id' => $id_group, 'uuid' => $save_proc['uuid'],]);
 
 
                 \DB::commit();
@@ -114,6 +126,10 @@ class HospitalController extends Controller
     //Salva Hospital
     public function storeHospital(Request $request)
     {
+        /* 1 = Administrador Senne | 2 = Usuario */
+        if (auth()->user()->role_id != 1) {
+            return response()->json(['error' => 'Unauthorized access'], 401);
+        }
 
         $data = $request->only('name', 'email', 'cnpj', 'image', 'phone', 'grupo_id');
 
@@ -169,6 +185,17 @@ class HospitalController extends Controller
     //FAZ ATUALIZAÇÃO DO HOSPITAL 
     public function updateHospital($id, Request $request)
     {
+        /* 1 = Administrador Senne | 2 = Usuario */
+        if (auth()->user()->role_id != 1) {
+            return response()->json(['error' => 'Unauthorized access'], 401);
+        }
+        if (!$request->user()->permission_user($request->user()->id, 2)) {
+            return response()->json(['error' => "Unauthorized"], 401);
+        }
+        if (!$request->user()->permission_user($request->user()->id, 3)) {
+            return response()->json(['error' => "Unauthorized"], 401);
+        }
+
         $data = $request->only('name', 'email', 'cnpj', 'image', 'phone', 'grupo_id');
 
         if (empty($data['name'])) {

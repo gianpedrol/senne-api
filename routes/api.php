@@ -123,6 +123,8 @@ Route::middleware('auth:api')->group(function () {
 
     //Lista LOGS de um usuario
     Route::get('list/logs/user/{id}', [UserController::class, 'logsUser']);
+      //Lista LOGS de um usuario
+      Route::get('list/logs/users', [UserController::class, 'logsUserAll']);
     //Lista TODOS 
     Route::get('list/users', [UserController::class, 'listAllUser']);
     //Edita Usuário
@@ -139,4 +141,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('user/create', [UserController::class, 'createUser']);
     //rota para mostrar usuário
     Route::get('show/user/{id}', [UserController::class, 'showUser']);
+
+    //rota para mostrar usuário
+    Route::get('teste', [UserController::class, 'teste']);
 });

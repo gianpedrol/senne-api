@@ -24,12 +24,20 @@ use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\Auth\DB;
 use App\Models\Groups;
 use App\Models\UsersGroup;
+use Illuminate\Auth\Events\Validated;
 use PHPUnit\TextUI\XmlConfiguration\Group;
+use Intervention\Image\Facades\Image;
 
 class UserController extends Controller
 {
     public function createUserMaster(Request $request)
     {
+        /* 
+            Função que chega se o user é usuario Senne ou Usuario comum
+         */
+        if (!$request->user()->role_id != 1) {
+            return response()->json(['error' => "Unauthorized"], 401);
+        }
 
         $data = $request->only(['name', 'cpf', 'email', 'id_hospital', 'unidade', 'permissao']);
         $user = User::where('email', $data['email'])->first();
@@ -102,6 +110,12 @@ class UserController extends Controller
     }
     public function createUser(Request $request)
     {
+
+        if (!$request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
+                return response()->json(['error' => "Unauthorized"], 401);
+            }
+        }
 
         $data = $request->only(['name', 'cpf', 'phone', 'email']);
         $permissions = $request->permissions;
@@ -176,7 +190,11 @@ class UserController extends Controller
     }
     public function update(Request $request)
     {
-
+        if (!$request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
+                return response()->json(['error' => "Unauthorized 1"], 401);
+            }
+        }
         $id = $request->id;
         $data = $request->only('name', 'phone', 'cpf', 'email');
         $permissions = $request->permissions;
@@ -237,6 +255,11 @@ class UserController extends Controller
 
     public function delete(Request $request)
     {
+        if (!$request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
+                return response()->json(['error' => "Unauthorized 1"], 401);
+            }
+        }
         $id = $request->id;
 
         try {
@@ -346,7 +369,31 @@ class UserController extends Controller
 
     public function logsUser(Request $request)
     {
+        if (!$request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
+                return response()->json(['error' => "Unauthorized 1"], 401);
+            }
+        }
+
+        function datadate($data)
+        {
+
+            $data = str_replace("/", "-", $data);
+
+            return date("Y-m-d", strtotime($data));
+        }
+
+
+        $data = $request->all();
+        if (!empty($data['iniciodata'])) {
+            $data['iniciodata'] = datadate($data['iniciodata']);
+        }
+        if (!empty($data['fimdata'])) {
+            $data['fimdata'] = datadate($data['fimdata']);
+        }
+
         $user = User::find($request->id);
+
 
         if (!$user) {
             return response()->json([
@@ -358,6 +405,12 @@ class UserController extends Controller
                 ->select('log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action')
                 ->join('logs_action as act', 'act.id', '=', 'log.id_log')
                 ->where('id_user', $user->id)
+                ->when(!empty($request->datainicio), function ($query) use ($data) {
+                    return $query->whereDate('log.created_at', '>=', $data['datainicio']);
+                })
+                ->when(!empty($request->fimdata), function ($query) use ($data) {
+                    return $query->whereDate('log.created_at', '>=', $data['fimdata']);
+                })
                 ->get();
             return response()->json(
                 ['status' => 'success', 'User' => $user],
@@ -365,10 +418,66 @@ class UserController extends Controller
             );
         }
     }
-
-    public function listAllUser()
+    public function logsUserAll(Request $request)
     {
+        /* if (!$request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
+                return response()->json(['error' => "Unauthorized 1"], 401);
+            }
+        }*/
 
+
+        $data = $request->all();
+        if (!empty($data['iniciodata'])) {
+            $data['iniciodata'] = datadate($data['datainicio']);
+        }
+        if (!empty($data['fimdata'])) {
+            $data['fimdata'] = datadate($data['fimdata']);
+        }
+
+        $logs['senneUser'] = UserLog::from('logs_user as log')
+            ->select('us.id as id_user', 'us.name as userName', 'log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action')
+            ->join('logs_action as act', 'act.id', '=', 'log.id_log')
+            ->join('users as us', 'us.id', '=', 'log.id_user')
+
+            ->when(!empty($request->datainicio), function ($query) use ($data) {
+                return $query->whereDate('log.created_at', '>=', $data['datainicio']);
+            })
+            ->when(!empty($request->fimdata), function ($query) use ($data) {
+                return $query->whereDate('log.created_at', '>=', $data['fimdata']);
+            })
+            ->get();
+
+        $logs = UserLog::from('logs_user as log')
+            ->select('us.id as id_user', 'us.name as userName', 'hos.id as id_hospital', 'hos.name as hospitalName', 'log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action')
+            ->join('logs_action as act', 'act.id', '=', 'log.id_log')
+            ->join('users as us', 'us.id', '=', 'log.id_user')
+            ->join('users_hospitals as userhos', 'userhos.id_user', '=', 'us.id')
+            ->join('hospitais as hos', 'hos.id', '=', 'userhos.id_user')
+            ->when(!empty($request->datainicio), function ($query) use ($data) {
+                return $query->whereDate('log.created_at', '>=', $data['datainicio']);
+            })
+            ->when(!empty($request->fimdata), function ($query) use ($data) {
+                return $query->whereDate('log.created_at', '>=', $data['fimdata']);
+            })
+            ->when(!empty($request->name), function ($query) use ($data) {
+                return $query->where('us.name', 'like', '%' . $data['name'] . '%');
+            })
+            ->when(!empty($request->procedencia), function ($query) use ($data) {
+                return $query->where('hos.name', 'like', '%' . $data['procedencia'] . '%');
+            })
+            ->get();
+        return response()->json(
+            ['status' => 'success', 'Logs' => $logs],
+            200
+        );
+    }
+
+    public function listAllUser(Request $request)
+    {
+        if (!$request->user()->role_id != 1) {
+            return response()->json(['error' => "Unauthorized "], 401);
+        }
         //Trazemos os usuarios que possui vinculo com hospitais
         $data = User::from('users as user')
             ->select('user.id', 'user.name', 'user.email')
@@ -417,7 +526,11 @@ class UserController extends Controller
 
     public function showUser(Request $request)
     {
-
+        if (!$request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
+                return response()->json(['error' => "Unauthorized "], 401);
+            }
+        }
         $user = [];
         $user = User::findOrFail($request->id);
 
@@ -444,15 +557,32 @@ class UserController extends Controller
         }
     }
 
-    public function listUserGroups($id)
+    public function listUserGroups($id, Request $request)
     {
+        $user_auth = Auth::user();
+        $user_group = UsersGroup::from('users_groups as usergroup')
+            ->select('usergroup.id_group')
+            ->join('groups as group', 'group.id', '=', 'usergroup.id_group')
+            ->where('usergroup.id_user', $user_auth->id)
+            ->first();
+
+
+        if ($request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
+                return response()->json(['error' => "Unauthorized "], 401);
+            }
+            if ($user_group->id_group != $id) {
+                return response()->json(['error' => "Unauthorized "], 401);
+            }
+        }
+
         $data = User::from('users as user')
-            ->select('user.id', 'user.name', 'user.email')
+            ->select('user.id', 'user.name', 'user.email', 'user.role_id')
             ->where('user.role_id', '!=', 1)
             ->get()
             ->toArray();
-
         $users = User::where('role_id', '!=', 1)->get();
+
 
 
         // Trazemos usuarios que não possui vinculo com hospitais
@@ -477,6 +607,7 @@ class UserController extends Controller
         //Rodamos o loop para trazer o ultimo log de cada usuário
         $retorno = [];
         foreach ($all_users as $key1 => $user_only) {
+            $user_only['permissoes'] = UserPermissoes::where('id_user', $user_only['id'])->select('id_permissao as id')->get();
             $user_only['dateLogin'] = UserLog::where('id_user', $user_only['id'])->orderBy('id_log', 'DESC')->first('created_at');
             // $user_only['hospitais'] = UsersHospitals::where('id_user', $user_only['id'])->get();
             $user_only['hospitais'] = UsersHospitals::from('users_hospitals as userhos')
@@ -499,6 +630,12 @@ class UserController extends Controller
 
     public function getUsersHospital($id, Request $request)
     {
+        if (!$request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
+                return response()->json(['error' => "Unauthorized 1"], 401);
+            }
+        }
+
         $hospital = Hospitais::find($id);
 
         if (!$hospital) {
@@ -533,9 +670,8 @@ class UserController extends Controller
         }
     }
     public function listUsersAdm(Request $request)
+    {
 
-    {        
-        
         $idAuthUser = Auth::user();
         $user = User::where('id', $idAuthUser->id)->first();
 
@@ -573,5 +709,14 @@ class UserController extends Controller
             ['status' => 'success', 'Users' => $data],
             200
         );
+    }
+
+    public function updateImageUser(Request $request)
+    {
+        $rules = [
+            'image' => '|image|mimes:png,jpg,jpeg'
+        ];
+
+        $validator = Validator::make()
     }
 }

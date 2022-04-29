@@ -49,9 +49,20 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return array
      */
+
+
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    /* Função para adicionar a URL do site automaticamente na imagem após puxar do banco
+    URL determinada no .env */
+    public function getImageAttribute($value)
+    {
+        if ($value) {
+            return config('app.url') . 'uploads/user/' . $value;
+        }
     }
 
 

@@ -242,7 +242,7 @@ class GroupController extends Controller
 
 
 
-    public function getHospitalsGroup(Request $request)
+    public function getHospitalsGroup($id, Request $request)
     {
         $user_auth = Auth::user();
         $user_group = UsersGroup::from('users_groups as usergroup')

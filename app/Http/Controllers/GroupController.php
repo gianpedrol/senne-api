@@ -209,9 +209,9 @@ class GroupController extends Controller
 
         $data = $request->only(['cnpj', 'image', 'phone']);
 
-        if (empty($data['cnpj'])) {
+        /*  if (empty($data['cnpj'])) {
             return response()->json(['error' => "cnpj cannot be null"], 200);
-        }
+        }*/
 
 
         //dd($group);

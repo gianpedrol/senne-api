@@ -1,0 +1,49 @@
+version: "3.7"
+services:
+  app:
+    build:
+      args:
+        user: sammy
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: senne_api_image
+    container_name: senne-api
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    networks:
+      - senne_network
+
+  db:
+    image: mysql:5.7
+    container_name: senne-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: senne_mageda
+      MYSQL_ROOT_PASSWORD: m4g3d4s3nn3
+      MYSQL_PASSWORD: m4g3d4s3nn3
+      MYSQL_USER: senne_api
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./docker-compose/mysql:/docker-entrypoint-initdb.d
+    networks:
+      - senne_network
+
+  nginx:
+    image: nginx:alpine
+    container_name: senne-nginx
+    restart: unless-stopped
+    ports:
+      - 8000:80
+    volumes:
+      - ./:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d/
+    networks:
+      - senne_network
+
+networks:
+  senne_network:
+    driver: bridge

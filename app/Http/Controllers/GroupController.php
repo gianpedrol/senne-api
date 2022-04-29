@@ -14,6 +14,7 @@ use App\Models\UserPermissoes;
 use PHPUnit\TextUI\XmlConfiguration\Group;
 use App\Models\UsersGroup;
 use Illuminate\Support\Facades\Auth;
+use Intervention\Image\Facades\Image;
 
 
 class GroupController extends Controller
@@ -34,18 +35,14 @@ class GroupController extends Controller
         }
     }
 
-    //
-    public function index()
-    {
-
-        $groups = Groups::all();
-        return response()->json($groups);
-    }
-
 
     //Salva Grupo no DB
     public function storeGroup(Request $request)
     {
+        /* 1 = Administrador Senne | 2 = Usuario */
+        if (auth()->user()->role_id != 1) {
+            return response()->json(['error' => 'Unauthorized access'], 401);
+        }
 
         $data = $request->only('name', 'cnpj', 'image', 'phone');
 
@@ -98,12 +95,30 @@ class GroupController extends Controller
     }
 
 
-    public function getGroups()
+    public function getGroups(Request $request)
     {
+        /* 1 = Administrador Senne | 2 = Usuario */
+        if (auth()->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 2)) {
+                return response()->json(['error' => "Unauthorized"], 401);
+            }
+            if (!$request->user()->permission_user($request->user()->id, 3)) {
+                return response()->json(['error' => "Unauthorized"], 401);
+            }
+            return response()->json(['error' => 'Unauthorized access'], 401);
+        }
+        /* 
+            Função que checa se o usuario tem permissão para acessar este método.
+            ## Params ##
+            $id_user : passa o id do usuario
+            $id_permissão : passa o id da view { 2 -> para view de agendamentos, 3 -> para view de consultas }
+         */
+
         /* CONSULTA API DE SISTEMA DA SENNE */
         $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/procedencia');
 
         $items = json_decode($response->getBody());
+
 
         /* SEPARA OS DADOS DA API */
         foreach ($items->items as $item) {
@@ -150,17 +165,6 @@ class GroupController extends Controller
             return response()->json(['error' => "Unauthorized"], 401);
         }
 
-
-        /* 
-            Função que checa se o usuario tem permissão para acessar este método.
-            ## Params ##
-            $id_user : passa o id do usuario
-            $id_permissão : passa o id da view { 2 -> para view de agendamentos, 3 -> para view de consultas }
-         */
-        if (!$request->user()->permission_user($request->user()->id, 3)) {
-            return response()->json(['error' => "Unauthorized"], 401);
-        }
-
         /* LISTA TODOS OS GRUPOS APÓS CONSULTA E SALVAR NOVOS DADOS  */
         $groups =  Groups::all();
 
@@ -187,35 +191,65 @@ class GroupController extends Controller
 
     public function updateGroup($id, Request $request)
     {
-        $data = $request->only(['name', 'cnpj', 'image', 'phone']);
+        $user_auth = Auth::user();
+        $user_group = UsersGroup::from('users_groups as usergroup')
+            ->select('usergroup.id_group')
+            ->join('groups as group', 'group.id', '=', 'usergroup.id_group')
+            ->where('usergroup.id_user', $user_auth->id)
+            ->first();
 
-        if (empty($data['name'])) {
-            return response()->json(['error' => "Name cannot be null"], 200);
+        if ($request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
+                return response()->json(['error' => "Unauthorized "], 401);
+            }
+            if ($user_group->id_group != $id) {
+                return response()->json(['error' => "Unauthorized "], 401);
+            }
         }
 
-        //atualizando o item
-        $group = Groups::find($id);
+        $data = $request->only(['cnpj', 'image', 'phone']);
+
+        if (empty($data['cnpj'])) {
+            return response()->json(['error' => "cnpj cannot be null"], 200);
+        }
+
+
         //dd($group);
-        if ($group) {
+
+        try {
+            \DB::beginTransaction();
+            //atualizando o item
+            $group = Groups::find($id);
             $group->update($data);
 
             //GERA LOG
             $log = Auth::user();
             $saveLog = new UserLog();
             $saveLog->id_user = $log->id;
-            $saveLog->Log = 'Usuário Atualizou um Grupo';
+            $saveLog->id_log = 7;
             $saveLog->save();
 
-            return response()->json(['msg' => "Edited Successfully!", $group], 200);
-        } else {
-            return response()->json(['error' => "Group not found"], 404);
+            \DB::commit();
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+            \DB::rollback();
+            return ['error' => 'Could not write data', 400];
         }
+
+        return response()->json(['msg' => "Edited Successfully!", $group], 200);
     }
 
 
 
     public function getHospitalsGroup(Request $request)
     {
+        if (!$request->user()->permission_user($request->user()->id, 2)) {
+            return response()->json(['error' => "Unauthorized"], 401);
+        }
+        if (!$request->user()->permission_user($request->user()->id, 3)) {
+            return response()->json(['error' => "Unauthorized"], 401);
+        }
+
         $group = Groups::find($request->id);
 
 
@@ -237,6 +271,13 @@ class GroupController extends Controller
 
     public function getUsersGroup(Request $request)
     {
+        if (!$request->user()->permission_user($request->user()->id, 2)) {
+            return response()->json(['error' => "Unauthorized"], 401);
+        }
+        if (!$request->user()->permission_user($request->user()->id, 3)) {
+            return response()->json(['error' => "Unauthorized"], 401);
+        }
+
         $group = Groups::find($request->id);
 
         if (!$group) {
@@ -256,6 +297,36 @@ class GroupController extends Controller
             return response()->json(
                 ['status' => 'success', $data],
                 200
+            );
+        }
+    }
+
+    public function updateImageGroup(Request $request)
+    {
+        $array = ['error' => ''];
+
+
+        $imageGroup = $request->file('image');
+
+        $dest = public_path('media/groups/');
+        $image_name = md5(time() . rand(0, 9999)) . '.jpg';
+
+        $img = Image::make($imageGroup->getRealPath());
+        $img->fit(300, 300)->save($dest . '/' . $image_name);
+
+        $group = Groups::where('id', $request->id_group)->first();
+
+        if ($group) {
+            $group->image = $image_name;
+            $group->update();
+            return response()->json(
+                ['status' => 'success', 'Image uploaded succesfully'],
+                200
+            );
+        } else {
+            return response()->json(
+                ['error' => 'Group Not found'],
+                404
             );
         }
     }

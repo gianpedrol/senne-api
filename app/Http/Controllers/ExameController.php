@@ -101,6 +101,6 @@ class ExameController extends Controller
         $saveLog->id_log = 8;
         $saveLog->save();
 
-        return $response;
+        return 'http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudo/' . $atendimento;
     }
 }

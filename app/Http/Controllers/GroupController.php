@@ -213,10 +213,13 @@ class GroupController extends Controller
             return response()->json(['error' => "cnpj cannot be null"], 200);
         }
 
-        //atualizando o item
-        $group = Groups::find($id);
+
         //dd($group);
-        if ($group) {
+
+        try {
+            \DB::beginTransaction();
+            //atualizando o item
+            $group = Groups::find($id);
             $group->update($data);
 
             //GERA LOG
@@ -226,10 +229,15 @@ class GroupController extends Controller
             $saveLog->id_log = 7;
             $saveLog->save();
 
-            return response()->json(['msg' => "Edited Successfully!", $group], 200);
-        } else {
-            return response()->json(['error' => "Group not found"], 404);
+            \DB::commit();
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+            \DB::rollback();
+            return ['error' => 'Could not write data', 400];
         }
+
+
+        return response()->json(['msg' => "Edited Successfully!", $group], 200);
     }
 
 

@@ -224,7 +224,6 @@ class GroupController extends Controller
 
             //GERA LOG
             $log = Auth::user();
-            dd($log->id);
             $saveLog = new UserLog();
             $saveLog->id_user = $log->id;
             $saveLog->id_log = 7;

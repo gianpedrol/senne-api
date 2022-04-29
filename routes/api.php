@@ -73,7 +73,7 @@ Route::middleware('auth:api')->group(function () {
     //lISTA GROUPS DO NOSSO BANCO DE DADOS
     Route::get('list/groups', [GroupController::class, 'listGroups']);
     //Rota de edição do Grupo
-    Route::post('edit/group/{id}', [GroupController::class, 'updateGroup']);
+    Route::put('edit/group/{id}', [GroupController::class, 'updateGroup']);
     //upload Imagem Group
     Route::post('upload/group/image', [GroupController::class, 'updateImageGroup']);
     //LISTA HOSPITAIS DE UM GRUPO

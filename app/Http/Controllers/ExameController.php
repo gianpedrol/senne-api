@@ -10,6 +10,19 @@ use Illuminate\Support\Facades\Http;
 
 class ExameController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+
+        if (!auth()->user()) {
+            return response()->json(['error' => 'Unauthorized access'], 401);
+        }
+
+        /* 1 = Administrador Senne | 2 = Usuario */
+        if (auth()->user()->role_id != 1) {
+            return response()->json(['error' => 'Unauthorized access'], 401);
+        }
+    }
 
     public function listExame()
     {
@@ -46,7 +59,6 @@ class ExameController extends Controller
         $saveLog->ip_user = $request->ip();
         $saveLog->id_log = 10;
         $saveLog->save();
-        $items = json_decode($response->getBody());
 
         $items = json_decode($response->getBody());
 
@@ -61,9 +73,7 @@ class ExameController extends Controller
 
 
 
-
-
-        return $items;
+        return $response;
     }
 
     public function listAttendanceDetails($uuid, $atendimento,  Request $request)
@@ -101,6 +111,6 @@ class ExameController extends Controller
         $saveLog->id_log = 8;
         $saveLog->save();
 
-        return 'http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudo/' . $atendimento;
+        return response()->json(['http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudo/' . $atendimento], 200);
     }
 }

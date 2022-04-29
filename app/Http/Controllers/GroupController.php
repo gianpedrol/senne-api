@@ -222,12 +222,7 @@ class GroupController extends Controller
             $group = Groups::find($id);
             $group->update($data);
 
-            //GERA LOG
-            $log = Auth::user();
-            $saveLog = new UserLog();
-            $saveLog->id_user = $log->id;
-            $saveLog->id_log = 7;
-            $saveLog->save();
+
 
             \DB::commit();
         } catch (\Throwable $th) {
@@ -235,6 +230,12 @@ class GroupController extends Controller
             \DB::rollback();
             return ['error' => 'Could not write data', 400];
         }
+        //GERA LOG
+        $log = Auth::user();
+        $saveLog = new UserLog();
+        $saveLog->id_user = $log->id;
+        $saveLog->id_log = 7;
+        $saveLog->save();
 
         return response()->json(['msg' => "Edited Successfully!", $group], 200);
     }

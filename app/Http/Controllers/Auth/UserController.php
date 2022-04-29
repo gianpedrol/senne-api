@@ -204,7 +204,7 @@ class UserController extends Controller
     }
     public function update(Request $request)
     {
-        if (!$request->user()->role_id != 1) {
+        if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
                 return response()->json(['error' => "Unauthorized 1"], 401);
             }

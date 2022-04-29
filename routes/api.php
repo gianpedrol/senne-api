@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\Auth\EmailVerificationController;
+use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\ExameController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\LaborController;
@@ -33,9 +35,16 @@ Route::get('/ping', function () {
 /* TESTE DE API FIM */
 
 
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('email/verification-notification', [EmailVerificationController::class, 'sendVerificationEmail'])->middleware('auth:sanctum');
+Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify')->middleware('auth:sanctum');
+
+
+
 
 //ROTA DE NÃO AUTORIZADO
 Route::get('/401', [AuthController::class, 'unauthorized'])->name('login');
@@ -43,11 +52,11 @@ Route::get('/401', [AuthController::class, 'unauthorized'])->name('login');
 Route::post('auth/login', [AuthController::class, 'login']);
 Route::post('auth/logout', [AuthController::class, 'logout']);
 
+
 // password reset
 Route::prefix('password')->group(function () {
-    Route::post('send', [UserController::class, 'sendResetPassword']);
-    Route::get('validation/', [UserController::class, 'verifyResetRoute'])->name('verifyResetRoute');
-    Route::post('reset/{id}', [UserController::class, 'reset'])->name('reset');
+    Route::post('forgot', [NewPasswordController::class, 'forgotPassword']);
+    Route::post('reset', [NewPasswordController::class, 'resetPassword']);
 });
 
 //Rota de registro de usuario Master
@@ -64,7 +73,9 @@ Route::middleware('auth:api')->group(function () {
     //lISTA GROUPS DO NOSSO BANCO DE DADOS
     Route::get('list/groups', [GroupController::class, 'listGroups']);
     //Rota de edição do Grupo
-    Route::put('edit/group/{id}', [GroupController::class, 'updateGroup']);
+    Route::post('edit/group/{id}', [GroupController::class, 'updateGroup']);
+    //upload Imagem Group
+    Route::post('upload/group/image', [GroupController::class, 'updateImageGroup']);
     //LISTA HOSPITAIS DE UM GRUPO
     Route::get('list/hospitals/group/{id}', [GroupController::class, 'getHospitalsGroup']);
 
@@ -98,7 +109,7 @@ Route::middleware('auth:api')->group(function () {
         //cria usuarios hospital
         Route::post('/store', [UserHospitalController::class, 'storeUserHospital']);
         //LISTA USUARIOS DE UM HOSPITAL
-        Route::get('/list/{id}', [UserHospitalController::class, 'getUsersHospital']);
+        Route::get('/list/{id}', [UserController::class, 'getUsersHospital']);
         //rota para mostrar usuário
         Route::get('show/{id}', [UserHospitalController::class, 'showUserGroup']);
         //Rota de edição do Usuário do Hospital
@@ -121,23 +132,30 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/treatment/report/{atendimento}', [ExameController::class, 'principalReport']);
 
 
-    //Lista Resultados de um usuario
+
+    //Lista LOGS de um usuario
     Route::get('list/logs/user/{id}', [UserController::class, 'logsUser']);
-    //Lista Resultados de um usuario
+    //Lista LOGS de um usuario
+    Route::get('list/logs/users', [UserController::class, 'logsUserAll']);
+    //Lista TODOS 
     Route::get('list/users', [UserController::class, 'listAllUser']);
     //Edita Usuário
     Route::put('edit/user/{id}', [UserController::class, 'update']);
+    //Edita Usuário
+    Route::post('upload/user/image', [UserController::class, 'updateImageUser']);
     //Lista Usuário e Hospital
     Route::delete('delete/user/{id}', [UserController::class, 'delete']);
     //Lista Usuário e Hospitais de um grupo
     Route::get('list/group/user/{id}', [UserController::class, 'listUserGroups']);
-
-
+    //LISTA USUARIOS DE UM HOSPITAL
+    Route::get('/list/{id}', [UserController::class, 'getUsersHospital']);
+    //rota para mostrar usuários atrelados ao Adm
+    Route::get('adm/list/users', [UserController::class, 'listUsersAdm']);
     //cria usuario
     Route::post('user/create', [UserController::class, 'createUser']);
     //rota para mostrar usuário
     Route::get('show/user/{id}', [UserController::class, 'showUser']);
 
     //rota para mostrar usuário
-    Route::get('adm/list/users', [UserController::class, 'listUsersAdm']);
+    Route::get('teste', [UserController::class, 'teste']);
 });

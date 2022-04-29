@@ -72,8 +72,10 @@ class ExameController extends Controller
 
     public function principalReport($atendimento)
     {
+
         /* CONSULTA API DE SISTEMA DA SENNE */
         $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudo/' . $atendimento);
+
 
 
         return $response;

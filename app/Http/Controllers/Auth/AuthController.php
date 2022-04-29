@@ -27,6 +27,7 @@ class AuthController extends Controller
         $creds = $request->only('email', 'password');
         $token = Auth::attempt($creds);
 
+
         if ($token) {
             $user['email'] = $creds;
             $array['token'] = $token;

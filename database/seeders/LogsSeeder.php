@@ -21,6 +21,9 @@ class LogsSeeder extends Seeder
             ['log_description' => 'Usuário criou um usuário', 'id' => 4],
             ['log_description' => 'Usuário deletou um usuário', 'id' => 5],
 
+            ['log_description' => 'Usuário Criou um Grupo', 'id' => 6],
+            ['log_description' => 'Usuário Editou um Grupo', 'id' => 7],
+
         ];
 
         DB::table('logs_action')->insert($logs);

@@ -556,7 +556,7 @@ class UserController extends Controller
     {
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Unauthorized 1"], 401);
+                return response()->json(['error' => "Unauthorized Access not administrator"], 401);
             }
         }
 

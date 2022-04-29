@@ -28,11 +28,6 @@ class GroupController extends Controller
         if (!auth()->user()) {
             return response()->json(['error' => 'Unauthorized access'], 401);
         }
-
-        /* 1 = Administrador Senne | 2 = Usuario */
-        if (auth()->user()->role_id != 1) {
-            return response()->json(['error' => 'Unauthorized access'], 401);
-        }
     }
 
 
@@ -281,11 +276,19 @@ class GroupController extends Controller
 
     public function getUsersGroup(Request $request)
     {
-        if (!$request->user()->permission_user($request->user()->id, 2)) {
-            return response()->json(['error' => "Unauthorized"], 401);
-        }
-        if (!$request->user()->permission_user($request->user()->id, 3)) {
-            return response()->json(['error' => "Unauthorized"], 401);
+        $user_auth = Auth::user();
+        $user_group = UsersGroup::from('users_groups as usergroup')
+            ->select('usergroup.id_group')
+            ->join('groups as group', 'group.id', '=', 'usergroup.id_group')
+            ->where('usergroup.id_user', $user_auth->id)
+            ->first();
+        if ($request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
+                return response()->json(['error' => "Unauthorized not administrator"], 401);
+            }
+            if ($user_group->id_group != $id) {
+                return response()->json(['error' => "Unauthorized dont belongs to this group "], 401);
+            }
         }
 
         $group = Groups::find($request->id);

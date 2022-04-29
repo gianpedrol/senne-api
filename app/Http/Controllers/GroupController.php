@@ -236,7 +236,6 @@ class GroupController extends Controller
             return ['error' => 'Could not write data', 400];
         }
 
-
         return response()->json(['msg' => "Edited Successfully!", $group], 200);
     }
 

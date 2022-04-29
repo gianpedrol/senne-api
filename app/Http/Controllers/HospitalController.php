@@ -46,10 +46,10 @@ class HospitalController extends Controller
 
         /* 1 = Administrador Senne | 2 = Usuario */
         if (auth()->user()->role_id != 1) {
-            if (!$request->user()->permission_user($request->user()->id, 2)) {
+            if ($request->user()->permission_user($request->user()->id, 2)) {
                 return response()->json(['error' => "Unauthorized"], 401);
             }
-            if (!$request->user()->permission_user($request->user()->id, 3)) {
+            if ($request->user()->permission_user($request->user()->id, 3)) {
                 return response()->json(['error' => "Unauthorized"], 401);
             }
             return response()->json(['error' => 'Unauthorized access'], 401);

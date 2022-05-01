@@ -319,7 +319,7 @@ class GroupController extends Controller
         $array = ['error' => ''];
 
 
-        $imageGroup = $request->file('image');
+        $imageGroup = $request->file('filename');
 
         $dest = public_path('media/groups/');
         $image_name = md5(time() . rand(0, 9999)) . '.jpg';

@@ -647,7 +647,7 @@ class UserController extends Controller
         //dd($request->all());
 
 
-        $imageUser = $request->file('image');
+        $imageUser = $request->file('filename');
 
         $dest = public_path('media/users/');
         $image_name = md5(time() . rand(0, 9999)) . '.jpg';

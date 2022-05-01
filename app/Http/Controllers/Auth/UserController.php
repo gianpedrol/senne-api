@@ -644,7 +644,7 @@ class UserController extends Controller
         }
         $array = ['error' => ''];
 
-        dd($request->all());
+        //dd($request->all());
 
         if ($request->hasFile('filename')) {
             $file = $request->file('filename');

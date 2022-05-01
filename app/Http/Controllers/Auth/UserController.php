@@ -653,7 +653,7 @@ class UserController extends Controller
         $image_name = md5(time() . rand(0, 9999)) . '.jpg';
 
         $img = Image::make($imageUser->getRealPath());
-        $img->fit(300, 300)->save($dest . '/' . $image_name);
+        $img->save($dest . '/' . $image_name);
 
         $user = User::where('id', $request->id_user)->first();
 

@@ -158,11 +158,11 @@ class UserController extends Controller
 
             /* Salva mais de um hospital ao usuário*/
             if (!empty($hospitals)) {
-                foreach ($hospitals as $id_hospital) {
-                    $info_hospital = Hospitais::where('id', $id_hospital)->first();
-                    UsersGroup::create(['id_group' => $info_hospital->grupo_id, 'id_user' => $newUser->id]);
-                }
+
+                $info_hospital = Hospitais::where('id', $hospitals[0])->first();
+                UsersGroup::create(['id_group' => $info_hospital->grupo_id, 'id_user' => $newUser->id]);
             }
+
             /* Salva permissões do Usuário */
             if (!empty($permissions)) {
                 foreach ($permissions as $id_permission) {

@@ -646,20 +646,32 @@ class UserController extends Controller
 
         dd($request->all());
 
+        if ($request->hasFile('filename')) {
+            $file = $request->file('filename');
+            $file_name = time() . '-' . $file->getClientOriginalName();
+            $file_path = 'media/users/';
 
-        $imageUser = $request->file('filename');
+            $file->move($file_path, $file_name);
+
+            if ($file['filename'] != "") {
+                $file['filename'] = $file_name;
+            }
+        }
+
+
+        /*    $imageUser = $request->file('filename');
 
 
         $dest = public_path('media/users/');
         $image_name = md5(time() . rand(0, 9999)) . '.jpg';
 
         $img = Image::make($imageUser->getRealPath());
-        $img->save($dest . '/' . $image_name);
+        $img->save($dest . '/' . $image_name);*/
 
         $user = User::where('id', $request->id_user)->first();
 
         if ($user) {
-            $user->image = $image_name;
+            $user->image = $file['filename'];
             $user->update();
             return response()->json(
                 ['status' => 'success', 'Image uploaded succesfully'],

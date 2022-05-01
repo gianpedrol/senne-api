@@ -645,15 +645,16 @@ class UserController extends Controller
         $array = ['error' => ''];
 
         //dd($request->all());
-
-        if ($request->hasFile('filename')) {
-            $file = $request->file('filename');
+        $filename = '';
+        $user = User::where('id', $request->id_user)->first();
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
             $file_name = time() . '-' . $file->getClientOriginalName();
             $file_path = 'media/users/';
 
             $file->move($file_path, $file_name);
 
-            if ($request->hasFile('filename') != "") {
+            if ($request->hasFile('image') != "") {
                 $filename = $file_name;
             }
         }
@@ -668,7 +669,7 @@ class UserController extends Controller
         $img = Image::make($imageUser->getRealPath());
         $img->save($dest . '/' . $image_name);*/
 
-        $user = User::where('id', $request->id_user)->first();
+
 
         if ($user) {
             $user->image = $filename;

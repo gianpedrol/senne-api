@@ -653,8 +653,8 @@ class UserController extends Controller
 
             $file->move($file_path, $file_name);
 
-            if ($file['filename'] != "") {
-                $file['filename'] = $file_name;
+            if ($request->hasFile('filename') != "") {
+                $filename = $file_name;
             }
         }
 
@@ -671,7 +671,7 @@ class UserController extends Controller
         $user = User::where('id', $request->id_user)->first();
 
         if ($user) {
-            $user->image = $file['filename'];
+            $user->image = $filename;
             $user->update();
             return response()->json(
                 ['status' => 'success', 'Image uploaded succesfully'],

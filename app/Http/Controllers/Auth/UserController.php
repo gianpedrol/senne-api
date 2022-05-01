@@ -180,19 +180,7 @@ class UserController extends Controller
             $saveLog->id_log = 4;
             $saveLog->save();
 
-            $status = Password::sendResetLink(
-                $request->only('email')
-            );
 
-            if ($status == Password::RESET_LINK_SENT) {
-                return [
-                    'status' => __($status)
-                ];
-            }
-
-            throw ValidationException::withMessages([
-                'email' => [trans($status)],
-            ]);
 
             \DB::commit();
         } catch (\Throwable $th) {
@@ -200,6 +188,22 @@ class UserController extends Controller
             \DB::rollback();
             return ['error' => 'Could not write data', 400];
         }
+
+
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        if ($status == Password::RESET_LINK_SENT) {
+            return [
+                'status' => __($status)
+            ];
+        }
+
+        throw ValidationException::withMessages([
+            'email' => [trans($status)],
+        ]);
+
         return response()->json(['message' => "User registered successfully!", 'data' => $newUser], 200);
     }
     public function update(Request $request)
@@ -258,10 +262,6 @@ class UserController extends Controller
             \DB::rollback();
             return ['error' => 'Could not write data', 400];
         }
-
-
-
-
 
 
         return response()->json(['message' => 'user updated']);

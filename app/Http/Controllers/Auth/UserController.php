@@ -644,10 +644,11 @@ class UserController extends Controller
         }
         $array = ['error' => ''];
 
-        //dd($request->all());
+        dd($request->all());
 
 
         $imageUser = $request->file('filename');
+
 
         $dest = public_path('media/users/');
         $image_name = md5(time() . rand(0, 9999)) . '.jpg';

@@ -1,12 +1,17 @@
-<!DOCTYPE html
-    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!--------------------------------------------------------------------------------------->
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="color-scheme" content="light">
-    <meta name="supported-color-schemes" content="light">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senne Mail</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+
     <style>
         @media only screen and (max-width: 600px) {
             .inner-body {
@@ -21,65 +26,75 @@
         @media only screen and (max-width: 500px) {
             .button {
                 width: 100% !important;
+                color: white;
+                text-decoration: none;
+                background-color: #EC6726;
+                padding: 8px;
+                border-radius: 3px;
+
             }
         }
 
     </style>
 </head>
 
-<body>
-
-    <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+<body bgcolor="#F0ECEB" topmargin="0" marginwidth="0" marginheight="0">
+    <table>
         <tr>
-            <td align="center">
-                <table class="content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
-                    @foreach ($introLines as $line)
-                        {{ $line }}
-                    @endforeach
-
-                    <!-- Email Body -->
-                    <tr>
-                        <td class="body" width="100%" cellpadding="0" cellspacing="0">
-                            <table class="inner-body" align="center" width="570" cellpadding="0" cellspacing="0"
-                                role="presentation">
-                                <!-- Body content -->
-                                <tr>
-                                    <td class="content-cell">
-                                        @isset($actionText)
-                                            <?php
-                                            switch ($level) {
-                                                case 'success':
-                                                case 'error':
-                                                    $color = $level;
-                                                    break;
-                                                default:
-                                                    $color = 'primary';
-                                            }
-                                            ?>
-                                            @component('mail::button', ['url' => $actionUrl, 'color' => $color])
-                                                {{ $actionText }}
-                                            @endcomponent
-                                        @endisset
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-
-                    @isset($actionText)
-                        @slot('subcopy')
-                            @lang(
-                            "If you're having trouble clicking the \":actionText\" button, copy and paste the URL below\n".
-                            'into your web browser:',
-                            [
-                            'actionText' => $actionText,
-                            ]
-                            ) <span class="break-all">[{{ $displayableActionUrl }}]({{ $actionUrl }})</span>
-                        @endslot
-                    @endisset
-                </table>
+            <td align="left" height="100">
+                <img src="https://teste-senne.mageda.com.br/static/media/logo.bcb20f9e965c296f72b5c9f62ece053f.svg"
+                    alt="Senne Liquor" width="210" height="62">
             </td>
         </tr>
+        <tr>
+            <td height="20"></td>
+        </tr>
+
+        <tr>
+            <td width="500" style="padding-left: 36px; font-family: Montserrat; color: #EC6726">
+                <h2 style="font-weight: bold">Olá,</h2>
+                <h3>O seu cadastro foi efetuado com sucesso!</h3>
+            </td>
+
+        </tr>
+
+        <tr>
+            <td width="350" style="padding-left: 36px; font-family: Montserrat;">
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum, quisquam qui eum dolores necessitatibus
+                    consequatur natus facere aliquid odit officiis?</p>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam ullam corrupti obcaecati molestias
+                    quisquam tempore odit commodi nisi explicabo sequi? Ut expedita dignissimos excepturi laborum
+                    ratione. Ut, provident! Quae, sit?</p>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nisi libero aliquam rem dolorem sequi ab
+                    asperiores nam expedita commodi temporibus?</p>
+            </td>
+
+        </tr>
+        <tr>
+            <td style="padding-left: 36px;padding-top: 30px;font-family: Montserrat; color:white; font-weight: 500;">
+
+                @isset($actionText) <?php
+switch ($level) {
+    case 'success':
+    case 'error':
+        $color = $level;
+        break;
+}
+?>
+                    @component('mail::button', ['url' => $actionUrl])
+                        {{ $actionText }}
+                    @endcomponent
+                @endisset
+
+            </td>
+        </tr>
+
+        <tr>
+            <td style="padding-left: 36px;padding-top: 30px;font-family: Montserrat;">
+                <h3 style="color:#EC6726; font-size:14px ">Equipe Senne</h3>
+            </td>
+        </tr>
+
     </table>
 </body>
 

@@ -13,6 +13,8 @@ class ResetPasswordNotification extends Notification
 
     public $url;
 
+
+
     /**
      * Create a new notification instance.
      *
@@ -43,8 +45,9 @@ class ResetPasswordNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->line('Forgot Password?')
-            ->action('Click to reset', $this->url)
+            ->subject('Altere sua senha')
+            //->line($this->user)
+            ->action('Validar e-mail de cadastro', $this->url)
             ->line('Thank you for using our application!');
     }
 

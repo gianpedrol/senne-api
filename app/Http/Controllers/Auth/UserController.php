@@ -189,14 +189,13 @@ class UserController extends Controller
             return ['error' => 'Could not write data', 400];
         }
 
-
         $status = Password::sendResetLink(
-            $request->only('email')
+            $request->only('email'),
         );
 
         if ($status == Password::RESET_LINK_SENT) {
             return [
-                'status' => __($status)
+                'status' => __($status),
             ];
         }
 

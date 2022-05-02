@@ -509,19 +509,18 @@ class UserController extends Controller
 
 
         // Trazemos usuarios que não possui vinculo com hospitais
-        $user_db = [];
+        /* $user_db = [];
         foreach ($users as $key => $user) {
             // dd($user);
             $user_nothos = UsersHospitals::where('id_user', $user->id)->first();
 
             if (empty($user_nothos)) {
-
                 return response()->json(
                     ['status' => 'Error', 'User dont belongs to group'],
                     400
                 );
             }
-        }
+        }*/
 
 
         // Juntamos os usuários em uma só array

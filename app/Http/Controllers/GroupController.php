@@ -274,7 +274,7 @@ class GroupController extends Controller
 
 
 
-    public function getUsersGroup(Request $request)
+    public function getUsersGroup($id, Request $request)
     {
         $user_auth = Auth::user();
         $user_group = UsersGroup::from('users_groups as usergroup')
@@ -286,7 +286,7 @@ class GroupController extends Controller
             if (!$request->user()->permission_user($request->user()->id, 1)) {
                 return response()->json(['error' => "Unauthorized not administrator"], 401);
             }
-            if ($user_group->id_group != $id) {
+            if ($user_group->id_group != $request->id) {
                 return response()->json(['error' => "Unauthorized dont belongs to this group "], 401);
             }
         }

@@ -42,8 +42,8 @@
     <table>
         <tr>
             <td align="left" height="100">
-                <img src="https://teste-senne.mageda.com.br/static/media/logo.bcb20f9e965c296f72b5c9f62ece053f.svg"
-                    alt="Senne Liquor" width="210" height="62">
+                <img src="https://teste-api-senne.mageda.com.br/uploads/logosenne.png" alt="Senne Liquor" width="210"
+                    height="62">
             </td>
         </tr>
         <tr>

@@ -70,7 +70,7 @@ class User extends Authenticatable implements JWTSubject
     public function getImageAttribute($value)
     {
         if ($value) {
-            return config('app.url') . '/media/user/' . $value;
+            return config('app.url') . 'uploads/' . $value;
         }
     }
 

@@ -648,9 +648,10 @@ class UserController extends Controller
         $filename = '';
         $user = User::where('id', $request->id_user)->first();
         if ($request->hasFile('image')) {
+
             $file = $request->file('image');
             $file_name = time() . '-' . $file->getClientOriginalName();
-            $file_path = 'media/users/';
+            $file_path = 'uploads/';
 
             $file->move($file_path, $file_name);
 
@@ -658,17 +659,6 @@ class UserController extends Controller
                 $filename = $file_name;
             }
         }
-
-
-        /*    $imageUser = $request->file('filename');
-
-
-        $dest = public_path('media/users/');
-        $image_name = md5(time() . rand(0, 9999)) . '.jpg';
-
-        $img = Image::make($imageUser->getRealPath());
-        $img->save($dest . '/' . $image_name);*/
-
 
 
         if ($user) {

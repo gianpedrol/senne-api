@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-
 use Illuminate\Support\Str;
 
 use DB;
@@ -17,6 +17,7 @@ use App\Models\User;
 use App\Models\UserLog;
 use App\Models\UserPermissoes;
 use App\Models\UsersHospitals;
+
 
 class AuthController extends Controller
 {
@@ -88,7 +89,7 @@ class AuthController extends Controller
         $role_id = 1;
 
         //$senha_md5= Str::random(8);//Descomentar após testes
-        $senha_md5 = '654321';
+        $senha_md5 = '%&yAXNF';
         $senha_temp = bcrypt($senha_md5);
 
         $newUser = new User();
@@ -101,6 +102,8 @@ class AuthController extends Controller
         $newUser->password = $senha_temp;
 
         $newUser->save();
+
+
 
         return response()->json(['message' => "User registered successfully!", 'data' => $newUser], 200);
     }

@@ -356,7 +356,7 @@ class UserController extends Controller
             $data['fimdata'] = datadate($data['fimdata']);
         }
 
-        $logs['senneUser'] = UserLog::from('logs_user as log')
+        $logs = UserLog::from('logs_user as log')
             ->select('us.id as id_user', 'us.name as userName', 'log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action')
             ->join('logs_action as act', 'act.id', '=', 'log.id_log')
             ->join('users as us', 'us.id', '=', 'log.id_user')
@@ -367,27 +367,13 @@ class UserController extends Controller
             ->when(!empty($request->fimdata), function ($query) use ($data) {
                 return $query->whereDate('log.created_at', '>=', $data['fimdata']);
             })
-            ->get();
-
-        $logs = UserLog::from('logs_user as log')
-            ->select('us.id as id_user', 'us.name as userName', 'hos.id as id_hospital', 'hos.name as hospitalName', 'log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action')
-            ->join('logs_action as act', 'act.id', '=', 'log.id_log')
-            ->join('users as us', 'us.id', '=', 'log.id_user')
-            ->join('users_hospitals as userhos', 'userhos.id_user', '=', 'us.id')
-            ->join('hospitais as hos', 'hos.id', '=', 'userhos.id_user')
-            ->when(!empty($request->datainicio), function ($query) use ($data) {
-                return $query->whereDate('log.created_at', '>=', $data['datainicio']);
-            })
-            ->when(!empty($request->fimdata), function ($query) use ($data) {
-                return $query->whereDate('log.created_at', '>=', $data['fimdata']);
-            })
             ->when(!empty($request->name), function ($query) use ($data) {
                 return $query->where('us.name', 'like', '%' . $data['name'] . '%');
             })
-            ->when(!empty($request->procedencia), function ($query) use ($data) {
-                return $query->where('hos.name', 'like', '%' . $data['procedencia'] . '%');
-            })
             ->get();
+
+
+
         return response()->json(
             ['status' => 'success', 'Logs' => $logs],
             200

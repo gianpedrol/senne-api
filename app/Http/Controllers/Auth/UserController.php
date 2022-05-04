@@ -375,7 +375,7 @@ class UserController extends Controller
             })
             ->get();
 
-        $logs['SenneUser'] = UserLog::from('logs_user as log')
+        /* $logs['SenneUser'] = UserLog::from('logs_user as log')
             ->select('us.id as id_user', 'us.name as userName', 'log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action')
             ->join('logs_action as act', 'act.id', '=', 'log.id_log')
             ->join('users as us', 'us.id', '=', 'log.id_user')
@@ -386,7 +386,7 @@ class UserController extends Controller
             ->when(!empty($request->fimdata), function ($query) use ($data) {
                 return $query->whereDate('log.created_at', '>=', $data['fimdata']);
             })
-            ->get();
+            ->get();*/
 
         return response()->json(
             ['status' => 'success', 'Logs' => $logs],

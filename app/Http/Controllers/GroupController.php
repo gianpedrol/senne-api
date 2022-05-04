@@ -113,11 +113,8 @@ class GroupController extends Controller
         $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/procedencia');
 
         $items = json_decode($response->getBody());
-
-
         /* SEPARA OS DADOS DA API */
         foreach ($items->items as $item) {
-
             $data[] = [
                 'grupo' => $item->grupo
             ];

@@ -343,9 +343,9 @@ class UserController extends Controller
     }
     public function logsUserAll(Request $request)
     {
-        if ($request->user()->role_id != 1) {
+        /*  if ($request->user()->role_id != 1) {
             return response()->json(['error' => "Unauthorized "], 401);
-        }
+        }*/
 
 
         $data = $request->all();
@@ -357,9 +357,12 @@ class UserController extends Controller
         }
 
         $logs = UserLog::from('logs_user as log')
-            ->select('us.id as id_user', 'us.name as userName', 'log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action')
+            ->select('us.id as id_user', 'us.name as userName', 'log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action', 'ushos.id_hospital', 'hos.name as hospitalName', 'hos.grupo_id', 'group.name as groupName')
             ->join('logs_action as act', 'act.id', '=', 'log.id_log')
             ->join('users as us', 'us.id', '=', 'log.id_user')
+            ->join('users_hospitals as ushos', 'ushos.id_user', '=', 'log.id_user')
+            ->join('hospitais as hos', 'hos.id', '=', 'ushos.id_hospital')
+            ->join('groups as group', 'group.id', '=', 'hos.grupo_id')
 
             ->when(!empty($request->datainicio), function ($query) use ($data) {
                 return $query->whereDate('log.created_at', '>=', $data['datainicio']);
@@ -372,7 +375,18 @@ class UserController extends Controller
             })
             ->get();
 
-
+        $logs['SenneUser'] = UserLog::from('logs_user as log')
+            ->select('us.id as id_user', 'us.name as userName', 'log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action')
+            ->join('logs_action as act', 'act.id', '=', 'log.id_log')
+            ->join('users as us', 'us.id', '=', 'log.id_user')
+            ->where('us.role_id', 1)
+            ->when(!empty($request->datainicio), function ($query) use ($data) {
+                return $query->whereDate('log.created_at', '>=', $data['datainicio']);
+            })
+            ->when(!empty($request->fimdata), function ($query) use ($data) {
+                return $query->whereDate('log.created_at', '>=', $data['fimdata']);
+            })
+            ->get();
 
         return response()->json(
             ['status' => 'success', 'Logs' => $logs],
@@ -451,8 +465,9 @@ class UserController extends Controller
 
 
             $user['hospitals'] = UsersHospitals::from('users_hospitals as userhos')
-                ->select('hos.id', 'hos.name as name',  'hos.uuid', 'hos.grupo_id')
+                ->select('hos.id', 'hos.name as name',  'hos.uuid', 'hos.grupo_id', 'group.name as groupName')
                 ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
+                ->join('groups as group', 'group.id', '=', 'hos.grupo_id')
                 ->where('id_user', $user->id)
                 ->get();
 

@@ -10,12 +10,12 @@ class Groups extends Model
 {
     protected $table = 'groups';
 
-    protected $fillable = ['name', 'cnpj', 'image', 'phone'];
+    protected $fillable = ['name', 'cnpj', 'image', 'phone', 'email'];
 
     public function getImageAttribute($value)
     {
         if ($value) {
-            return config('app.url') . '/media/groups/' . $value;
+            return config('app.url') . 'uploads/' . $value;
         }
     }
 

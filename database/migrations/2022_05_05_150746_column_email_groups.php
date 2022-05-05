@@ -13,7 +13,7 @@ class ColumnEmailGroups extends Migration
      */
     public function up()
     {
-        Schema::table('gropus', function (Blueprint $table) {
+        Schema::table('groups', function (Blueprint $table) {
             $table->string('email');
         });
     }

@@ -240,9 +240,6 @@ class GroupController extends Controller
             if (!$request->user()->permission_user($request->user()->id, 1)) {
                 return response()->json(['error' => "Unauthorized not administrator"], 401);
             }
-            if ($user_group->id_group != $id) {
-                return response()->json(['error' => "Unauthorized dont belongs to this group "], 401);
-            }
         }
 
         $group = Groups::find($request->id);
@@ -275,9 +272,6 @@ class GroupController extends Controller
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
                 return response()->json(['error' => "Unauthorized not administrator"], 401);
-            }
-            if ($user_group->id_group != $request->id) {
-                return response()->json(['error' => "Unauthorized dont belongs to this group "], 401);
             }
         }
 

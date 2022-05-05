@@ -195,7 +195,7 @@ class GroupController extends Controller
             }
         }
 
-        $data = $request->only(['cnpj', 'image', 'phone']);
+        $data = $request->only(['cnpj', 'image', 'phone', 'email']);
 
         if (empty($data['cnpj'])) {
             return response()->json(['error' => "cnpj cannot be null"], 200);

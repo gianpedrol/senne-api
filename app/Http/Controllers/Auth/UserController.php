@@ -196,14 +196,13 @@ class UserController extends Controller
         if ($status == Password::RESET_LINK_SENT) {
             return [
                 'status' => __($status),
+                'message' => "User registered successfully!", 'data' => $newUser
             ];
         }
 
         throw ValidationException::withMessages([
             'email' => [trans($status)],
         ]);
-
-        return response()->json(['message' => "User registered successfully!", 'data' => $newUser], 200);
     }
     public function update(Request $request)
     {
@@ -373,7 +372,10 @@ class UserController extends Controller
             ->when(!empty($request->name), function ($query) use ($data) {
                 return $query->where('us.name', 'like', '%' . $data['name'] . '%');
             })
-            ->get();
+            ->when(!empty($request->procedencia), function ($query) use ($data) {
+                return $query->where('hos.name', 'like', '%' . $data['procedencci'] . '%');
+            })
+            ->paginate(10);
 
         /* $logs['SenneUser'] = UserLog::from('logs_user as log')
             ->select('us.id as id_user', 'us.name as userName', 'log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action')

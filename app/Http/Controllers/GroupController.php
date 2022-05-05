@@ -98,8 +98,6 @@ class GroupController extends Controller
             if (!$request->user()->permission_user($request->user()->id, 1)) {
                 return response()->json(['error' => "Unauthorized"], 401);
             }
-        } else {
-            return response()->json(['error' => 'Unauthorized access'], 401);
         }
         /* 
             Função que checa se o usuario tem permissão para acessar este método.

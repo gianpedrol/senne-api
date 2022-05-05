@@ -93,8 +93,8 @@ class GroupController extends Controller
     public function getGroups(Request $request)
     {
         /* 1 = Administrador Senne | 2 = Usuario */
-        if (!auth()->user()->role_id != 1) {
-            if (!$request->user()->permission_user($request->user()->id, 1)) {
+        if (auth()->user()->role_id != 1) {
+            if ($request->user()->permission_user($request->user()->id, 1)) {
                 return response()->json(['error' => "Unauthorized"], 401);
             }
             return response()->json(['error' => 'Unauthorized access'], 401);

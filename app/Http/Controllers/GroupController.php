@@ -94,7 +94,6 @@ class GroupController extends Controller
     {
         /* 1 = Administrador Senne | 2 = Usuario */
         if (auth()->user()->role_id != 1) {
-
             if (!$request->user()->permission_user($request->user()->id, 1)) {
                 return response()->json(['error' => "Unauthorized"], 401);
             }
@@ -310,29 +309,38 @@ class GroupController extends Controller
 
     public function updateImageGroup(Request $request)
     {
-        $array = ['error' => ''];
+        if ($request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
+                return response()->json(['error' => "Unauthorized "], 401);
+            }
+        }
+
+        $filename = '';
+        $user = Groups::where('id', $request->id_group)->first();
+        if ($request->hasFile('image')) {
+
+            $file = $request->file('image');
+            $file_name = time() . '-' . $file->getClientOriginalName();
+            $file_path = 'uploads/';
+
+            $file->move($file_path, $file_name);
+
+            if ($request->hasFile('image') != "") {
+                $filename = $file_name;
+            }
+        }
 
 
-        $imageGroup = $request->file('filename');
-
-        $dest = public_path('media/groups/');
-        $image_name = md5(time() . rand(0, 9999)) . '.jpg';
-
-        $img = Image::make($imageGroup->getRealPath());
-        $img->fit(300, 300)->save($dest . '/' . $image_name);
-
-        $group = Groups::where('id', $request->id_group)->first();
-
-        if ($group) {
-            $group->image = $image_name;
-            $group->update();
+        if ($user) {
+            $user->image = $filename;
+            $user->update();
             return response()->json(
                 ['status' => 'success', 'Image uploaded succesfully'],
                 200
             );
         } else {
             return response()->json(
-                ['error' => 'Group Not found'],
+                ['error' => 'User Not found'],
                 404
             );
         }

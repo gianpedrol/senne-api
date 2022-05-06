@@ -378,7 +378,7 @@ class UserController extends Controller
                 return $query->where('hos.name', 'like', '%' . $data['procedencia'] . '%');
             })
             ->when(!empty($request->sort), function ($query) use ($data) {
-                return $query->orderBy('us.id', $data['sort']);
+                return $query->orderBy('time_action', $data['sort']);
             })
             ->paginate($request->limit);
 

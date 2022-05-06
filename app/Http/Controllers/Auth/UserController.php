@@ -375,9 +375,11 @@ class UserController extends Controller
                 return $query->where('us.name', 'like', '%' . $data['name'] . '%');
             })
             ->when(!empty($request->procedencia), function ($query) use ($data) {
-                return $query->where('hos.name', 'like', '%' . $data['procedencci'] . '%');
+                return $query->where('hos.name', 'like', '%' . $data['procedencia'] . '%');
             })
-            ->orderBy('us.id', $request->sort)
+            ->when(!empty($request->sort), function ($query) use ($data) {
+                return $query->orderBy('us.id', $data['sort']);
+            })
             ->paginate($request->limit);
 
         /* $logs['SenneUser'] = UserLog::from('logs_user as log')

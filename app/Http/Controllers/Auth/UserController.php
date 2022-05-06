@@ -346,6 +346,8 @@ class UserController extends Controller
             return response()->json(['error' => "Unauthorized "], 401);
         }*/
 
+        // dd($request->limit);
+
 
         $data = $request->all();
         if (!empty($data['iniciodata'])) {
@@ -375,7 +377,8 @@ class UserController extends Controller
             ->when(!empty($request->procedencia), function ($query) use ($data) {
                 return $query->where('hos.name', 'like', '%' . $data['procedencci'] . '%');
             })
-            ->paginate(10);
+            ->orderBy('us.id', $request->sort)
+            ->paginate($request->limit);
 
         /* $logs['SenneUser'] = UserLog::from('logs_user as log')
             ->select('us.id as id_user', 'us.name as userName', 'log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action')

@@ -408,13 +408,17 @@ class UserController extends Controller
         }
         //Trazemos os usuarios que possui vinculo com hospitais
         $data = User::from('users as user')
-            ->select('user.id', 'user.name', 'user.email', 'user.role_id')
+            ->select('user.id', 'user.name as nameUser', 'user.email', 'user.role_id', 'hos.id as id_hospital', 'hos.name as nameHospital', 'hos.uuid', 'hos.grupo_id', 'group.name as GroupName')
+            ->join('logs_user as log', 'log.id_user', '=', 'user.id')
+            ->join('logs_action as act', 'act.id', '=', 'log.id_log')
+            ->join('users_hospitals as ushos', 'ushos.id_user', '=', 'log.id_user')
+            ->join('hospitais as hos', 'hos.id', '=', 'ushos.id_hospital')
+            ->join('groups as group', 'group.id', '=', 'hos.grupo_id')
             ->where('user.role_id', '!=', 1)
             ->paginate($request->limit);
-
-        $users = User::where('role_id', '!=', 1)->get();
-
-        // Trazemos usuarios que não possui vinculo com hospitais
+        $data['dateLogin'] = UserLog::where('id_user', $data['id'])->orderBy('id_log', 'DESC')->first('created_at');
+        $data['permissoes'] = UserPermissoes::where('id_user', $data['id'])->select('id_permissao as id')->get();
+        /*   // Trazemos usuarios que não possui vinculo com hospitais
         $user_db = [];
         foreach ($users as $key => $user) {
             // dd($user);
@@ -425,10 +429,10 @@ class UserController extends Controller
                 $user_db[$key]['name'] = $user->name;
                 $user_db[$key]['email'] = $user->email;
             }
-        }
+        }*/
 
 
-        // Juntamos os usuários em uma só array
+        /*   // Juntamos os usuários em uma só array
         $all_users = $data;
 
 
@@ -443,12 +447,12 @@ class UserController extends Controller
                 ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
                 ->join('groups as group', 'group.id', '=', 'hos.grupo_id')
                 ->where('id_user', $user_only['id'])
-                ->paginate($request->limit);
+                ->get();
             $retorno[] = $user_only;
         }
-
+*/
         return response()->json(
-            ['status' => 'success', 'Users' => $retorno],
+            ['status' => 'success', 'Users' => $data],
             200
         );
     }

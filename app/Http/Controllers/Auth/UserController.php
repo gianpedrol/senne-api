@@ -410,7 +410,7 @@ class UserController extends Controller
         $data = User::from('users as user')
             ->select('user.id', 'user.name', 'user.email', 'user.role_id')
             ->where('user.role_id', '!=', 1)
-            ->get()
+            ->paginate($request->limit)
             ->toArray();
 
         $users = User::where('role_id', '!=', 1)->get();
@@ -444,7 +444,7 @@ class UserController extends Controller
                 ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
                 ->join('groups as group', 'group.id', '=', 'hos.grupo_id')
                 ->where('id_user', $user_only['id'])
-                ->get();
+                ->paginate($request->limit);
             $retorno[] = $user_only;
         }
 

@@ -410,8 +410,7 @@ class UserController extends Controller
         $data = User::from('users as user')
             ->select('user.id', 'user.name', 'user.email', 'user.role_id')
             ->where('user.role_id', '!=', 1)
-            ->paginate($request->limit)
-            ->toArray();
+            ->paginate($request->limit);
 
         $users = User::where('role_id', '!=', 1)->get();
 
@@ -430,7 +429,7 @@ class UserController extends Controller
 
 
         // Juntamos os usuários em uma só array
-        $all_users = array_merge($data);
+        $all_users = $data;
 
 
         //Rodamos o loop para trazer o ultimo log de cada usuário

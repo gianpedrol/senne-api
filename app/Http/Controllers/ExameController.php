@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Hospitais;
+use App\Models\LogsExames;
 use App\Models\UserLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -52,26 +53,38 @@ class ExameController extends Controller
         /* CONSULTA API DE SISTEMA DA SENNE */
         $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento/' . $uuid . '/' . $atendimento);
 
-        //GERA LOG
-        $log = Auth::user();
-        $saveLog = new UserLog();
-        $saveLog->id_user = $log->id;
-        $saveLog->ip_user = $request->ip();
-        $saveLog->id_log = 10;
-        $saveLog->save();
+        $hospital = Hospitais::where('uuid', $uuid)->first();
 
         $items = json_decode($response->getBody());
+
+        //GERA LOG
+        /* $log = Auth::user();
+        $saveLog = new LogsExames();
+        $saveLog->id_user = $log->id;
+        $saveLog->ip_user = $request->ip();
+        $saveLog->log_description = 'acessou o atendimento' . $atendimento . ' do hospital' . $hospital->name;
+        $saveLog->save();*/
+
+        //$items = json_decode($response->getBody());
 
         return $items;
     }
 
-    public function listAttendanceDate($uuid, $startdate, $finaldate)
+    public function listAttendanceDate($uuid, $startdate, $finaldate, Request $request)
     {
 
         /* CONSULTA API DE SISTEMA DA SENNE */
         $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/proced_atendimentos/' . $uuid . '/' . $startdate . '/' . $finaldate);
 
+        $hospital = Hospitais::where('uuid', $uuid)->first();
 
+        //GERA LOG
+        /*  $log = Auth::user();
+        $saveLog = new LogsExames();
+        $saveLog->id_user = $log->id;
+        $saveLog->ip_user = $request->ip();
+        $saveLog->log_description = 'acessou a lista de atendimentos do hospital' . $hospital->name;
+        $saveLog->save();*/
 
         return $response;
     }
@@ -83,16 +96,25 @@ class ExameController extends Controller
         $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento_detalhe/' . $uuid . '/' . $atendimento);
 
 
-        //GERA LOG
-        $log = Auth::user();
-        $saveLog = new UserLog();
-        $saveLog->id_user = $log->id;
-        $saveLog->ip_user = $request->ip();
-        $saveLog->id_log = 9;
-        $saveLog->save();
+        $hospital = Hospitais::where('uuid', $uuid)->first();
 
         $items = json_decode($response->getBody());
-
+        /* $data = [];
+        foreach ($items as $item) {
+            if (isset($item[0]->nomepaciente)) {
+                $data = [
+                    'nomepaciente' =>  $item[0]->nomepaciente
+                ];
+            }
+            //dd($data['nomepaciente']);
+            $nomepaciente = $data['nomepaciente'];
+            $log = Auth::user();
+            $saveLog = new LogsExames();
+            $saveLog->id_user = $log->id;
+            $saveLog->numatendimento = $atendimento;
+            $saveLog->log_description = 'acessou detalhes de atendimento do paciente ' . $nomepaciente  . ' do ' . $hospital->name;
+            $saveLog->save();
+        }*/
         return $items;
     }
 
@@ -102,14 +124,13 @@ class ExameController extends Controller
         /* CONSULTA API DE SISTEMA DA SENNE */
         $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudo/' . $atendimento);
 
-
-        //GERA LOG
+        /*
         $log = Auth::user();
-        $saveLog = new UserLog();
+        $saveLog = new LogsExames();
         $saveLog->id_user = $log->id;
         $saveLog->ip_user = $request->ip();
-        $saveLog->id_log = 8;
-        $saveLog->save();
+        $saveLog->log_description = 'acessou o laudo principal do atendimento ' . $atendimento;
+        $saveLog->save();*/
 
         return response()->json(['http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudo/' . $atendimento], 200);
     }

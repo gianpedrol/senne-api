@@ -14,7 +14,7 @@ class ColumnEmailGroups extends Migration
     public function up()
     {
         Schema::table('groups', function (Blueprint $table) {
-            $table->string('email');
+            $table->string('email')->nullable();
         });
     }
 

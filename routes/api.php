@@ -3,9 +3,10 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\UserController as AuthUserController;
 use App\Http\Controllers\ExameController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\LaborController;

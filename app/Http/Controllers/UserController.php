@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers;
 
 use App\Jobs\sendEmailPasswordReset;
 use App\Jobs\sendEmailVerification;
@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\Auth\DB;
 use App\Models\Groups;
+use App\Models\LogsExames;
 use App\Models\UsersGroup;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Support\Facades\Password;
@@ -323,9 +324,11 @@ class UserController extends Controller
             ], 404);
         } else {
 
+
             $user['logs'] = UserLog::from('logs_user as log')
-                ->select('log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action')
+                ->select('log.id_log', 'act.log_description as log_description', 'log.ip_user',  'log.numatendimento', 'hos.uuid', 'hos.name as hospitalName')
                 ->join('logs_action as act', 'act.id', '=', 'log.id_log')
+                ->leftJoin('hospitais as hos', 'hos.uuid', '=', 'log.uuidatendimento')
                 ->where('id_user', $user->id)
                 ->when(!empty($request->datainicio), function ($query) use ($data) {
                     return $query->whereDate('log.created_at', '>=', $data['datainicio']);
@@ -358,13 +361,10 @@ class UserController extends Controller
         }
 
         $logs = UserLog::from('logs_user as log')
-            ->select('us.id as id_user', 'us.name as userName', 'log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action', 'ushos.id_hospital', 'hos.name as hospitalName', 'hos.grupo_id', 'group.name as groupName')
+            ->select('us.id as id_user', 'us.name as userName', 'log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action', 'log.numatendimento', 'hos.uuid', 'hos.name as hospitalName')
             ->join('logs_action as act', 'act.id', '=', 'log.id_log')
             ->join('users as us', 'us.id', '=', 'log.id_user')
-            ->join('users_hospitals as ushos', 'ushos.id_user', '=', 'log.id_user')
-            ->join('hospitais as hos', 'hos.id', '=', 'ushos.id_hospital')
-            ->join('groups as group', 'group.id', '=', 'hos.grupo_id')
-
+            ->leftJoin('hospitais as hos', 'hos.uuid', '=', 'log.uuidatendimento')
             ->when(!empty($request->datainicio), function ($query) use ($data) {
                 return $query->whereDate('log.created_at', '>=', $data['datainicio']);
             })
@@ -380,7 +380,10 @@ class UserController extends Controller
             ->when(!empty($request->sort), function ($query) use ($data) {
                 return $query->orderBy('time_action', $data['sort']);
             })
+            ->where('us.role_id', '!=', 1)
             ->paginate($request->limit);
+
+
 
         /* $logs['SenneUser'] = UserLog::from('logs_user as log')
             ->select('us.id as id_user', 'us.name as userName', 'log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action')

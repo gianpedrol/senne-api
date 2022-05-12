@@ -19,8 +19,8 @@ class CreateLogsUser extends Migration
             $table->string('ip_user')->nullable();
             $table->string('numatendimento')->nullable();
             $table->string('numeroexame')->nullable();
-            $table->string('uuidatendimento')->unsigned()->nullable();
-            $table->string('uuidexame')->unsigned()->nullable();
+            $table->unsignedBigInteger('uuidatendimento')->nullable();
+            $table->unsignedBigInteger('uuidexame')->nullable();
 
             $table->foreign('id_user')->references('id')->on('users')->onUpdate('NO ACTION')->onDelete('CASCADE');
             $table->foreign('id_log')->references('id')->on('logs_action')->onUpdate('NO ACTION')->onDelete('CASCADE');

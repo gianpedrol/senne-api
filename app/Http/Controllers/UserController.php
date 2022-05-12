@@ -328,7 +328,7 @@ class UserController extends Controller
             $user['logs'] = UserLog::from('logs_user as log')
                 ->select('log.id_log', 'act.log_description as log_description', 'log.ip_user',  'log.numatendimento', 'hos.uuid', 'hos.name as hospitalName')
                 ->join('logs_action as act', 'act.id', '=', 'log.id_log')
-                ->leftJoin('hospitais as hos', 'hos.uuid', '=', 'log.uuidatendimento')
+                ->leftJoin('hospitais as hos', 'hos.id', '=', 'log.id_hospital_atendimento')
                 ->where('id_user', $user->id)
                 ->when(!empty($request->datainicio), function ($query) use ($data) {
                     return $query->whereDate('log.created_at', '>=', $data['datainicio']);

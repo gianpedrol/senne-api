@@ -58,14 +58,14 @@ class ExameController extends Controller
         $items = json_decode($response->getBody());
 
         //GERA LOG
-        /* $log = Auth::user();
-        $saveLog = new LogsExames();
+        $log = Auth::user();
+        $saveLog = new UserLog();
         $saveLog->id_user = $log->id;
         $saveLog->ip_user = $request->ip();
-        $saveLog->log_description = 'acessou o atendimento' . $atendimento . ' do hospital' . $hospital->name;
-        $saveLog->save();*/
-
-        //$items = json_decode($response->getBody());
+        $saveLog->id_log = 9;
+        $saveLog->numatendimento = $atendimento;
+        $saveLog->id_hospital_atendimento = $hospital->id;
+        $saveLog->save();
 
         return $items;
     }
@@ -79,12 +79,14 @@ class ExameController extends Controller
         $hospital = Hospitais::where('uuid', $uuid)->first();
 
         //GERA LOG
-        /*  $log = Auth::user();
-        $saveLog = new LogsExames();
+        $log = Auth::user();
+        $saveLog = new UserLog();
         $saveLog->id_user = $log->id;
         $saveLog->ip_user = $request->ip();
-        $saveLog->log_description = 'acessou a lista de atendimentos do hospital' . $hospital->name;
-        $saveLog->save();*/
+        $saveLog->id_log = 10;
+        $saveLog->id_hospital_atendimento = $hospital->id;
+        $saveLog->save();
+
 
         return $response;
     }
@@ -97,6 +99,16 @@ class ExameController extends Controller
 
 
         $hospital = Hospitais::where('uuid', $uuid)->first();
+
+        //GERA LOG
+        $log = Auth::user();
+        $saveLog = new UserLog();
+        $saveLog->id_user = $log->id;
+        $saveLog->ip_user = $request->ip();
+        $saveLog->id_log = 9;
+        $saveLog->numatendimento = $atendimento;
+        $saveLog->id_hospital_atendimento = $hospital->id;
+        $saveLog->save();
 
         $items = json_decode($response->getBody());
         /* $data = [];
@@ -124,13 +136,13 @@ class ExameController extends Controller
         /* CONSULTA API DE SISTEMA DA SENNE */
         $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudo/' . $atendimento);
 
-        /*
         $log = Auth::user();
-        $saveLog = new LogsExames();
+        $saveLog = new UserLog();
         $saveLog->id_user = $log->id;
         $saveLog->ip_user = $request->ip();
-        $saveLog->log_description = 'acessou o laudo principal do atendimento ' . $atendimento;
-        $saveLog->save();*/
+        $saveLog->id_log = 8;
+        $saveLog->numatendimento = $atendimento;
+        $saveLog->save();
 
         return response()->json(['http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudo/' . $atendimento], 200);
     }

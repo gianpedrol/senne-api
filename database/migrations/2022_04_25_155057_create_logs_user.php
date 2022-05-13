@@ -24,7 +24,7 @@ class CreateLogsUser extends Migration
 
             $table->foreign('id_user')->references('id')->on('users')->onUpdate('NO ACTION')->onDelete('CASCADE');
             $table->foreign('id_log')->references('id')->on('logs_action')->onUpdate('NO ACTION')->onDelete('CASCADE');
-            $table->foreign('uuid_hospital_atendimento')->references('uuid')->on('hospitais')->onUpdate('NO ACTION')->onDelete('CASCADE');
+            $table->foreign('uuid_hospital_atendimento')->references('uuid')->on('hospitais')->onDelete('CASCADE');
             $table->foreign('uuid_hospital_exame')->references('id')->on('hospitais')->onUpdate('NO ACTION')->onDelete('CASCADE');
 
 

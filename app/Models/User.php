@@ -11,6 +11,7 @@ use Illuminate\Auth\Notifications\ResetPassword;
 use Laravel\Sanctum\HasApiTokens;
 use PHPUnit\TextUI\XmlConfiguration\Group;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -59,8 +60,10 @@ class User extends Authenticatable implements JWTSubject
     }
     public function sendPasswordResetNotification($token)
     {
+        $email = DB::table('password_resets')->get('token');
+        dd($email);
 
-        $url = 'https://teste-senne.mageda.com.br/reset-password?token=' . $token;
+        $url = 'https://teste-senne.mageda.com.br/reset-password?token=' . $token . '&email=' . $email;
 
         $this->notify(new ResetPasswordNotification($url));
     }

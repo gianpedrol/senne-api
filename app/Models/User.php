@@ -67,7 +67,7 @@ class User extends Authenticatable implements JWTSubject
         $email = $this->email;
         $encrypted = Crypt::encryptString($email);
 
-        $url = 'https://teste-senne.mageda.com.br/reset-password?token=' . $token . '?&%=' . $encrypted;
+        $url = 'https://teste-senne.mageda.com.br/reset-password?token=' . $token . '&key=' . $encrypted;
 
         $this->notify(new ResetPasswordNotification($url));
     }

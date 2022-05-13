@@ -49,14 +49,14 @@ class NewPasswordController extends Controller
     public function resetPassword(Request $request)
     {
 
+        // dd($request->key);
 
 
         try {
-            $decrypted = Crypt::decryptString($request['?%']);
+            $decrypted = Crypt::decryptString($request->key);
         } catch (DecryptException $e) {
             //
         }
-        //dd($request['?%']);
 
         $request->only('token', 'password', 'password_confirmation');
 

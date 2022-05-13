@@ -130,7 +130,7 @@ class ExameController extends Controller
         return $items;
     }
 
-    public function principalReport($atendimento,  Request $request)
+    public function principalReport($uuid, $atendimento,  Request $request)
     {
 
         /* CONSULTA API DE SISTEMA DA SENNE */
@@ -142,6 +142,7 @@ class ExameController extends Controller
         $saveLog->ip_user = $request->ip();
         $saveLog->id_log = 8;
         $saveLog->numatendimento = $atendimento;
+        $saveLog->id_hospital_atendimento = $uuid;
         $saveLog->save();
 
         return response()->json(['http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudo/' . $atendimento], 200);

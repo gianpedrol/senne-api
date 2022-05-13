@@ -337,6 +337,9 @@ class UserController extends Controller
                 ->when(!empty($request->fimdata), function ($query) use ($data) {
                     return $query->whereDate('log.created_at', '>=', $data['fimdata']);
                 })
+                ->when(!empty($request->sort), function ($query) use ($data) {
+                    return $query->orderBy($data['sort'], $data['sortOrder']);
+                })
                 ->get();
             return response()->json(
                 ['status' => 'success', 'User' => $user],
@@ -380,7 +383,7 @@ class UserController extends Controller
                 return $query->where('hos.name', 'like', '%' . $data['procedencia'] . '%');
             })
             ->when(!empty($request->sort), function ($query) use ($data) {
-                return $query->orderBy('time_action', $data['sort']);
+                return $query->orderBy($data['sort'], $data['sortOrder']);
             })
             ->where('us.role_id', '!=', 1)
             ->paginate($request->limit);

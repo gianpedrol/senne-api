@@ -328,7 +328,7 @@ class UserController extends Controller
             $user['logs'] = UserLog::from('logs_user as log')
                 ->select('log.id_log', 'act.log_description as log_description', 'log.created_at as timeAction', 'log.ip_user',  'log.numatendimento', 'hos.uuid', 'hos.name as hospitalName', 'group.name as groupName')
                 ->join('logs_action as act', 'act.id', '=', 'log.id_log')
-                ->leftJoin('hospitais as hos', 'hos.id', '=', 'log.id_hospital_atendimento')
+                ->leftJoin('hospitais as hos', 'hos.uuid', '=', 'log.uuid_hospital_atendimento')
                 ->leftJoin('groups as group', 'group.id', '=', 'hos.grupo_id')
                 ->where('id_user', $user->id)
                 ->when(!empty($request->datainicio), function ($query) use ($data) {
@@ -365,7 +365,7 @@ class UserController extends Controller
             ->select('us.id as id_user', 'us.name as userName', 'log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action', 'log.numatendimento', 'hos.uuid', 'hos.name as hospitalName', 'group.name as groupName')
             ->join('logs_action as act', 'act.id', '=', 'log.id_log')
             ->join('users as us', 'us.id', '=', 'log.id_user')
-            ->leftJoin('hospitais as hos', 'hos.id', '=', 'log.id_hospital_atendimento')
+            ->leftJoin('hospitais as hos', 'hos.uuid', '=', 'log.uuid_hospital_atendimento')
             ->leftJoin('groups as group', 'group.id', '=', 'hos.grupo_id')
             ->when(!empty($request->datainicio), function ($query) use ($data) {
                 return $query->whereDate('log.created_at', '>=', $data['datainicio']);

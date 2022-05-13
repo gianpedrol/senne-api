@@ -64,7 +64,7 @@ class ExameController extends Controller
         $saveLog->ip_user = $request->ip();
         $saveLog->id_log = 9;
         $saveLog->numatendimento = $atendimento;
-        $saveLog->id_hospital_atendimento = $hospital->id;
+        $saveLog->uuid_hospital_atendimento = $hospital->id;
         $saveLog->save();
 
         return $items;
@@ -84,7 +84,7 @@ class ExameController extends Controller
         $saveLog->id_user = $log->id;
         $saveLog->ip_user = $request->ip();
         $saveLog->id_log = 10;
-        $saveLog->id_hospital_atendimento = $hospital->id;
+        $saveLog->uuid_hospital_atendimento = $hospital->id;
         $saveLog->save();
 
 
@@ -107,7 +107,7 @@ class ExameController extends Controller
         $saveLog->ip_user = $request->ip();
         $saveLog->id_log = 9;
         $saveLog->numatendimento = $atendimento;
-        $saveLog->id_hospital_atendimento = $hospital->id;
+        $saveLog->uuid_hospital_atendimento = $hospital->id;
         $saveLog->save();
 
         $items = json_decode($response->getBody());

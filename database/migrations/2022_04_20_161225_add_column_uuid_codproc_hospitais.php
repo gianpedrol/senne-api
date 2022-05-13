@@ -15,7 +15,7 @@ class AddColumnUuidCodprocHospitais extends Migration
     {
         Schema::table('hospitais', function (Blueprint $table) {
 
-            $table->string('uuid');
+            $table->string('uuid')->constrained();
             $table->integer('codprocedencia');
         });
     }

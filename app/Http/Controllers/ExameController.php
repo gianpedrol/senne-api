@@ -20,9 +20,9 @@ class ExameController extends Controller
         }
 
         /* 1 = Administrador Senne | 2 = Usuario */
-        if (auth()->user()->role_id != 1) {
+        /*   if (auth()->user()->role_id != 1) {
             return response()->json(['error' => 'Unauthorized access'], 401);
-        }
+        }*/
     }
 
     public function listExame()
@@ -132,7 +132,7 @@ class ExameController extends Controller
 
     public function principalReport($uuid, $atendimento,  Request $request)
     {
-
+        // dd($uuid);
         /* CONSULTA API DE SISTEMA DA SENNE */
         $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudo/' . $atendimento);
 

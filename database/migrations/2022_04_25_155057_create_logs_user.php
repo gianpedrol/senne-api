@@ -19,13 +19,13 @@ class CreateLogsUser extends Migration
             $table->string('ip_user');
             $table->string('numatendimento');
             $table->string('numeroexame');
-            $table->string('uuid_hospital_atendimento')->nullable();
-            $table->string('uuid_hospital_exame')->nullable();
+            $table->string('uuid_hospital_atendimento')->references('uuid')->on('hospitais')->onDelete('CASCADE')->nullable();
+            $table->string('uuid_hospital_exame')->references('uuid')->on('hospitais')->onDelete('CASCADE')->nullable();
 
             $table->foreign('id_user')->references('id')->on('users')->onUpdate('NO ACTION')->onDelete('CASCADE');
             $table->foreign('id_log')->references('id')->on('logs_action')->onUpdate('NO ACTION')->onDelete('CASCADE');
-            $table->foreign('uuid_hospital_atendimento')->references('uuid')->on('hospitais')->onDelete('CASCADE');
-            $table->foreign('uuid_hospital_exame')->references('id')->on('hospitais')->onUpdate('NO ACTION')->onDelete('CASCADE');
+            //$table->foreign('uuid_hospital_atendimento')->references('uuid')->on('hospitais')->onDelete('CASCADE');
+            // $table->foreign('uuid_hospital_exame')->references('id')->on('hospitais')->onUpdate('NO ACTION')->onDelete('CASCADE');
 
 
             $table->timestamps();

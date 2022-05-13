@@ -12,6 +12,10 @@ use Laravel\Sanctum\HasApiTokens;
 use PHPUnit\TextUI\XmlConfiguration\Group;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
+
+
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -60,10 +64,10 @@ class User extends Authenticatable implements JWTSubject
     }
     public function sendPasswordResetNotification($token)
     {
-        $email = DB::table('password_resets')->get('token');
-        dd($email);
+        $email = $this->email;
+        $encrypted = Crypt::encryptString($email);
 
-        $url = 'https://teste-senne.mageda.com.br/reset-password?token=' . $token . '&email=' . $email;
+        $url = 'https://teste-senne.mageda.com.br/reset-password?token=' . $token . '?&%=' . $encrypted;
 
         $this->notify(new ResetPasswordNotification($url));
     }

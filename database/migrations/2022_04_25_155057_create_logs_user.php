@@ -17,8 +17,8 @@ class CreateLogsUser extends Migration
             $table->unsignedBigInteger('id_user');
             $table->unsignedBigInteger('id_log');
             $table->string('ip_user');
-            $table->string('numatendimento');
-            $table->string('numeroexame');
+            $table->string('numatendimento')->nullable();
+            $table->string('numeroexame')->nullable();
             $table->string('uuid_hospital_atendimento')->references('uuid')->on('hospitais')->onDelete('CASCADE')->nullable();
             $table->string('uuid_hospital_exame')->references('uuid')->on('hospitais')->onDelete('CASCADE')->nullable();
 

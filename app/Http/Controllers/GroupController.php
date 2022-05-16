@@ -306,9 +306,11 @@ class GroupController extends Controller
                 return response()->json(['error' => "Unauthorized "], 401);
             }
         }
+        $array = ['error' => ''];
 
+        //dd($request->all());
         $filename = '';
-        $user = Groups::where('id', $request->id_group)->first();
+        $group = Groups::where('id', $request->id_group)->first();
         if ($request->hasFile('image')) {
 
             $file = $request->file('image');
@@ -322,10 +324,9 @@ class GroupController extends Controller
             }
         }
 
-
-        if ($user) {
-            $user->image = $filename;
-            $user->update();
+        if ($group) {
+            $group->image = $filename;
+            $group->update();
             return response()->json(
                 ['status' => 'success', 'Image uploaded succesfully'],
                 200

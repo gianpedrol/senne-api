@@ -212,6 +212,7 @@ class GroupController extends Controller
             $saveLog = new UserLog();
             $saveLog->id_user = $log->id;
             $saveLog->id_log = 7;
+            $saveLog->ip_user = $request->ip();
             $saveLog->save();
 
             \DB::commit();

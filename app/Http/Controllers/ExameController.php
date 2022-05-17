@@ -119,8 +119,9 @@ class ExameController extends Controller
         return $items;
     }
 
-    public function principalReport($r_id, $uuid, $atendimento,  Request $request)
+    public function principalReport($uuid, $atendimento, $r_id, Request $request)
     {
+
         // dd($uuid);laudocplt/:r_id
         /* CONSULTA API DE SISTEMA DA SENNE */
         // $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudocplt/' . $r_id);

@@ -110,7 +110,7 @@ class ExameController extends Controller
         $saveLog->save();
 
         $items = json_decode($response->getBody());
-        dd($items);
+        //dd($items);
         /* $data = [];
         foreach ($items as $item) {
             if (isset($item[0]->nomepaciente)) {

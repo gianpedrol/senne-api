@@ -130,7 +130,7 @@ Route::middleware('auth:api')->group(function () {
     //Lista detalhes exames por atendimento
     Route::get('/treatment/details/{uuid}/{atendimento}', [ExameController::class, 'listAttendanceDetails']);
     //PDF LAUDO PRINCIPAL
-    Route::get('/treatment/report/{uuid}/{atendimento}/{idlaudo}', [ExameController::class, 'principalReport']);
+    Route::get('/treatment/report/{uuid}/{atendimento}/{r_id}', [ExameController::class, 'principalReport']);
 
 
 

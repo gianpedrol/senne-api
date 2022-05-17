@@ -94,9 +94,15 @@ class ExameController extends Controller
     public function listAttendanceDetails($uuid, $atendimento,  Request $request)
     {
 
-        /* CONSULTA API DE SISTEMA DA SENNE */
-        $response = Http::post('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento_detalhe/' . $uuid . '/' . $atendimento);
 
+
+        /* CONSULTA API DE SISTEMA DA SENNE */
+        $response = Http::get(
+            'http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento_detalhe/' . $uuid . '/' . $atendimento
+        );
+
+
+        // dd($parsed);
         $hospital = Hospitais::where('uuid', $uuid)->first();
 
         //GERA LOG
@@ -109,32 +115,15 @@ class ExameController extends Controller
         $saveLog->uuid_hospital_atendimento = $uuid;
         $saveLog->save();
 
-        $items = json_decode($response->getBody());
-        //dd($items);
-        /* $data = [];
-        foreach ($items as $item) {
-            if (isset($item[0]->nomepaciente)) {
-                $data = [
-                    'nomepaciente' =>  $item[0]->nomepaciente
-                ];
-            }
-            //dd($data['nomepaciente']);
-            $nomepaciente = $data['nomepaciente'];
-            $log = Auth::user();
-            $saveLog = new LogsExames();
-            $saveLog->id_user = $log->id;
-            $saveLog->numatendimento = $atendimento;
-            $saveLog->log_description = 'acessou detalhes de atendimento do paciente ' . $nomepaciente  . ' do ' . $hospital->name;
-            $saveLog->save();
-        }*/
+        $items = $response->getBody();
         return $items;
     }
 
-    public function principalReport($uuid, $atendimento,  Request $request)
+    public function principalReport($r_id, $uuid, $atendimento,  Request $request)
     {
-        // dd($uuid);
+        // dd($uuid);laudocplt/:r_id
         /* CONSULTA API DE SISTEMA DA SENNE */
-        $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudo/' . $atendimento);
+        // $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudocplt/' . $r_id);
 
         $log = Auth::user();
         $saveLog = new UserLog();
@@ -145,6 +134,6 @@ class ExameController extends Controller
         $saveLog->uuid_hospital_atendimento = $uuid;
         $saveLog->save();
 
-        return response()->json(['http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudo/' . $atendimento], 200);
+        return response()->json(['http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudocplt/' . $r_id], 200);
     }
 }

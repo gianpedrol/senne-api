@@ -128,9 +128,9 @@ Route::middleware('auth:api')->group(function () {
     //Lista de exames por atendimento
     Route::get('/hospitals/treatment/{uuid}/{startdate}/{finaldate}', [ExameController::class, 'listAttendanceDate']);
     //Lista detalhes exames por atendimento
-    Route::post('/treatment/details/{uuid}/{atendimento}', [ExameController::class, 'listAttendanceDetails']);
+    Route::get('/treatment/details/{uuid}/{atendimento}', [ExameController::class, 'listAttendanceDetails']);
     //PDF LAUDO PRINCIPAL
-    Route::get('/treatment/report/{uuid}/{atendimento}', [ExameController::class, 'principalReport']);
+    Route::get('/treatment/report/{uuid}/{atendimento}/{idlaudo}', [ExameController::class, 'principalReport']);
 
 
 

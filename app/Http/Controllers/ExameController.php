@@ -95,8 +95,7 @@ class ExameController extends Controller
     {
 
         /* CONSULTA API DE SISTEMA DA SENNE */
-        $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento_detalhe/' . $uuid . '/' . $atendimento);
-
+        $response = Http::post('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento_detalhe/' . $uuid . '/' . $atendimento);
 
         $hospital = Hospitais::where('uuid', $uuid)->first();
 
@@ -111,6 +110,7 @@ class ExameController extends Controller
         $saveLog->save();
 
         $items = json_decode($response->getBody());
+        dd($items);
         /* $data = [];
         foreach ($items as $item) {
             if (isset($item[0]->nomepaciente)) {

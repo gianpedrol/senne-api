@@ -104,21 +104,61 @@ class GroupController extends Controller
             $id_user : passa o id do usuario
             $id_permissão : passa o id da view { 2 -> para view de agendamentos, 3 -> para view de consultas }
          */
+        //curl \--user mUlsPn8LSRPaYu1zJkbf2w..:U8fQdDraw7r7Yq74mpQ0IA.. \--data 'grant_type=client_credentials' \
+        $client = 'mUlsPn8LSRPaYu1zJkbf2w..';
+        $client_secret = 'U8fQdDraw7r7Yq74mpQ0IA..';
+        $resp = Http::withBasicAuth($client, $client_secret)->asForm()->post(
+            'http://sistemas.senneliquor.com.br:8804/ords/gateway/oauth/token',
+            [
+                'grant_type' => 'client_credentials',
+
+            ]
+        );
+
+        $token = json_decode($resp->getBody());
+        //  dd($token);
+        //  dd($token->access_token);
+
+
+        /*         'headers' => [
+            'Authorization' => 'Bearer ' . self::REQUEST_TOKEN_V1
+        ] */
+
+        $bearer = $token->access_token;
+
 
         /* CONSULTA API DE SISTEMA DA SENNE */
-        $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/procedencia');
+        // $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/procedencia');
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $bearer
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/procedencia');
 
         $items = json_decode($response->getBody());
+
+
+        /* CONSULTA API DE SISTEMA DA SENNE */
+        //   $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/procedencia');
+
+        //  $items = json_decode($response->getBody());
         /* SEPARA OS DADOS DA API */
         foreach ($items->items as $item) {
+            // dd($item);
+            if ($item->codgrupo == null) {
+                $item->codgrupo = 1;
+            }
             $data[] = [
-                'grupo' => $item->grupo
+                'name' => $item->grupo,
+                'codgrupo' => $item->codgrupo
             ];
         }
 
         /* CASO NÃO TENHA NENHUM GRUPO CADASTRADO NO BANCO ELE IRÁ CRIAR*/
         foreach ($data as $name) {
-            Groups::firstOrCreate(['name' => $name['grupo']]);
+            $groupNull =  Groups::where('codgroup',  $name['codgrupo'])->update(['name' => $name['name']]);
+            if (empty($groupNull)) {
+                Groups::firstOrCreate(['name' => $name['name'], 'codgroup' => $name['codgrupo']]);
+            }
         }
         /* LISTA TODOS OS GRUPOS APÓS CONSULTA E SALVAR NOVOS DADOS  */
         $groups =  Groups::all();

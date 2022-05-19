@@ -10,7 +10,7 @@ class Groups extends Model
 {
     protected $table = 'groups';
 
-    protected $fillable = ['name', 'cnpj', 'image', 'phone', 'email'];
+    protected $fillable = ['name', 'cnpj', 'image', 'phone', 'email', 'codgroup'];
 
     public function getImageAttribute($value)
     {

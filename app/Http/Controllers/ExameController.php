@@ -50,6 +50,7 @@ class ExameController extends Controller
     public function listAttendance($uuid, $atendimento,  Request $request)
     {
 
+        
         /* CONSULTA API DE SISTEMA DA SENNE */
         $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento/' . $uuid . '/' . $atendimento);
 
@@ -93,8 +94,6 @@ class ExameController extends Controller
 
     public function listAttendanceDetails($uuid, $atendimento,  Request $request)
     {
-
-
 
         /* CONSULTA API DE SISTEMA DA SENNE */
         $response = Http::get(

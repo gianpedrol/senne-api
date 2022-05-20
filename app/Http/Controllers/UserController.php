@@ -290,7 +290,7 @@ class UserController extends Controller
         }
     }
 
-    public function inactivateUser(Request $request)
+    public function inactivateUser($id, Request $request)
     {
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {

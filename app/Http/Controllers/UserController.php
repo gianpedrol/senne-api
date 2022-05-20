@@ -299,10 +299,11 @@ class UserController extends Controller
         }
         $id = $request->id;
         $status = $request->only('status');
+        //dd($status['status']);
         try {
             $user = User::where('id', $id)->first();
             if ($user) {
-                $user->update(['status' => $status]);
+                $user->update(['status' => $status['status']]);
             }
             return response()->json(['message' => 'user inactivated'], 200);
             //GERA LOG

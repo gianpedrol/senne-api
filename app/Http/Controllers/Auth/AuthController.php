@@ -23,10 +23,18 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $array = ['message' => ''];
+        $user = User::where('email', $request->email)->first();
 
+        if ($user->status == 0) {
+            return response()->json([
+                'message'   => 'The user is inativated',
+            ], 404);
+        }
+
+        $array = ['message' => ''];
         $creds = $request->only('email', 'password');
         $token = Auth::attempt($creds);
+
 
 
         if ($token) {
@@ -54,7 +62,6 @@ class AuthController extends Controller
             ], 404);
         } else {
 
-
             $user['hospitals'] = UsersHospitals::from('users_hospitals as userhos')
                 ->select('hos.id', 'hos.grupo_id', 'hos.name as name',  'hos.uuid')
                 ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
@@ -63,8 +70,8 @@ class AuthController extends Controller
 
 
             $user['permissoes'] = UserPermissoes::where('id_user', $user->id)->select('id_permissao as id')->get();
+            return response()->json(['message' => "User Logged in!", 'token' => $array['token'], 'user' => $user], 200);
         }
-        return response()->json(['message' => "User Logged in!", 'token' => $array['token'], 'user' => $user], 200);
     }
 
 

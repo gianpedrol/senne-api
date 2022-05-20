@@ -290,6 +290,33 @@ class UserController extends Controller
         }
     }
 
+    public function inactivateUser(Request $request)
+    {
+        if ($request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
+                return response()->json(['error' => "Unauthorized 1"], 401);
+            }
+        }
+        $id = $request->id;
+        $status = $request->only('status');
+        try {
+            $user = User::where('id', $id)->first();
+            if ($user) {
+                $user->update(['status' => $status]);
+            }
+            return response()->json(['message' => 'user inactivated'], 200);
+            //GERA LOG
+            $log = Auth::user();
+            $saveLog = new UserLog();
+            $saveLog->id_user = $log->id;
+            $saveLog->ip_user = $request->ip();
+            $saveLog->id_log = 5;
+            $saveLog->save();
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Fail on delete a user'], 400);
+        }
+    }
+
     public function logsUser(Request $request)
     {
         if ($request->user()->role_id != 1) {

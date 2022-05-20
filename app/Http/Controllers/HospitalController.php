@@ -55,7 +55,7 @@ class HospitalController extends Controller
             return response()->json(['error' => 'Unauthorized access'], 401);
         }
 
-        //curl \--user mUlsPn8LSRPaYu1zJkbf2w..:U8fQdDraw7r7Yq74mpQ0IA.. \--data 'grant_type=client_credentials' \
+    
         $client = 'mUlsPn8LSRPaYu1zJkbf2w..';
         $client_secret = 'U8fQdDraw7r7Yq74mpQ0IA..';
         $resp = Http::withBasicAuth($client, $client_secret)->asForm()->post(
@@ -67,26 +67,14 @@ class HospitalController extends Controller
         );
 
         $token = json_decode($resp->getBody());
-        //  dd($token);
-        //  dd($token->access_token);
-
-
-        /*         'headers' => [
-            'Authorization' => 'Bearer ' . self::REQUEST_TOKEN_V1
-        ] */
 
         $bearer = $token->access_token;
-
-
-        /* CONSULTA API DE SISTEMA DA SENNE */
-        // $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/procedencia');
-
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
         ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/procedencia');
-        // dd($response);
+
         $items = json_decode($response->getBody());
-        //dd($items);
+
 
         /* SEPARA OS DADOS DA API */
         foreach ($items->items as $item) {

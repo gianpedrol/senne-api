@@ -613,7 +613,7 @@ class UserController extends Controller
         } else {
 
             $hospital['users'] = UsersHospitals::from('users_hospitals as userhos')
-                ->select('us.name', 'us.id', 'us.email', 'user.status')
+                ->select('us.name', 'us.id', 'us.email', 'us.status')
                 ->join('users as us', 'us.id', '=', 'userhos.id_user')
                 ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
                 ->where('userhos.id_hospital', '=', $id)

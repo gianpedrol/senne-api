@@ -68,7 +68,9 @@ Route::post('auth/register', [AuthController::class, 'create']);
 /**Rotas de registro de usuários**/
 Route::post('patient/register', [RegisterController::class, 'registerPatient']);
 Route::post('doctor/register', [RegisterController::class, 'registerPatient']);
-Route::post('hospital/register', [RegisterController::class, 'registerPatient']);
+Route::post('user/hospital/register', [RegisterController::class, 'registerPatient']);
+Route::post('partner/register', [RegisterController::class, 'registerPatient']);
+
 
 //Rota relacionada ao laboratório via usuario Senne
 Route::middleware('auth:api')->group(function () {

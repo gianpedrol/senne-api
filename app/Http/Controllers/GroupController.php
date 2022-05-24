@@ -155,7 +155,7 @@ class GroupController extends Controller
 
         /* CASO NÃO TENHA NENHUM GRUPO CADASTRADO NO BANCO ELE IRÁ CRIAR*/
         foreach ($data as $name) {
-           // Groups::where('codgroup', null)->update(['name' => $name['name'], 'codgroup' => $name['codgrupo']]);
+            // Groups::where('codgroup', null)->update(['name' => $name['name'], 'codgroup' => $name['codgrupo']]);
             $groupNull =  Groups::where('codgroup',  $name['codgrupo'])->update(['name' => $name['name']]);
             if (empty($groupNull)) {
                 Groups::firstOrCreate(['name' => $name['name'], 'codgroup' => $name['codgrupo']]);
@@ -309,7 +309,7 @@ class GroupController extends Controller
         $user_group = UsersGroup::from('users_groups as usergroup')
             ->select('usergroup.id_group')
             ->join('groups as group', 'group.id', '=', 'usergroup.id_group')
-            ->where('usergroup.id_user', $user_auth->id)
+            ->where('usergroup.id_group', $id)
             ->first();
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {

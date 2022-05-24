@@ -546,7 +546,7 @@ class UserController extends Controller
         }
 
         $data = User::from('users as user')
-            ->select('user.id', 'user.name', 'user.email', 'user.role_id')
+            ->select('user.id', 'user.name', 'user.email', 'user.role_id', 'user.status')
             ->where('user.role_id', '!=', 1)
             ->get()
             ->toArray();
@@ -613,7 +613,7 @@ class UserController extends Controller
         } else {
 
             $hospital['users'] = UsersHospitals::from('users_hospitals as userhos')
-                ->select('us.name', 'us.id', 'us.email')
+                ->select('us.name', 'us.id', 'us.email', 'user.status')
                 ->join('users as us', 'us.id', '=', 'userhos.id_user')
                 ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
                 ->where('userhos.id_hospital', '=', $id)

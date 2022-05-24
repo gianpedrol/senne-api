@@ -18,6 +18,6 @@ class UsersGroup extends Model
 
     public function users_group()
     {
-        return $this->hasMany(User::class, 'id', 'id_user');
+        return $this->hasMany(User::class, 'id', 'id_user', 'status');
     }
 }

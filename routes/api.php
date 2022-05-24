@@ -11,6 +11,7 @@ use App\Http\Controllers\ExameController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\LaborController;
 use App\Http\Controllers\HospitalController;
+use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\UserHospitalController;
 use App\Http\Provider\ServiceProviderApi;
@@ -62,6 +63,12 @@ Route::prefix('password')->group(function () {
 
 //Rota de registro de usuario Master
 Route::post('auth/register', [AuthController::class, 'create']);
+
+
+/**Rotas de registro de usuários**/
+Route::post('patient/register', [RegisterController::class, 'registerPatient']);
+Route::post('doctor/register', [RegisterController::class, 'registerPatient']);
+Route::post('hospital/register', [RegisterController::class, 'registerPatient']);
 
 //Rota relacionada ao laboratório via usuario Senne
 Route::middleware('auth:api')->group(function () {

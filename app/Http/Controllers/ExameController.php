@@ -174,6 +174,23 @@ class ExameController extends Controller
         $saveLog->numatendimento = $atendimento;
         $saveLog->uuid_hospital_atendimento = $uuid;
         $saveLog->save();
+        $client = 'mUlsPn8LSRPaYu1zJkbf2w..';
+        $client_secret = 'U8fQdDraw7r7Yq74mpQ0IA..';
+        $resp = Http::withBasicAuth($client, $client_secret)->asForm()->post(
+            'http://sistemas.senneliquor.com.br:8804/ords/gateway/oauth/token',
+            [
+                'grant_type' => 'client_credentials',
+
+            ]
+        );
+
+        $token = json_decode($resp->getBody());
+
+        $bearer = $token->access_token;
+        Http::withHeaders([
+            'Authorization' => 'Bearer ' . $bearer
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudocplt/' . $r_id);
+        // dd($response);
 
         return response()->json(['http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudocplt/' . $r_id], 200);
     }

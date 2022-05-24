@@ -448,7 +448,7 @@ class UserController extends Controller
         }
         //Trazemos os usuarios que possui vinculo com hospitais
         $data = User::from('users as user')
-            ->select('user.id', 'user.name', 'user.email', 'user.role_id')
+            ->select('user.id', 'user.name', 'user.email', 'user.role_id', 'user.status')
             ->where('user.role_id', '!=', 1)
             ->get()
             ->toArray();

@@ -13,8 +13,6 @@ class RegisterController extends Controller
 {
     public function registerPatient(Request $request)
     {
-
-
         $data = $request->only(['name', 'cpf', 'phone', 'email']);
 
         $user = User::where('email', $data['email'])->first();
@@ -38,6 +36,7 @@ class RegisterController extends Controller
             $newUser->email = $data['email'];
             $newUser->cpf = $data['cpf'];
             $newUser->phone = $data['phone'];
+            $newUser->status = 2;
             $newUser->role_id = $role_id;
             $newUser->password = $senha_temp;
             $newUser->save();

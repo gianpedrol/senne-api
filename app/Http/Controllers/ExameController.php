@@ -38,7 +38,7 @@ class ExameController extends Controller
     public function resultExame(Request $request)
     {
         /* CONSULTA API DE SISTEMA DA SENNE */
-        $response = Http::post('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/resultado', [
+        $response = Http::post('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/resultado', [
             'NumeroCPF' => $request->cpf,
             'DataNascimento' => $request->datanascimento
         ]);
@@ -65,7 +65,7 @@ class ExameController extends Controller
         $bearer = $token->access_token;
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento/' . $uuid . '/' . $atendimento);
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/atendimento/' . $uuid . '/' . $atendimento);
 
         /* CONSULTA API DE SISTEMA DA SENNE */
         //$response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento/' . $uuid . '/' . $atendimento);
@@ -105,7 +105,7 @@ class ExameController extends Controller
         $bearer = $token->access_token;
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/proced_atendimentos/' . $uuid . '/' . $startdate . '/' . $finaldate);
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/proced_atendimentos/' . $uuid . '/' . $startdate . '/' . $finaldate);
 
 
         $hospital = Hospitais::where('uuid', $uuid)->first();
@@ -189,7 +189,7 @@ class ExameController extends Controller
         $bearer = $token->access_token;
         Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudocplt/' . $r_id);
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/laudocplt/' . $r_id);
         // dd($response);
 
         return response()->json(['http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudocplt/' . $r_id], 200);

@@ -719,4 +719,64 @@ class UserController extends Controller
             );
         }
     }
+
+    public function testListUserAll(Request $request)
+    {
+        if ($request->user()->role_id != 1) {
+            return response()->json(['error' => "Unauthorized "], 401);
+        }
+
+
+        $filter = $request->all();
+        if (!empty($filter['iniciodata'])) {
+            $filter['iniciodata'] = datadate($filter['datainicio']);
+        }
+        if (!empty($filter['fimdata'])) {
+            $filter['fimdata'] = datadate($filter['fimdata']);
+        }
+        //Trazemos os usuarios que possui vinculo com hospitais
+        $data = User::from('users as user')
+            ->select('user.id', 'user.name', 'user.email', 'user.role_id', 'user.status')
+            ->where('user.role_id', '!=', 1)
+            ->when(!empty($request->datainicio), function ($query) use ($filter) {
+                return $query->whereDate('log.created_at', '>=', $filter['datainicio']);
+            })
+            ->when(!empty($request->fimdata), function ($query) use ($filter) {
+                return $query->whereDate('log.created_at', '>=', $filter['fimdata']);
+            })
+            ->when(!empty($request->name), function ($query) use ($filter) {
+                return $query->where('us.name', 'like', '%' . $filter['name'] . '%');
+            })
+            ->when(!empty($request->sort), function ($query) use ($filter) {
+                return $query->orderBy($filter['sort'], $filter['sortOrder']);
+            })
+            ->paginate($request->limit);
+
+        // Juntamos os usuários em uma só array
+        $all_users = $data;
+
+
+        //Rodamos o loop para trazer o ultimo log de cada usuário
+        $retorno = [];
+        foreach ($all_users as $key1 => $user_only) {
+            //$user_only['permissoes'] = UserPermissoes::where('id_user', $user_only['id'])->select('id_permissao as id')->get();
+            $user_only['dateLogin'] = UserLog::where('id_user', $user_only['id'])->orderBy('id_log', 'DESC')->first('created_at');
+            // $user_only['hospitais'] = UsersHospitals::where('id_user', $user_only['id'])->get();
+            $user_only['hospitais'] = UsersHospitals::from('users_hospitals as userhos')
+                ->select('hos.id as id_hospital', 'hos.name as name', 'hos.uuid', 'hos.grupo_id', 'group.name as GroupName')
+                ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
+                ->join('groups as group', 'group.id', '=', 'hos.grupo_id')
+                ->where('id_user', $user_only['id'])
+                ->when(!empty($request->procedencia), function ($query) use ($filter) {
+                    return $query->where('hos.name', 'like', '%' . $filter['procedencia'] . '%');
+                })
+                ->get();
+            $retorno[] = $user_only;
+        }
+
+        return response()->json(
+            ['status' => 'success', 'Users' => $retorno],
+            200
+        );
+    }
 }

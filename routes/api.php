@@ -149,6 +149,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('list/logs/users', [UserController::class, 'logsUserAll']);
     //Lista TODOS 
     Route::get('list/users', [UserController::class, 'listAllUser']);
+    Route::get('list/users/teste', [UserController::class, 'testListUserAll']);
     //Edita Usuário
     Route::put('edit/user/{id}', [UserController::class, 'update']);
     //Edita Usuário

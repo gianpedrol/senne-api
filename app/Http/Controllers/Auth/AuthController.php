@@ -17,7 +17,7 @@ use App\Models\User;
 use App\Models\UserLog;
 use App\Models\UserPermissoes;
 use App\Models\UsersHospitals;
-
+use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
 {
@@ -109,7 +109,72 @@ class AuthController extends Controller
         $newUser->password = $senha_temp;
 
         $newUser->save();
+        if (!empty($user)) {
+            return response()->json(['error' => "User already exists!"], 200);
+        }
 
+        try {
+            \DB::beginTransaction();
+
+            //Define nivel user Senne
+            $role_id = 2;
+
+            //$senha_md5= Str::random(8);//Descomentar após testes
+            $senha_md5 = '654321';
+            $senha_temp = bcrypt($senha_md5);
+
+            $newUser = new User();
+            $newUser->name = $data['name'];
+            $newUser->email = $data['email'];
+            $newUser->cpf = $data['cpf'];
+            $newUser->phone = $data['phone'];
+            $newUser->role_id = $role_id;
+            $newUser->password = $senha_temp;
+            $newUser->save();
+
+            /* Salva mais de um hospital ao usuário*/
+            if (!empty($hospitals)) {
+                foreach ($hospitals as $id_hospital) {
+                    UsersHospitals::create(['id_hospital' => $id_hospital, 'id_user' => $newUser->id]);
+                }
+            }
+
+            /* Salva mais de um hospital ao usuário*/
+            if (!empty($hospitals)) {
+
+                $info_hospital = Hospitais::where('id', $hospitals[0])->first();
+                UsersGroup::create(['id_group' => $info_hospital->grupo_id, 'id_user' => $newUser->id]);
+            }
+
+            /* Salva permissões do Usuário */
+            if (!empty($permissions)) {
+                foreach ($permissions as $id_permission) {
+                    UserPermissoes::create(['id_permissao' => $id_permission, 'id_user' => $newUser->id]);
+                }
+            }
+
+
+
+            \DB::commit();
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+            \DB::rollback();
+            return ['error' => 'Could not write data', 400];
+        }
+        $status = Password::sendResetLink(
+            $request->only('email'),
+        );
+
+        if ($status == Password::RESET_LINK_SENT) {
+            return [
+                'status' => __($status),
+                'message' => "User registered successfully!", 'data' => $newUser
+            ];
+        }
+
+        throw ValidationException::withMessages([
+            'email' => [trans($status)],
+        ]);
 
 
         return response()->json(['message' => "User registered successfully!", 'data' => $newUser], 200);

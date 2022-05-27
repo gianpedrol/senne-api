@@ -7,8 +7,11 @@ use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
+use App\Mail\emailRegisterPartner;
+use Exception;
 
 class RegisterController extends Controller
 {
@@ -68,7 +71,7 @@ class RegisterController extends Controller
 
     public function registerDoctor(Request $request)
     {
-       
+
 
         $data = $request->only(['name', 'crm', 'phone', 'email', 'especialidade']);
 
@@ -123,7 +126,8 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function getSpeciality(Request $request){
+    public function getSpeciality(Request $request)
+    {
         $client = 'mUlsPn8LSRPaYu1zJkbf2w..';
         $client_secret = 'U8fQdDraw7r7Yq74mpQ0IA..';
         $resp = Http::withBasicAuth($client, $client_secret)->asForm()->post(
@@ -144,5 +148,27 @@ class RegisterController extends Controller
         $medical_specility = json_decode($response->getBody());
         //dd($medical_specility);
         return response()->json([$medical_specility]);
+    }
+
+    public function registerPartner(Request $request)
+    {
+        $data = $request->only(['name', 'cpf', 'phone', 'email', 'nameempresa', 'razaosocial', 'cnpj', 'classification']);
+
+        $usersMasters = User::where('role_id', 1)->get();
+        $sendTo = [];
+        foreach ($usersMasters as $user) {
+            $sendTo = [
+                'email' => $user->email
+            ];
+        }
+
+        try {
+            /* Enviar e-mail para o usuário com sua senha de acesso */
+            Mail::to(['gian@mageda.digital', 'elson@mageda.digital', 'gustavo@mageda.digital'])->send(new emailRegisterPartner($data));
+            return response()->json(['status' => 'solicitation sended'], 200);
+        } catch (Exception $ex) {
+            dd($ex);
+            return response()->json(['error' => 'cannot be sended', $ex], 500);
+        }
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Hospitais;
 use App\Models\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -16,6 +17,7 @@ use DB;
 use App\Models\User;
 use App\Models\UserLog;
 use App\Models\UserPermissoes;
+use App\Models\UsersGroup;
 use App\Models\UsersHospitals;
 use Illuminate\Support\Facades\Password;
 
@@ -92,67 +94,27 @@ class AuthController extends Controller
             return response()->json(['error' => "User already exists!"], 200);
         }
 
-        //Define nivel user Senne
-        $role_id = 1;
-
-        //$senha_md5= Str::random(8);//Descomentar após testes
-        $senha_md5 = '%&yAXNF';
-        $senha_temp = bcrypt($senha_md5);
-
-        $newUser = new User();
-        $newUser->name = $data['name'];
-        $newUser->email = $data['email'];
-        $newUser->cpf = $data['cpf'];
-        $newUser->cnpj = $data['cnpj'];
-        $newUser->phone = $data['phone'];
-        $newUser->role_id = $role_id;
-        $newUser->password = $senha_temp;
-
-        $newUser->save();
-        if (!empty($user)) {
-            return response()->json(['error' => "User already exists!"], 200);
-        }
 
         try {
             \DB::beginTransaction();
 
             //Define nivel user Senne
-            $role_id = 2;
+            $role_id = 1;
 
             //$senha_md5= Str::random(8);//Descomentar após testes
-            $senha_md5 = '654321';
+            $senha_md5 = '%&yAXNF';
             $senha_temp = bcrypt($senha_md5);
 
             $newUser = new User();
             $newUser->name = $data['name'];
             $newUser->email = $data['email'];
             $newUser->cpf = $data['cpf'];
+            $newUser->cnpj = $data['cnpj'];
             $newUser->phone = $data['phone'];
             $newUser->role_id = $role_id;
             $newUser->password = $senha_temp;
+
             $newUser->save();
-
-            /* Salva mais de um hospital ao usuário*/
-            if (!empty($hospitals)) {
-                foreach ($hospitals as $id_hospital) {
-                    UsersHospitals::create(['id_hospital' => $id_hospital, 'id_user' => $newUser->id]);
-                }
-            }
-
-            /* Salva mais de um hospital ao usuário*/
-            if (!empty($hospitals)) {
-
-                $info_hospital = Hospitais::where('id', $hospitals[0])->first();
-                UsersGroup::create(['id_group' => $info_hospital->grupo_id, 'id_user' => $newUser->id]);
-            }
-
-            /* Salva permissões do Usuário */
-            if (!empty($permissions)) {
-                foreach ($permissions as $id_permission) {
-                    UserPermissoes::create(['id_permissao' => $id_permission, 'id_user' => $newUser->id]);
-                }
-            }
-
 
 
             \DB::commit();

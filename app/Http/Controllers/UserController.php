@@ -21,7 +21,7 @@ use App\Models\UserPermissoes;
 use App\Models\UsersHospitals;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-use App\Http\Controllers\Auth\DB;
+//use App\Http\Controllers\Auth\DB;
 use App\Models\Groups;
 use App\Models\LogsExames;
 use App\Models\UsersGroup;
@@ -31,6 +31,8 @@ use PHPUnit\TextUI\XmlConfiguration\Group;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+
+use DB;
 
 class UserController extends Controller
 {
@@ -641,5 +643,82 @@ class UserController extends Controller
                 404
             );
         }
+    }
+
+    public function approveUser($id, Request $request)
+    {
+        if ($request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
+                return response()->json(['error' => "Unauthorized not administrator"], 401);
+            }
+        }
+        $id = $request->id;
+        $data = $request->only('name', 'phone', 'cpf', 'email');
+        $permissions = $request->permissions;
+        $hospitals = $request->hospitals;
+
+        //Validar se email existe!
+        $user = User::where('id', $id)->first();
+        // dd($user);
+
+        try {
+            \DB::beginTransaction();
+            //atualizando o HOSPITAL
+            $user = User::where('id', $id)->first();
+            if ($user) {
+                $user->update($data);
+            }
+
+
+            /* Salva mais de um hospital ao usuário*/
+            UsersHospitals::where('id_user', $user->id)->delete(); //Deleta os registros
+            if (!empty($hospitals)) {
+                foreach ($hospitals as $id_hospital) {
+                    UsersHospitals::create(['id_hospital' => $id_hospital, 'id_user' => $user->id]);
+                }
+            }
+
+
+            /* Salva permissões do Usuário */
+            UserPermissoes::where('id_user', $user->id)->delete(); //Deleta os registros
+            if (!empty($permissions)) {
+                foreach ($permissions as $id_permission) {
+                    UserPermissoes::create(['id_permissao' => $id_permission, 'id_user' => $user->id]);
+                }
+            }
+            //GERA LOG
+            $log = Auth::user();
+            $saveLog = new UserLog();
+            $saveLog->id_user = $log->id;
+            $saveLog->ip_user = $request->ip();
+            $saveLog->id_log = 3;
+            $saveLog->save();
+
+            \DB::commit();
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+            \DB::rollback();
+            return ['error' => 'Could not write data', 400];
+        }
+
+        //dd($user->email);
+
+        $status = Password::sendResetLink(
+            $request->only('email'),
+        );
+
+        if ($status == Password::RESET_LINK_SENT) {
+            return [
+                'status' => __($status),
+                'message' => "User approved successfully!",
+                'data' => $user
+            ];
+        }
+
+        throw ValidationException::withMessages([
+            'email' => [trans($status)],
+        ]);
+
+        // return response()->json(['message' => 'user updated']);
     }
 }

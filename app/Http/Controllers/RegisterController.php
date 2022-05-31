@@ -205,6 +205,7 @@ class RegisterController extends Controller
             $newUser->email = $data['email'];
             $newUser->cpf = $data['cpf'];
             $newUser->phone = $data['phone'];
+            $newUser->status = 2;
             $newUser->role_id = $role_id;
             $newUser->password = $senha_temp;
             $newUser->save();
@@ -238,19 +239,22 @@ class RegisterController extends Controller
             return ['error' => 'Could not write data', 400];
         }
 
-        $status = Password::sendResetLink(
+        /*   $status = Password::sendResetLink(
             $request->only('email'),
         );
 
         if ($status == Password::RESET_LINK_SENT) {
             return [
-                'status' => __($status),
-                'message' => "User registered successfully!", 'data' => $newUser
+                'status' => __($status)
             ];
         }
 
         throw ValidationException::withMessages([
             'email' => [trans($status)],
-        ]);
+        ]);*/
+
+        return response()->json([
+            'message' => "User registered successfully!", 'data' => $newUser
+        ], 200);
     }
 }

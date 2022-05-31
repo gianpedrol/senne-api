@@ -169,7 +169,6 @@ Route::middleware('auth:api')->group(function () {
 
     //inativa um usuario
     Route::put('inactivate/user/{id}', [UserController::class, 'inactivateUser']);
-
-    //rota para mostrar usuário
-    Route::get('teste', [UserController::class, 'teste']);
+    //Aprova Usuário
+    Route::post('approve/user/{id}', [UserController::class, 'approveUser']);
 });

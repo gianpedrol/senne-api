@@ -69,7 +69,7 @@ Route::post('auth/register', [AuthController::class, 'create']);
 Route::post('patient/register', [RegisterController::class, 'registerPatient']);
 Route::post('doctor/register', [RegisterController::class, 'registerDoctor']);
 Route::get('doctor/speciality', [RegisterController::class, 'getSpeciality']);
-Route::post('user/hospital/register', [RegisterController::class, 'registerPatient']);
+Route::post('user/hospital/register', [RegisterController::class, 'RegisterUserHospital']);
 Route::post('partner/register', [RegisterController::class, 'registerPartner']);
 
 

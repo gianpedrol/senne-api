@@ -24,7 +24,9 @@ class NewPasswordController extends Controller
         ]);
 
 
-        $user = User::where('email', $request->email)->first();
+        $email = $request->email;
+        $user = User::where('email', $email)->first();
+
 
         if ($user) {
 

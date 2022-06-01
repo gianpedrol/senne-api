@@ -158,7 +158,7 @@ class GroupController extends Controller
             // Groups::where('codgroup', null)->update(['name' => $name['name'], 'codgroup' => $name['codgrupo']]);
             $groupNull =  Groups::where('codgroup',  $name['codgrupo'])->update(['name' => $name['name']]);
             if (empty($groupNull)) {
-                Groups::firstOrCreate(['name' => $name['name'], 'codgroup' => $name['codgrupo']]);
+                Groups::updateOrCreate(['name' => $name['name'], 'codgroup' => $name['codgrupo']]);
             }
         }
         /* LISTA TODOS OS GRUPOS APÓS CONSULTA E SALVAR NOVOS DADOS  */

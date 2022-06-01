@@ -55,7 +55,7 @@ class HospitalController extends Controller
             return response()->json(['error' => 'Unauthorized access'], 401);
         }
 
-    
+
         $client = 'mUlsPn8LSRPaYu1zJkbf2w..';
         $client_secret = 'U8fQdDraw7r7Yq74mpQ0IA..';
         $resp = Http::withBasicAuth($client, $client_secret)->asForm()->post(
@@ -103,7 +103,7 @@ class HospitalController extends Controller
             try {
                 \DB::beginTransaction();
 
-                Hospitais::firstOrCreate(['codprocedencia' => $save_proc['id_api'], 'name' => $save_proc['name'], 'grupo_id' => $id_group, 'uuid' => $save_proc['uuid'],]);
+                Hospitais::updateOrCreate(['codprocedencia' => $save_proc['id_api'], 'name' => $save_proc['name'], 'grupo_id' => $id_group, 'uuid' => $save_proc['uuid'],]);
 
 
                 \DB::commit();

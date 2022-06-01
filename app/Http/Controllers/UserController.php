@@ -46,7 +46,7 @@ class UserController extends Controller
             }
         }
 
-        $data = $request->only(['name', 'cpf', 'phone', 'email']);
+        $data = $request->only(['name', 'cpf', 'phone', 'email', 'crm']);
         $permissions = $request->permissions;
         $hospitals = $request->hospitals;
 
@@ -71,6 +71,8 @@ class UserController extends Controller
             $newUser->email = $data['email'];
             $newUser->cpf = $data['cpf'];
             $newUser->phone = $data['phone'];
+            $newUser->crm = $data['crm'];
+            $newUser->status = 2;
             $newUser->role_id = $role_id;
             $newUser->password = $senha_temp;
             $newUser->save();
@@ -106,29 +108,27 @@ class UserController extends Controller
             $saveLog->id_log = 4;
             $saveLog->save();
 
-
-
             \DB::commit();
+
+            $status = Password::sendResetLink(
+                $request->only('email'),
+            );
+
+            if ($status == Password::RESET_LINK_SENT) {
+                return [
+                    'status' => __($status),
+                    'message' => "User registered successfully!", 'data' => $newUser
+                ];
+            }
+
+            throw ValidationException::withMessages([
+                'email' => [trans($status)],
+            ]);
         } catch (\Throwable $th) {
             dd($th->getMessage());
             \DB::rollback();
             return ['error' => 'Could not write data', 400];
         }
-
-        $status = Password::sendResetLink(
-            $request->only('email'),
-        );
-
-        if ($status == Password::RESET_LINK_SENT) {
-            return [
-                'status' => __($status),
-                'message' => "User registered successfully!", 'data' => $newUser
-            ];
-        }
-
-        throw ValidationException::withMessages([
-            'email' => [trans($status)],
-        ]);
     }
     public function update(Request $request)
     {
@@ -346,19 +346,6 @@ class UserController extends Controller
             ->paginate($request->limit);
 
 
-
-        /* $logs['SenneUser'] = UserLog::from('logs_user as log')
-            ->select('us.id as id_user', 'us.name as userName', 'log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action')
-            ->join('logs_action as act', 'act.id', '=', 'log.id_log')
-            ->join('users as us', 'us.id', '=', 'log.id_user')
-            ->where('us.role_id', 1)
-            ->when(!empty($request->datainicio), function ($query) use ($data) {
-                return $query->whereDate('log.created_at', '>=', $data['datainicio']);
-            })
-            ->when(!empty($request->fimdata), function ($query) use ($data) {
-                return $query->whereDate('log.created_at', '>=', $data['fimdata']);
-            })
-            ->get();*/
 
         return response()->json(
             ['status' => 'success', 'Logs' => $logs],

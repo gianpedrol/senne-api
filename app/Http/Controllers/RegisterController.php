@@ -77,7 +77,7 @@ class RegisterController extends Controller
     {
 
 
-        $data = $request->only(['name', 'crm', 'phone', 'email', 'especialidade']);
+        $data = $request->only(['name', 'crm', 'phone', 'email', 'especialidade', 'novidades']);
 
         $user = User::where('email', $data['email'])->first();
 
@@ -101,7 +101,9 @@ class RegisterController extends Controller
             $newUser->crm = $data['crm'];
             $newUser->phone = $data['phone'];
             $newUser->especialidade = $data['especialidade'];
+            $newUser->news_email = $data['novidades'];
             $newUser->status = 2;
+
             $newUser->role_id = $role_id;
             $newUser->password = $senha_temp;
             $newUser->save();
@@ -180,7 +182,7 @@ class RegisterController extends Controller
     {
 
 
-        $data = $request->only(['name', 'cpf', 'phone', 'email']);
+        $data = $request->only(['name', 'cpf', 'phone', 'email', 'department']);
         $permissions = $request->permissions;
         $hospitals = $request->hospitals;
 
@@ -205,6 +207,7 @@ class RegisterController extends Controller
             $newUser->email = $data['email'];
             $newUser->cpf = $data['cpf'];
             $newUser->phone = $data['phone'];
+            $newUser->department = $data['department'];
             $newUser->status = 2;
             $newUser->role_id = $role_id;
             $newUser->password = $senha_temp;

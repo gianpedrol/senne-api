@@ -87,13 +87,13 @@
                     <p>Endereço: {{ $data['address'] }}</p>
                 @endif
                 @if ($data['city'])
-                    <p>Endereço: {{ $data['city'] }}</p>
+                    <p>Cidade: {{ $data['city'] }}</p>
                 @endif
                 @if ($data['uf'])
-                    <p>Endereço: {{ $data['uf'] }}</p>
+                    <p>Estado: {{ $data['uf'] }}</p>
                 @endif
                 @if ($data['cep'])
-                    <p>Endereço: {{ $data['cep'] }}</p>
+                    <p>CEP: {{ $data['cep'] }}</p>
                 @endif
 
 

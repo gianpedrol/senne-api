@@ -213,7 +213,7 @@ class RegisterController extends Controller
             $newUser->email = $data['email'];
             $newUser->cpf = $data['cpf'];
             $newUser->phone = $data['phone'];
-            $newUser->department = $data['department'];
+            $newUser->id_department = $data['department'];
             $newUser->status = 2;
             $newUser->role_id = $role_id;
             $newUser->password = $senha_temp;

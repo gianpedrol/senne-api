@@ -83,6 +83,19 @@
                 @if ($data['classification'])
                     <p>Classificação: {{ $data['classification'] }}</p>
                 @endif
+                @if ($data['address'])
+                    <p>Endereço: {{ $data['address'] }}</p>
+                @endif
+                @if ($data['city'])
+                    <p>Endereço: {{ $data['city'] }}</p>
+                @endif
+                @if ($data['uf'])
+                    <p>Endereço: {{ $data['uf'] }}</p>
+                @endif
+                @if ($data['cep'])
+                    <p>Endereço: {{ $data['cep'] }}</p>
+                @endif
+
 
                 </p>
             </td>

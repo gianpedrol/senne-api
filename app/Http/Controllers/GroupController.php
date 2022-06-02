@@ -30,7 +30,6 @@ class GroupController extends Controller
         }
     }
 
-
     //Salva Grupo no DB
     public function storeGroup(Request $request)
     {
@@ -89,7 +88,6 @@ class GroupController extends Controller
         }
     }
 
-
     public function getGroups(Request $request)
     {
         /* 1 = Administrador Senne | 2 = Usuario */
@@ -98,13 +96,7 @@ class GroupController extends Controller
                 return response()->json(['error' => "Unauthorized"], 401);
             }
         }
-        /* 
-            Função que checa se o usuario tem permissão para acessar este método.
-            ## Params ##
-            $id_user : passa o id do usuario
-            $id_permissão : passa o id da view { 2 -> para view de agendamentos, 3 -> para view de consultas }
-         */
-        //curl \--user mUlsPn8LSRPaYu1zJkbf2w..:U8fQdDraw7r7Yq74mpQ0IA.. \--data 'grant_type=client_credentials' \
+
         $client = 'mUlsPn8LSRPaYu1zJkbf2w..';
         $client_secret = 'U8fQdDraw7r7Yq74mpQ0IA..';
         $resp = Http::withBasicAuth($client, $client_secret)->asForm()->post(
@@ -116,19 +108,11 @@ class GroupController extends Controller
         );
 
         $token = json_decode($resp->getBody());
-        //  dd($token);
-        //  dd($token->access_token);
-
-
-        /*         'headers' => [
-            'Authorization' => 'Bearer ' . self::REQUEST_TOKEN_V1
-        ] */
 
         $bearer = $token->access_token;
 
 
         /* CONSULTA API DE SISTEMA DA SENNE */
-        // $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/procedencia');
 
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
@@ -137,11 +121,6 @@ class GroupController extends Controller
         $items = json_decode($response->getBody());
 
 
-        /* CONSULTA API DE SISTEMA DA SENNE */
-        //   $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/procedencia');
-
-        //  $items = json_decode($response->getBody());
-        /* SEPARA OS DADOS DA API */
         foreach ($items->items as $item) {
             // dd($item);
             if ($item->codgrupo == null) {
@@ -155,7 +134,7 @@ class GroupController extends Controller
 
         /* CASO NÃO TENHA NENHUM GRUPO CADASTRADO NO BANCO ELE IRÁ CRIAR*/
         foreach ($data as $name) {
-            // Groups::where('codgroup', null)->update(['name' => $name['name'], 'codgroup' => $name['codgrupo']]);
+
             $groupNull =  Groups::where('codgroup',  $name['codgrupo'])->update(['name' => $name['name']]);
             if (empty($groupNull)) {
                 Groups::updateOrCreate(['name' => $name['name'], 'codgroup' => $name['codgrupo']]);
@@ -267,8 +246,6 @@ class GroupController extends Controller
         return response()->json(['msg' => "Edited Successfully!", $group], 200);
     }
 
-
-
     public function getHospitalsGroup($id, Request $request)
     {
         $user_auth = Auth::user();
@@ -300,8 +277,6 @@ class GroupController extends Controller
             );
         }
     }
-
-
 
     public function getUsersGroup($id, Request $request)
     {
@@ -349,7 +324,6 @@ class GroupController extends Controller
         }
         $array = ['error' => ''];
 
-        //dd($request->all());
         $filename = '';
         $group = Groups::where('id', $request->id_group)->first();
         if ($request->hasFile('image')) {

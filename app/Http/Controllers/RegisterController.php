@@ -110,26 +110,26 @@ class RegisterController extends Controller
 
 
             \DB::commit();
+
+            $status = Password::sendResetLink(
+                $request->only('email'),
+            );
+
+            if ($status == Password::RESET_LINK_SENT) {
+                return [
+                    'status' => __($status),
+                    'message' => "User registered successfully!", 'data' => $newUser
+                ];
+            }
+
+            throw ValidationException::withMessages([
+                'email' => [trans($status)],
+            ]);
         } catch (\Throwable $th) {
             dd($th->getMessage());
             \DB::rollback();
             return ['error' => 'Could not write data', 400];
         }
-
-        $status = Password::sendResetLink(
-            $request->only('email'),
-        );
-
-        if ($status == Password::RESET_LINK_SENT) {
-            return [
-                'status' => __($status),
-                'message' => "User registered successfully!", 'data' => $newUser
-            ];
-        }
-
-        throw ValidationException::withMessages([
-            'email' => [trans($status)],
-        ]);
     }
 
     public function getSpeciality(Request $request)
@@ -158,7 +158,7 @@ class RegisterController extends Controller
 
     public function registerPartner(Request $request)
     {
-        $data = $request->only(['name', 'cpf', 'phone', 'email', 'nameempresa', 'razaosocial', 'cnpj', 'classification']);
+        $data = $request->only(['name', 'cpf', 'phone', 'email', 'nameempresa', 'razaosocial', 'cnpj', 'classification', "uf", "cep", "city", "address", "number"]);
 
         $usersMasters = User::where('role_id', 1)->get();
         $sendTo = [];

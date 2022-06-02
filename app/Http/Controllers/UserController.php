@@ -130,6 +130,7 @@ class UserController extends Controller
             return ['error' => 'Could not write data', 400];
         }
     }
+
     public function update(Request $request)
     {
         if ($request->user()->role_id != 1) {
@@ -304,6 +305,7 @@ class UserController extends Controller
             );
         }
     }
+
     public function logsUserAll(Request $request)
     {
         /*  if ($request->user()->role_id != 1) {
@@ -370,7 +372,7 @@ class UserController extends Controller
         //Trazemos usuarios que não possui vinculo com hospitais
         $user_db = [];
         foreach ($users as $key => $user) {
-            // dd($user);
+
             $user_nothos = UsersHospitals::where('id_user', $user->id)->first();
 
             if (empty($user_nothos) || empty($userlog)) {
@@ -549,6 +551,7 @@ class UserController extends Controller
             );
         }
     }
+
     public function listUsersAdm(Request $request)
     {
 
@@ -646,11 +649,10 @@ class UserController extends Controller
 
         //Validar se email existe!
         $user = User::where('id', $id)->first();
-        // dd($user);
 
         try {
             \DB::beginTransaction();
-            //atualizando o HOSPITAL
+
             $user = User::where('id', $id)->first();
             if ($user) {
                 $user->update($data);
@@ -706,6 +708,5 @@ class UserController extends Controller
             'email' => [trans($status)],
         ]);
 
-        // return response()->json(['message' => 'user updated']);
     }
 }

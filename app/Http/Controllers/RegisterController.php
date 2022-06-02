@@ -156,6 +156,12 @@ class RegisterController extends Controller
         return response()->json([$medical_specility]);
     }
 
+    public function getHospital(Request $request)
+    {
+        $hospitals = Hospitais::all();
+        return response()->json($hospitals);
+    }
+
     public function registerPartner(Request $request)
     {
         $data = $request->only(['name', 'cpf', 'phone', 'email', 'nameempresa', 'razaosocial', 'cnpj', 'classification', "uf", "cep", "city", "address", "number"]);

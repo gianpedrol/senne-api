@@ -69,8 +69,10 @@ Route::post('auth/register', [AuthController::class, 'create']);
 Route::post('patient/register', [RegisterController::class, 'registerPatient']);
 Route::post('doctor/register', [RegisterController::class, 'registerDoctor']);
 Route::get('doctor/speciality', [RegisterController::class, 'getSpeciality']);
+Route::get('hospitals/list', [RegisterController::class, 'gethospital']);
 Route::post('user/hospital/register', [RegisterController::class, 'RegisterUserHospital']);
 Route::post('partner/register', [RegisterController::class, 'registerPartner']);
+
 
 
 //Rota relacionada ao laboratório via usuario Senne

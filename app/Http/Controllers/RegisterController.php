@@ -266,4 +266,19 @@ class RegisterController extends Controller
             'message' => "User registered successfully!", 'data' => $newUser
         ], 200);
     }
+
+    public function getHospitalDomain(Request $request)
+    {
+        $domain = $request->domain;
+        $hospitals = Hospitais::where('domain', $domain)->get();
+
+        return response()->json($hospitals);
+    }
+
+    public function saveHospitalDomain(Request $request)
+    {
+        $hospitals = Hospitais::where('id', $request->id)->update(['domains' => $request->domain]);
+
+        dd($hospitals);
+    }
 }

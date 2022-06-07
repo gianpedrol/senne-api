@@ -11,7 +11,7 @@ class Hospitais extends Model
 {
     protected $table = 'hospitais';
 
-    protected $fillable = ['name', 'email', 'cnpj', 'image', 'phone', 'grupo_id', 'uuid', 'codprocedencia'];
+    protected $fillable = ['name', 'email', 'cnpj', 'image', 'phone', 'grupo_id', 'uuid', 'codprocedencia', 'domain'];
 
     public function group()
     {

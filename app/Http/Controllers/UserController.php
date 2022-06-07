@@ -56,6 +56,18 @@ class UserController extends Controller
             return response()->json(['error' => "User already exists!"], 200);
         }
 
+        /* CHECAR SE EMAIL CONFERE COM DOMINIO */
+        /* $userEmail = $data['email'];
+        $dominio = explode('@', $userEmail);
+        //dd($dominio[1]);
+        $domainEmail = $dominio[1];
+
+        $hospital = Hospitais::where('id', $hospitals)->first();
+
+        if ($hospital->domain = null || $hospital->domain != $domainEmail) {
+            return response()->json(['error' => 'Domain is invalid for this hospital'], 400);
+        }*/
+
         try {
             \DB::beginTransaction();
 
@@ -707,6 +719,5 @@ class UserController extends Controller
         throw ValidationException::withMessages([
             'email' => [trans($status)],
         ]);
-
     }
 }

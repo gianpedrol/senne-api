@@ -11,7 +11,7 @@ class Hospitais extends Model
 {
     protected $table = 'hospitais';
 
-    protected $fillable = ['name', 'email', 'cnpj', 'image', 'phone', 'grupo_id', 'uuid', 'codprocedencia', 'domain'];
+    protected $fillable = ['name', 'email', 'cnpj', 'image', 'phone', 'grupo_id', 'uuid', 'codprocedencia'];
 
     public function group()
     {
@@ -25,5 +25,9 @@ class Hospitais extends Model
     public function users_hospital()
     {
         return $this->hasMany(UsersHospitals::class, 'id_user');
+    }
+    public function domainHospital()
+    {
+        return $this->hasMany(DomainHospital::class, 'codprocedencia');
     }
 }

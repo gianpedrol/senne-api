@@ -19,5 +19,6 @@ class DatabaseSeeder extends Seeder
         $this->call(LogsSeeder::class);
         $this->call(LogsUserExames::class);
         $this->call(DepartmentSeeder::class);
+        $this->call(DomainsSeeder::class);
     }
 }

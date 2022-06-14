@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 use App\Mail\emailRegisterPartner;
+use App\Models\DomainHospital;
 use App\Models\Hospitais;
 use App\Models\UserPermissoes;
 use App\Models\UsersGroup;
@@ -270,7 +271,11 @@ class RegisterController extends Controller
     public function getHospitalDomain(Request $request)
     {
         $domain = $request->domain;
-        $hospitals = Hospitais::where('domain', $domain)->get();
+        $hospitals = DomainHospital::from('domains_hospitals as domain')
+            ->select('hos.name', 'domain.domains',)
+            ->join('hospitais as hos', 'domain.codprocedencia', '=', 'hos.codprocedencia')
+            ->where('domain.domains', '=', $domain)
+            ->get();
 
         return response()->json($hospitals);
     }

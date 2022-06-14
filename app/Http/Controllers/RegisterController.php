@@ -177,7 +177,7 @@ class RegisterController extends Controller
 
         try {
             /* Enviar e-mail para o usuário com sua senha de acesso */
-            Mail::to(['gian@mageda.digital', 'elson@mageda.digital', 'gustavo@mageda.digital'])->send(new emailRegisterPartner($data));
+            Mail::to(['gian@mageda.digital', 'elson@mageda.digital', 'gustavo@mageda.digital', 'ti@senneliquor.com.br'])->send(new emailRegisterPartner($data));
             return response()->json(['status' => 'solicitation sended'], 200);
         } catch (Exception $ex) {
             dd($ex);

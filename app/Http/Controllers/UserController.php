@@ -70,14 +70,14 @@ class UserController extends Controller
         $hospitals = DomainHospital::from('domains_hospitals as domain')
             ->select('hos.name', 'domain.domains',)
             ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
-            ->where('hos.id', '=', $hospital->id)
+            ->where('hos.id', '=', $hospitalsId)
             ->get()
             ->toArray();
 
         $domains = DomainHospital::from('domains_hospitals as domain')
             ->select('domain.domains')
             ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
-            ->where('hos.id', '=',  $hospital->id)
+            ->where('hos.id', '=',  $hospitalsId)
             ->get();
 
         $domain = [];

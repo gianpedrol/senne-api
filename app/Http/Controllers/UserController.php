@@ -87,6 +87,10 @@ class UserController extends Controller
             ];
         }
 
+        if (empty($domain)) {
+            $domain['email'] = $domainEmail;
+        }
+
         if (empty($domains) || $domainEmail === $domain['email']) {
             try {
                 \DB::beginTransaction();

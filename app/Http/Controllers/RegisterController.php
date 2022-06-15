@@ -18,7 +18,21 @@ use App\Models\UserPermissoes;
 use App\Models\UsersGroup;
 use App\Models\UsersHospitals;
 use Exception;
+/* 
+Status 
 
+0 - inativo
+1 - ativo
+2 - precisa alterar senha, para ativar
+3 - pendente aprovação Senne
+
+ROLE ID
+
+1 - SENNE MASTER
+2 - USER HOSPITAL
+3 - PACIENTE
+4 - MÉDICO PARTICULAR
+*/
 class RegisterController extends Controller
 {
     public function registerPatient(Request $request)
@@ -104,7 +118,7 @@ class RegisterController extends Controller
             $newUser->phone = $data['phone'];
             $newUser->especialidade = $data['especialidade'];
             $newUser->news_email = $data['novidades'];
-            $newUser->status = 2;
+            $newUser->status = 3;
 
             $newUser->role_id = $role_id;
             $newUser->password = $senha_temp;
@@ -113,20 +127,15 @@ class RegisterController extends Controller
 
             \DB::commit();
 
-            $status = Password::sendResetLink(
-                $request->only('email'),
-            );
-
-            if ($status == Password::RESET_LINK_SENT) {
-                return [
-                    'status' => __($status),
-                    'message' => "User registered successfully!", 'data' => $newUser
-                ];
+            try {
+                /* Enviar e-mail para o usuário com sua senha de acesso */
+                Mail::to($newUser->email)->send(new emailPendentRegister($data));
+                return response()->json(['status' => 'solicitation sended', $newUser], 200);
+            } catch (Exception $ex) {
+                dd($ex);
+                return response()->json(['error' => 'cannot be sended', $ex], 500);
             }
-
-            throw ValidationException::withMessages([
-                'email' => [trans($status)],
-            ]);
+            
         } catch (\Throwable $th) {
             dd($th->getMessage());
             \DB::rollback();

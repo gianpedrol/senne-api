@@ -35,6 +35,22 @@ use Illuminate\Validation\ValidationException;
 
 use DB;
 
+/* 
+Status 
+
+0 - inativo
+1 - ativo
+2 - precisa alterar senha, para ativar
+3 - pendente aprovação Senne
+
+ROLE ID
+
+1 - SENNE MASTER
+2 - USER HOSPITAL
+3 - PACIENTE
+4 - MÉDICO PARTICULAR
+*/
+
 class UserController extends Controller
 {
 
@@ -698,6 +714,14 @@ class UserController extends Controller
 
         //Validar se email existe!
         $user = User::where('id', $id)->first();
+        //dd($user);
+
+        if ($user == null) {
+            return response()->json(['error' => "user cannot be found"], 401);
+        }
+        if ($user->status == 1) {
+            return response()->json(['error' => "user already activated"], 401);
+        }
 
         /* CHECAR SE EMAIL CONFERE COM DOMINIO */
         $userEmail = $data['email'];
@@ -789,5 +813,66 @@ class UserController extends Controller
         } else {
             return response()->json(['error' => 'Domain is invalid for this hospital'], 400);
         }
+    }
+    public function approveDoctorUser($id, Request $request)
+    {
+        if ($request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
+                return response()->json(['error' => "Unauthorized not administrator"], 401);
+            }
+        }
+        $id = $request->id;
+        $data = $request->only(['name', 'crm', 'phone', 'email', 'especialidade', 'novidades']);
+
+        //Validar se email existe!
+        $user = User::where('id', $id)->first();
+
+        if ($user->role_id != 4) {
+            return response()->json(['error' => "You cant approve the user in this route"], 401);
+        }
+
+        if ($user->status == 1) {
+            return response()->json(['error' => "user already activated"], 401);
+        }
+
+        try {
+            \DB::beginTransaction();
+
+            $user = User::where('id', $id)->first();
+            if ($user) {
+                $user->update($data, ['status' => 2]);
+            }
+
+
+            //GERA LOG
+            $log = Auth::user();
+            $saveLog = new UserLog();
+            $saveLog->id_user = $log->id;
+            $saveLog->ip_user = $request->ip();
+            $saveLog->id_log = 11;
+            $saveLog->save();
+
+            \DB::commit();
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+            \DB::rollback();
+            return ['error' => 'Could not write data', 400];
+        }
+
+        $status = Password::sendResetLink(
+            $request->only('email'),
+        );
+
+        if ($status == Password::RESET_LINK_SENT) {
+            return [
+                'status' => __($status),
+                'message' => "User approved successfully!",
+                'data' => $user
+            ];
+        }
+
+        throw ValidationException::withMessages([
+            'email' => [trans($status)],
+        ]);
     }
 }

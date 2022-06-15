@@ -175,4 +175,7 @@ Route::middleware('auth:api')->group(function () {
     Route::put('inactivate/user/{id}', [UserController::class, 'inactivateUser']);
     //Aprova Usuário
     Route::post('approve/user/{id}', [UserController::class, 'approveUser']);
+
+    //Aprova Usuário Médico
+    Route::post('approve/doctor/{id}', [UserController::class, 'approveDoctorUser']);
 });

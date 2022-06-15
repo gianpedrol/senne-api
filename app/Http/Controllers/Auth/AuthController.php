@@ -20,7 +20,21 @@ use App\Models\UserPermissoes;
 use App\Models\UsersGroup;
 use App\Models\UsersHospitals;
 use Illuminate\Support\Facades\Password;
+/* 
+Status 
 
+0 - inativo
+1 - ativo
+2 - precisa alterar senha, para ativar
+3 - pendente aprovação Senne
+
+ROLE ID
+
+1 - SENNE MASTER
+2 - USER HOSPITAL
+3 - PACIENTE
+4 - MÉDICO PARTICULAR
+*/
 class AuthController extends Controller
 {
     public function login(Request $request, $role_id)

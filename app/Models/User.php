@@ -11,12 +11,17 @@ use Illuminate\Auth\Notifications\ResetPassword;
 use Laravel\Sanctum\HasApiTokens;
 use PHPUnit\TextUI\XmlConfiguration\Group;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
+
+
 
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    protected $fillable = ['email', 'id_hospital', 'name', 'cpf', 'image', 'phone'];
+    protected $fillable = ['email', 'id_hospital', 'name', 'cpf', 'image', 'phone', 'news-email', 'department'];
 
     /**
      * The attributes that are mass assignable.
@@ -59,8 +64,10 @@ class User extends Authenticatable implements JWTSubject
     }
     public function sendPasswordResetNotification($token)
     {
+        $email = $this->email;
+        $encrypted = Crypt::encryptString($email);
 
-        $url = 'https://teste-senne.mageda.com.br/reset-password?token=' . $token;
+        $url = 'https://teste-senne.mageda.com.br/reset-password?token=' . $token . '&key=' . $encrypted;
 
         $this->notify(new ResetPasswordNotification($url));
     }

@@ -12,6 +12,8 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password as RulesPassword;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Support\Facades\Crypt;
 
 class NewPasswordController extends Controller
 {
@@ -22,7 +24,9 @@ class NewPasswordController extends Controller
         ]);
 
 
-        $user = User::where('email', $request->email)->first();
+        $email = $request->email;
+        $user = User::where('email', $email)->first();
+
 
         if ($user) {
 
@@ -47,35 +51,38 @@ class NewPasswordController extends Controller
     public function resetPassword(Request $request)
     {
 
-        $rules = [
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => ['required', 'confirmed'],
-        ];
+        // dd($request->key);
 
-        $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails()) {
-            $array['error'] = $validator->errors();
-            return $array;
+        try {
+            $decrypted = Crypt::decryptString($request->key);
+        } catch (DecryptException $e) {
+            //
         }
 
+        $request->only('token', 'password', 'password_confirmation');
+
+
         $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
+            $request = ['email' => $decrypted, 'token' => $request->token, 'password' => $request->password, 'password_confirmation' => $request->password_confirmation],
+
+            // dd($this->$user);
             function ($user) use ($request) {
+                //$user->email = $decrypted;
                 $user->forceFill([
-                    'password' => Hash::make($request->password),
+                    'password' => Hash::make($request['password']),
                     'remember_token' => Str::random(60),
                 ])->save();
 
                 $user->tokens()->delete();
 
                 event(new PasswordReset($user));
+                //dd($user);
             }
         );
 
-
         if ($status == Password::PASSWORD_RESET) {
+            User::where('email', $request['email'])->update(['status' => 1]);
             return response([
                 'message' => 'Password reset successfully'
             ]);

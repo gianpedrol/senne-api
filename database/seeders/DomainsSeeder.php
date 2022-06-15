@@ -1,0 +1,116 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use DB;
+
+class DomainsSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        $domain = [
+            ['codprocedencia' => 8, 'domains' => 'aacd.org.br'],
+            ['codprocedencia' => 301, 'domains' => 'alvarenga.org.br'],
+            ['codprocedencia' => 340, 'domains' => 'amaralcosta.com.br'],
+            ['codprocedencia' => 34, 'domains' => 'aviccena.com.br'],
+            ['codprocedencia' => 244, 'domains' => 'beneficenciacamp.com.br'],
+            ['codprocedencia' => 372, 'domains' => 'boldrini.org.br'],
+            ['codprocedencia' => 39, 'domains' => 'bp.org.br'],
+            ['codprocedencia' => 312, 'domains' => 'bp.org.br'],
+            ['codprocedencia' => 309, 'domains' => 'casadesaudecampinas.com.br'],
+            ['codprocedencia' => 388, 'domains' => 'cientificalab.com.br'],
+            ['codprocedencia' => 292, 'domains' => 'cientificalab.com.br'],
+            ['codprocedencia' => 293, 'domains' => 'cientificalab.com.br'],
+            ['codprocedencia' => 258, 'domains' => 'cqa.com.br'],
+            ['codprocedencia' => 48, 'domains' => 'cruzazulsp.com.br'],
+            ['codprocedencia' => 48, 'domains' => 'craz.com.br'],
+            ['codprocedencia' => 289, 'domains' => 'cruzeirodosul.com.br'],
+            ['codprocedencia' => 287, 'domains' => 'gndi.com.br'],
+            ['codprocedencia' => 377, 'domains' => 'gndi.com.br'],
+            ['codprocedencia' => 385, 'domains' => 'gndi.com.br'],
+            ['codprocedencia' => 385, 'domains' => 'intermedica.com.br'],
+            ['codprocedencia' => 419, 'domains' => 'gndi.com.br'],
+            ['codprocedencia' => 294, 'domains' => 'gndi.com.br'],
+            ['codprocedencia' => 180, 'domains' => 'gndi.com.br'],
+            ['codprocedencia' => 327, 'domains' => 'gndi.com.br'],
+            ['codprocedencia' => 412, 'domains' => 'greenlinesaude.com.br'],
+            ['codprocedencia' => 410, 'domains' => 'greenlinesaude.com.br'],
+            ['codprocedencia' => 408, 'domains' => 'greenlinesaude.com.br'],
+            ['codprocedencia' => 409, 'domains' => 'greenlinesaude.com.br'],
+            ['codprocedencia' => 411, 'domains' => 'greenlinesaude.com.br'],
+            ['codprocedencia' => 27, 'domains' => 'h9j.com.br'],
+            ['codprocedencia' => 480, 'domains' => 'haoc.com.br'],
+            ['codprocedencia' => 452, 'domains' => 'hcc.com.br'],
+            ['codprocedencia' => 58, 'domains' => 'hcor.com.br'],
+            ['codprocedencia' => 334, 'domains' => 'hcor.com.br'],
+            ['codprocedencia' => 403, 'domains' => 'hmg.com.br'],
+            ['codprocedencia' => 445, 'domains' => 'hnipo.org.br'],
+            ['codprocedencia' => 280, 'domains' => 'hospitaldaluz.com.br'],
+            ['codprocedencia' => 319, 'domains' => 'hospitalmoriah.com.br'],
+            ['codprocedencia' => 276, 'domains' => 'hospitalpaulistano.com.br'],
+            ['codprocedencia' => 92, 'domains' => 'hospitalpaulistano.com.br'],
+            ['codprocedencia' => 313, 'domains' => 'hospitalportinari.com.br'],
+            ['codprocedencia' => 79, 'domains' => 'hospitalsalvalus.com.br'],
+            ['codprocedencia' => 137, 'domains' => 'hospitalsantarita.com.br'],
+            ['codprocedencia' => 318, 'domains' => 'hospitalsantatereza.com.br'],
+            ['codprocedencia' => 263, 'domains' => 'hospitalsaocamilosp.org.br'],
+            ['codprocedencia' => 285, 'domains' => 'hospitalsaocamilosp.org.br'],
+            ['codprocedencia' => 154, 'domains' => 'hospitalvillalobos.com.br'],
+            ['codprocedencia' => 156, 'domains' => 'hospitalvitoria.com.br'],
+            ['codprocedencia' => 156, 'domains' => 'amil.com.br'],
+            ['codprocedencia' => 279, 'domains' => 'amil.com.br'],
+            ['codprocedencia' => 279, 'domains' => 'hospitalvitoria.com.br'],
+            ['codprocedencia' => 266, 'domains' => 'hpev.com.br'],
+            ['codprocedencia' => 238, 'domains' => 'hrim.com.br'],
+            ['codprocedencia' => 144, 'domains' => 'hsanp.com.br'],
+            ['codprocedencia' => 417, 'domains' => 'hsfamericana.com.br'],
+            ['codprocedencia' => 111, 'domains' => 'hsi.org.br'],
+            ['codprocedencia' => 303, 'domains' => 'hsv.org.br'],
+            ['codprocedencia' => 290, 'domains' => 'ibcc-mooca.org.br'],
+            ['codprocedencia' => 290, 'domains' => 'ibcc.org.br'],
+            ['codprocedencia' => 22, 'domains' => 'idpc.org.br'],
+            ['codprocedencia' => 283, 'domains' => 'intermedica.com.br'],
+            ['codprocedencia' => 283, 'domains' => 'gndi.org.br'],
+            ['codprocedencia' => 361, 'domains' => 'laboratoriobehring.com.br'],
+            ['codprocedencia' => 73, 'domains' => 'leforte.com.br'],
+            ['codprocedencia' => 413, 'domains' => 'maternidadesantamaria.com.br'],
+            ['codprocedencia' => 274, 'domains' => 'metropolitano.com.br'],
+            ['codprocedencia' => 84, 'domains' => 'metropolitano.com.br'],
+            ['codprocedencia' => 314, 'domains' => 'metropolitano.com.br'],
+            ['codprocedencia' => 97, 'domains' => 'promatresp.com.br'],
+            ['codprocedencia' => 291, 'domains' => 'propm.org.br'],
+            ['codprocedencia' => 418, 'domains' => 'rededor.com.br'],
+            ['codprocedencia' => 426, 'domains' => 'rededor.com.br'],
+            ['codprocedencia' => 288, 'domains' => 'rededor.com.br'],
+            ['codprocedencia' => 288, 'domains' => 'saoluiz.com.br'],
+            ['codprocedencia' => 141, 'domains' => 'sabara.com.br'],
+            ['codprocedencia' => 338, 'domains' => 'sabin.com.br'],
+            ['codprocedencia' => 415, 'domains' => 'samaritano.com.br'],
+            ['codprocedencia' => 295, 'domains' => 'samaritano.com.br'],
+            ['codprocedencia' => 337, 'domains' => 'samaritano.com.br'],
+            ['codprocedencia' => 151, 'domains' => 'samaritano.com.br'],
+            ['codprocedencia' => 362, 'domains' => 'samaritano.com.br'],
+            ['codprocedencia' => 315, 'domains' => 'santacasacampinas.com.br'],
+            ['codprocedencia' => 114, 'domains' => 'santajoana.com.br'],
+            ['codprocedencia' => 384, 'domains' => 'saoluiz.com.br'],
+            ['codprocedencia' => 118, 'domains' => 'saoluiz.com.br'],
+            ['codprocedencia' => 7, 'domains' => 'saoluiz.com.br'],
+            ['codprocedencia' => 124, 'domains' => 'saoluiz.com.br'],
+            ['codprocedencia' => 49, 'domains' => 'saoluiz.com.br'],
+            ['codprocedencia' => 87, 'domains' => 'saoluiz.com.br'],
+            ['codprocedencia' => 256, 'domains' => 'sbcsaude.com.br'],
+            ['codprocedencia' => 392, 'domains' => 'sel-liquor.com.br'],
+            ['codprocedencia' => 9, 'domains' => 'senneliquor.com.br'],
+            ['codprocedencia' => 147, 'domains' => 'sepaco.org.br'],
+            ['codprocedencia' => 396, 'domains' => 'unimedcampinas.com.br'],
+        ];
+
+        DB::table('domains_hospitals')->insert($domain);
+    }
+}

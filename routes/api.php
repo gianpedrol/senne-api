@@ -11,6 +11,7 @@ use App\Http\Controllers\ExameController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\LaborController;
 use App\Http\Controllers\HospitalController;
+use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\UserHospitalController;
 use App\Http\Provider\ServiceProviderApi;
@@ -50,7 +51,7 @@ Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'ver
 //ROTA DE NÃO AUTORIZADO
 Route::get('/401', [AuthController::class, 'unauthorized'])->name('login');
 //ROTA DE LOGIN
-Route::post('auth/login', [AuthController::class, 'login']);
+Route::post('auth/login/{role_id}', [AuthController::class, 'login']);
 Route::post('auth/logout', [AuthController::class, 'logout']);
 
 
@@ -62,6 +63,19 @@ Route::prefix('password')->group(function () {
 
 //Rota de registro de usuario Master
 Route::post('auth/register', [AuthController::class, 'create']);
+
+
+/**Rotas de registro de usuários**/
+Route::post('patient/register', [RegisterController::class, 'registerPatient']);
+Route::post('doctor/register', [RegisterController::class, 'registerDoctor']);
+Route::get('doctor/speciality', [RegisterController::class, 'getSpeciality']);
+Route::get('hospitals/list', [RegisterController::class, 'gethospital']);
+Route::get('hospitals/list/{id}', [RegisterController::class, 'gethospitalId']);
+Route::get('hospitals/domain/list', [RegisterController::class, 'getHospitalDomain']);
+Route::post('user/hospital/register', [RegisterController::class, 'RegisterUserHospital']);
+Route::post('partner/register', [RegisterController::class, 'registerPartner']);
+
+
 
 //Rota relacionada ao laboratório via usuario Senne
 Route::middleware('auth:api')->group(function () {
@@ -130,7 +144,7 @@ Route::middleware('auth:api')->group(function () {
     //Lista detalhes exames por atendimento
     Route::get('/treatment/details/{uuid}/{atendimento}', [ExameController::class, 'listAttendanceDetails']);
     //PDF LAUDO PRINCIPAL
-    Route::get('/treatment/report/{atendimento}', [ExameController::class, 'principalReport']);
+    Route::get('/treatment/report/{uuid}/{atendimento}/{r_id}', [ExameController::class, 'principalReport']);
 
 
 
@@ -157,6 +171,11 @@ Route::middleware('auth:api')->group(function () {
     //rota para mostrar usuário
     Route::get('show/user/{id}', [UserController::class, 'showUser']);
 
-    //rota para mostrar usuário
-    Route::get('teste', [UserController::class, 'teste']);
+    //inativa um usuario
+    Route::put('inactivate/user/{id}', [UserController::class, 'inactivateUser']);
+    //Aprova Usuário
+    Route::post('approve/user/{id}', [UserController::class, 'approveUser']);
+
+    //Aprova Usuário Médico
+    Route::post('approve/doctor/{id}', [UserController::class, 'approveDoctorUser']);
 });

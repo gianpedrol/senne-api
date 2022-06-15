@@ -26,4 +26,8 @@ class Hospitais extends Model
     {
         return $this->hasMany(UsersHospitals::class, 'id_user');
     }
+    public function domainHospital()
+    {
+        return $this->hasMany(DomainHospital::class, 'codprocedencia');
+    }
 }

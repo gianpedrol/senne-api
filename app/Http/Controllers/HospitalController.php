@@ -56,11 +56,24 @@ class HospitalController extends Controller
         }
 
 
-        /* CONSULTA API DE SISTEMA DA SENNE */
-        $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/procedencia');
+        $client = 'mUlsPn8LSRPaYu1zJkbf2w..';
+        $client_secret = 'U8fQdDraw7r7Yq74mpQ0IA..';
+        $resp = Http::withBasicAuth($client, $client_secret)->asForm()->post(
+            'http://sistemas.senneliquor.com.br:8804/ords/gateway/oauth/token',
+            [
+                'grant_type' => 'client_credentials',
+
+            ]
+        );
+
+        $token = json_decode($resp->getBody());
+
+        $bearer = $token->access_token;
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $bearer
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/procedencia');
 
         $items = json_decode($response->getBody());
-
 
         /* SEPARA OS DADOS DA API */
         foreach ($items->items as $item) {
@@ -69,23 +82,27 @@ class HospitalController extends Controller
                 'id_api' => $item->codprocedencia,
                 'name' => $item->nomeprocedencia,
                 'grupo' => $item->grupo,
-                'uuid' => $item->uuid
+                'uuid' => $item->uuid,
+                'codgrupo' => $item->codgrupo
             ];
         }
 
 
-        /* CASO NÃO TENHA NENHUM HOSPITAL CADASTRADO NO BANCO ELE IRÁ CRIAR*/
+        /*/* CASO NÃO TENHA NENHUM HOSPITAL CADASTRADO NO BANCO ELE IRÁ CRIAR*/
         foreach ($data as $save_proc) {
-            $group = Groups::where('name', $save_proc['grupo'])->first();
+            if ($save_proc['codgrupo'] == null) {
+                $save_proc['codgrupo'] = 1;
+            }
+            $group = Groups::where('codgroup', $save_proc['codgrupo'])->first();
 
-            if ($save_proc['grupo'] === $group->name) {
+            if ($save_proc['codgrupo'] = $group['codgroup']) {
                 $id_group = $group->id;
             }
 
             try {
                 \DB::beginTransaction();
 
-                Hospitais::firstOrCreate(['codprocedencia' => $save_proc['id_api'], 'name' => $save_proc['name'], 'grupo_id' => $id_group, 'uuid' => $save_proc['uuid'],]);
+                Hospitais::updateOrCreate(['codprocedencia' => $save_proc['id_api'], 'name' => $save_proc['name'], 'grupo_id' => $id_group, 'uuid' => $save_proc['uuid'],]);
 
 
                 \DB::commit();

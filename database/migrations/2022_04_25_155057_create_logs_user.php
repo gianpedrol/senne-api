@@ -15,17 +15,17 @@ class CreateLogsUser extends Migration
     {
         Schema::create('logs_user', function (Blueprint $table) {
             $table->unsignedBigInteger('id_user');
-            $table->unsignedBigInteger('id_log')->nullable();
-            $table->string('ip_user')->nullable();
+            $table->unsignedBigInteger('id_log');
+            $table->string('ip_user');
             $table->string('numatendimento')->nullable();
             $table->string('numeroexame')->nullable();
-            $table->string('uuidatendimento')->nullable();
-            $table->string('uuidexame')->nullable();
+            $table->string('uuid_hospital_atendimento')->references('uuid')->on('hospitais')->onDelete('CASCADE')->nullable();
+            $table->string('uuid_hospital_exame')->references('uuid')->on('hospitais')->onDelete('CASCADE')->nullable();
 
             $table->foreign('id_user')->references('id')->on('users')->onUpdate('NO ACTION')->onDelete('CASCADE');
             $table->foreign('id_log')->references('id')->on('logs_action')->onUpdate('NO ACTION')->onDelete('CASCADE');
-            $table->foreign('uuidatendimento')->references('uuid')->on('hospitais')->onUpdate('NO ACTION')->onDelete('CASCADE');
-            $table->foreign('uuidexame')->references('uuid')->on('hospitais')->onUpdate('NO ACTION')->onDelete('CASCADE');
+            //$table->foreign('uuid_hospital_atendimento')->references('uuid')->on('hospitais')->onDelete('CASCADE');
+            // $table->foreign('uuid_hospital_exame')->references('id')->on('hospitais')->onUpdate('NO ACTION')->onDelete('CASCADE');
 
 
             $table->timestamps();

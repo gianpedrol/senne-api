@@ -15,13 +15,14 @@ use Illuminate\Support\Facades\URL;
 use League\Flysystem\Exception;
 
 use App\Http\Controllers\Controller;
+use App\Models\DomainHospital;
 use App\Models\Hospitais;
 use App\Models\UserLog;
 use App\Models\UserPermissoes;
 use App\Models\UsersHospitals;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-use App\Http\Controllers\Auth\DB;
+//use App\Http\Controllers\Auth\DB;
 use App\Models\Groups;
 use App\Models\LogsExames;
 use App\Models\UsersGroup;
@@ -32,88 +33,27 @@ use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
-//use DB;
+use DB;
+
+/* 
+Status 
+
+0 - inativo
+1 - ativo
+2 - precisa alterar senha, para ativar
+3 - pendente aprovação Senne
+
+ROLE ID
+
+1 - SENNE MASTER
+2 - USER HOSPITAL
+3 - PACIENTE
+4 - MÉDICO PARTICULAR
+*/
 
 class UserController extends Controller
 {
-    public function createUserMaster(Request $request)
-    {
-        /* 
-            Função que chega se o user é usuario Senne ou Usuario comum
-         */
-        if (!$request->user()->role_id != 1) {
-            return response()->json(['error' => "Unauthorized"], 401);
-        }
 
-        $data = $request->only(['name', 'cpf', 'email', 'id_hospital', 'unidade', 'permissao']);
-        $user = User::where('email', $data['email'])->first();
-        $permissions = $request->only('permissions');
-        if (!empty($user)) {
-            return response()->json(['error' => "User already exists!"], 200);
-        }
-
-        try {
-            \DB::beginTransaction();
-
-            //Define nivel user Senne
-            $role_id = 1;
-
-            //$senha_md5= Str::random(8);//Descomentar após testes
-            $senha_md5 = '654321';
-            $senha_temp = bcrypt($senha_md5);
-
-            $newUser = new User();
-            $newUser->name = $data['name'];
-            $newUser->email = $data['email'];
-            $newUser->cpf = $data['cpf'];
-            $newUser->telefone = $data['telefone'];
-            $newUser->role_id = $role_id;
-            $newUser->password = $senha_temp;
-            $newUser->save();
-
-            $userHospital = new UsersHospitals();
-            $userHospital->id_user = $newUser->id;
-            $userHospital->id_hospital = $data['id_hospital'];
-            $userHospital->save();
-
-            foreach ($permissions as $permission) {
-
-                $dataPermission = [
-                    'id' => $permission['id']
-                ];
-            }
-
-            //PERMISSOES
-            $userPermissao = new UserPermissoes();
-            $userPermissao->id_user = $user->id;
-            $userPermissao->id_permissao = $dataPermission['id'];
-            $userPermissao->save();
-
-            $userPermissao = new UserPermissoes();
-            $userPermissao->id_user = $newUser->id;
-            $userPermissao->id_hospital =  $data['id_hospital'];
-            $userPermissao->id_permissao = $data['permissao'];
-            $userPermissao->save();
-
-            //GERA LOG
-            $log = Auth::user();
-            $saveLog = new UserLog();
-            $saveLog->id_user = $log->id;
-            $saveLog->ip_user = $request->ip();
-            $saveLog->id_log = 4;
-            $saveLog->save();
-
-
-
-
-            \DB::commit();
-        } catch (\Throwable $th) {
-            dd($th->getMessage());
-            \DB::rollback();
-            return ['error' => 'Could not write data', 400];
-        }
-        return response()->json(['message' => "User registered successfully!", 'data' => $newUser], 200);
-    }
     public function createUser(Request $request)
     {
 
@@ -123,9 +63,9 @@ class UserController extends Controller
             }
         }
 
-        $data = $request->only(['name', 'cpf', 'phone', 'email']);
+        $data = $request->only(['name', 'cpf', 'phone', 'email', 'crm']);
         $permissions = $request->permissions;
-        $hospitals = $request->hospitals;
+        $hospitalsId = $request->hospitals;
 
         $user = User::where('email', $data['email'])->first();
 
@@ -133,80 +73,129 @@ class UserController extends Controller
             return response()->json(['error' => "User already exists!"], 200);
         }
 
-        try {
-            \DB::beginTransaction();
-
-            //Define nivel user Senne
-            $role_id = 2;
-
-            //$senha_md5= Str::random(8);//Descomentar após testes
-            $senha_md5 = '654321';
-            $senha_temp = bcrypt($senha_md5);
-
-            $newUser = new User();
-            $newUser->name = $data['name'];
-            $newUser->email = $data['email'];
-            $newUser->cpf = $data['cpf'];
-            $newUser->phone = $data['phone'];
-            $newUser->role_id = $role_id;
-            $newUser->password = $senha_temp;
-            $newUser->save();
-
-            /* Salva mais de um hospital ao usuário*/
-            if (!empty($hospitals)) {
-                foreach ($hospitals as $id_hospital) {
-                    UsersHospitals::create(['id_hospital' => $id_hospital, 'id_user' => $newUser->id]);
-                }
-            }
-
-            /* Salva mais de um hospital ao usuário*/
-            if (!empty($hospitals)) {
-
-                $info_hospital = Hospitais::where('id', $hospitals[0])->first();
-                UsersGroup::create(['id_group' => $info_hospital->grupo_id, 'id_user' => $newUser->id]);
-            }
-
-            /* Salva permissões do Usuário */
-            if (!empty($permissions)) {
-                foreach ($permissions as $id_permission) {
-                    UserPermissoes::create(['id_permissao' => $id_permission, 'id_user' => $newUser->id]);
-                }
-            }
+        /* CHECAR SE EMAIL CONFERE COM DOMINIO */
+        $userEmail = $data['email'];
+        $dominio = explode('@', $userEmail);
+        //dd($dominio[1]);
+        $domainEmail = $dominio[1];
 
 
 
-            //GERA LOG
-            $log = Auth::user();
-            $saveLog = new UserLog();
-            $saveLog->id_user = $log->id;
-            $saveLog->ip_user = $request->ip();
-            $saveLog->id_log = 4;
-            $saveLog->save();
+        $hospital = Hospitais::where('id', $hospitalsId)->first();
 
+        $hospitals = DomainHospital::from('domains_hospitals as domain')
+            ->select('hos.name', 'domain.domains',)
+            ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
+            ->where('hos.id', '=', $hospitalsId)
+            ->get()
+            ->toArray();
 
+        $domains = DomainHospital::from('domains_hospitals as domain')
+            ->select('domain.domains')
+            ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
+            ->where('hos.id', '=',  $hospitalsId)
+            ->get();
 
-            \DB::commit();
-        } catch (\Throwable $th) {
-            dd($th->getMessage());
-            \DB::rollback();
-            return ['error' => 'Could not write data', 400];
-        }
+        $domain = [];
 
-        $status = Password::sendResetLink(
-            $request->only('email'),
-        );
-
-        if ($status == Password::RESET_LINK_SENT) {
-            return [
-                'status' => __($status),
-                'message' => "User registered successfully!", 'data' => $newUser
+        foreach ($hospitals as $hospital) {
+            $domain = [
+                'email' => $hospital['domains']
             ];
         }
 
-        throw ValidationException::withMessages([
-            'email' => [trans($status)],
-        ]);
+        if (empty($domain)) {
+            $domain['email'] = $domainEmail;
+        }
+
+        if (empty($domains) || $domainEmail === $domain['email']) {
+            try {
+                \DB::beginTransaction();
+
+                //Define nivel user Senne
+                $role_id = 2;
+
+                //$senha_md5= Str::random(8);//Descomentar após testes
+                $senha_md5 = '654321';
+                $senha_temp = bcrypt($senha_md5);
+
+                $newUser = new User();
+                $newUser->name = $data['name'];
+                $newUser->email = $data['email'];
+                $newUser->cpf = $data['cpf'];
+                $newUser->phone = $data['phone'];
+                $newUser->crm = $data['crm'];
+                $newUser->status = 2;
+                $newUser->role_id = $role_id;
+                $newUser->password = $senha_temp;
+                $newUser->save();
+
+
+                /* Salva mais de um hospital ao usuário*/
+                UsersHospitals::where('id_user', $newUser->id)->delete(); //Deleta os registros
+                if (!empty($hospitalsId)) {
+                    foreach ($hospitalsId  as $id_hospital) {
+                        UsersHospitals::create(['id_hospital' => $id_hospital, 'id_user' => $newUser->id]);
+                    }
+                }
+
+                /* Salva mais de um hospital ao usuário*/
+                /* if (!empty($hospitals)) {
+                    foreach ($hospitals as $id_hospital) {
+                    UsersHospitals::create(['id_hospital' =>  $id_hospital, 'id_user' => $newUser->id]);                        
+                    }
+                }*/
+
+                /* Salva mais de um hospital ao usuário*/
+                /*  if (!empty($hospitals)) {
+                    dd($hospitals);
+                    $info_hospital = Hospitais::where('id', $hospitals[0])->first();
+                    UsersGroup::create(['id_group' => $info_hospital->grupo_id, 'id_user' => $newUser->id]);
+                }*/
+
+                /* Salva permissões do Usuário */
+                if (!empty($permissions)) {
+                    foreach ($permissions as $id_permission) {
+                        UserPermissoes::create(['id_permissao' => $id_permission, 'id_user' => $newUser->id]);
+                    }
+                }
+
+
+
+                //GERA LOG
+                $log = Auth::user();
+                $saveLog = new UserLog();
+                $saveLog->id_user = $log->id;
+                $saveLog->ip_user = $request->ip();
+                $saveLog->id_log = 4;
+                $saveLog->save();
+
+                \DB::commit();
+
+                $status = Password::sendResetLink(
+                    $request->only('email'),
+                );
+
+                if ($status == Password::RESET_LINK_SENT) {
+                    return [
+                        'status' => __($status),
+                        'message' => "User registered successfully!", 'data' => $newUser
+                    ];
+                }
+
+                throw ValidationException::withMessages([
+                    'email' => [trans($status)],
+                ]);
+            } catch (\Throwable $th) {
+                dd($th->getMessage());
+                \DB::rollback();
+                return ['error' => 'Could not write data', 400];
+            }
+        } else {
+            return response()->json(['error' => 'Domain is invalid for this hospital'], 400);
+        }
     }
+
     public function update(Request $request)
     {
         if ($request->user()->role_id != 1) {
@@ -292,6 +281,38 @@ class UserController extends Controller
         }
     }
 
+    public function inactivateUser($id, Request $request)
+    {
+        if ($request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
+                return response()->json(['error' => "Unauthorized 1"], 401);
+            }
+        }
+        $id = $request->id;
+        $status = $request->only('status');
+        //dd($status['status']);
+        try {
+            $user = User::where('id', $id)->first();
+            if ($user) {
+                User::where('id', $id)->update(['status' => $status['status']]);
+                //  $user->update(['status' => $status['status']]);
+                return response()->json(['message' => 'user inactivated'], 200);
+            } else {
+                return response()->json(['error' => 'user cannot be inactivated'], 400);
+            }
+
+            //GERA LOG
+            $log = Auth::user();
+            $saveLog = new UserLog();
+            $saveLog->id_user = $log->id;
+            $saveLog->ip_user = $request->ip();
+            $saveLog->id_log = 12;
+            $saveLog->save();
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Fail on delete a user'], 400);
+        }
+    }
+
     public function logsUser(Request $request)
     {
         if ($request->user()->role_id != 1) {
@@ -328,15 +349,19 @@ class UserController extends Controller
 
 
             $user['logs'] = UserLog::from('logs_user as log')
-                ->select('log.id_log', 'act.log_description as log_description', 'log.ip_user',  'log.numatendimento', 'hos.uuid', 'hos.name as hospitalName')
+                ->select('log.id_log', 'act.log_description as log_description', 'log.created_at as timeAction', 'log.ip_user',  'log.numatendimento', 'hos.uuid', 'hos.name as hospitalName', 'group.name as groupName')
                 ->join('logs_action as act', 'act.id', '=', 'log.id_log')
-                ->leftJoin('hospitais as hos', 'hos.uuid', '=', 'log.uuidatendimento')
+                ->leftJoin('hospitais as hos', 'hos.uuid', '=', 'log.uuid_hospital_atendimento')
+                ->leftJoin('groups as group', 'group.id', '=', 'hos.grupo_id')
                 ->where('id_user', $user->id)
                 ->when(!empty($request->datainicio), function ($query) use ($data) {
                     return $query->whereDate('log.created_at', '>=', $data['datainicio']);
                 })
                 ->when(!empty($request->fimdata), function ($query) use ($data) {
                     return $query->whereDate('log.created_at', '>=', $data['fimdata']);
+                })
+                ->when(!empty($request->sort), function ($query) use ($data) {
+                    return $query->orderBy($data['sort'], $data['sortOrder']);
                 })
                 ->get();
             return response()->json(
@@ -345,6 +370,7 @@ class UserController extends Controller
             );
         }
     }
+
     public function logsUserAll(Request $request)
     {
         /*  if ($request->user()->role_id != 1) {
@@ -363,10 +389,11 @@ class UserController extends Controller
         }
 
         $logs = UserLog::from('logs_user as log')
-            ->select('us.id as id_user', 'us.name as userName', 'log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action', 'log.numatendimento', 'hos.uuid', 'hos.name as hospitalName')
+            ->select('us.id as id_user', 'us.name as userName', 'log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action', 'log.numatendimento', 'hos.uuid', 'hos.name as hospitalName', 'group.name as groupName')
             ->join('logs_action as act', 'act.id', '=', 'log.id_log')
             ->join('users as us', 'us.id', '=', 'log.id_user')
-            ->leftJoin('hospitais as hos', 'hos.uuid', '=', 'log.uuidatendimento')
+            ->leftJoin('hospitais as hos', 'hos.uuid', '=', 'log.uuid_hospital_atendimento')
+            ->leftJoin('groups as group', 'group.id', '=', 'hos.grupo_id')
             ->when(!empty($request->datainicio), function ($query) use ($data) {
                 return $query->whereDate('log.created_at', '>=', $data['datainicio']);
             })
@@ -380,25 +407,12 @@ class UserController extends Controller
                 return $query->where('hos.name', 'like', '%' . $data['procedencia'] . '%');
             })
             ->when(!empty($request->sort), function ($query) use ($data) {
-                return $query->orderBy('time_action', $data['sort']);
+                return $query->orderBy($data['sort'], $data['sortOrder']);
             })
             ->where('us.role_id', '!=', 1)
             ->paginate($request->limit);
 
 
-
-        /* $logs['SenneUser'] = UserLog::from('logs_user as log')
-            ->select('us.id as id_user', 'us.name as userName', 'log.id_log', 'act.log_description as log_description', 'log.ip_user', 'log.created_at as time_action')
-            ->join('logs_action as act', 'act.id', '=', 'log.id_log')
-            ->join('users as us', 'us.id', '=', 'log.id_user')
-            ->where('us.role_id', 1)
-            ->when(!empty($request->datainicio), function ($query) use ($data) {
-                return $query->whereDate('log.created_at', '>=', $data['datainicio']);
-            })
-            ->when(!empty($request->fimdata), function ($query) use ($data) {
-                return $query->whereDate('log.created_at', '>=', $data['fimdata']);
-            })
-            ->get();*/
 
         return response()->json(
             ['status' => 'success', 'Logs' => $logs],
@@ -535,7 +549,7 @@ class UserController extends Controller
         }
 
         $data = User::from('users as user')
-            ->select('user.id', 'user.name', 'user.email', 'user.role_id')
+            ->select('user.id', 'user.name', 'user.email', 'user.role_id', 'user.status')
             ->where('user.role_id', '!=', 1)
             ->get()
             ->toArray();
@@ -602,7 +616,7 @@ class UserController extends Controller
         } else {
 
             $hospital['users'] = UsersHospitals::from('users_hospitals as userhos')
-                ->select('us.name', 'us.id', 'us.email')
+                ->select('us.name', 'us.id', 'us.email', 'us.status')
                 ->join('users as us', 'us.id', '=', 'userhos.id_user')
                 ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
                 ->where('userhos.id_hospital', '=', $id)
@@ -626,6 +640,7 @@ class UserController extends Controller
             );
         }
     }
+
     public function listUsersAdm(Request $request)
     {
 
@@ -707,5 +722,181 @@ class UserController extends Controller
                 404
             );
         }
+    }
+
+    public function approveUser($id, Request $request)
+    {
+        if ($request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
+                return response()->json(['error' => "Unauthorized not administrator"], 401);
+            }
+        }
+        $id = $request->id;
+        $data = $request->only('name', 'phone', 'cpf', 'email');
+        $permissions = $request->permissions;
+        $hospitalsId = $request->hospitals;
+
+        //Validar se email existe!
+        $user = User::where('id', $id)->first();
+        //dd($user);
+
+        if ($user == null) {
+            return response()->json(['error' => "user cannot be found"], 401);
+        }
+        if ($user->status == 1) {
+            return response()->json(['error' => "user already activated"], 401);
+        }
+
+        /* CHECAR SE EMAIL CONFERE COM DOMINIO */
+        $userEmail = $data['email'];
+        $dominio = explode('@', $userEmail);
+        //dd($dominio[1]);
+        $domainEmail = $dominio[1];
+        $hospital = Hospitais::where('id', $hospitalsId)->first();
+        $hospitals = DomainHospital::from('domains_hospitals as domain')
+            ->select('hos.name', 'domain.domains',)
+            ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
+            ->where('hos.id', '=', $hospitalsId)
+            ->get()
+            ->toArray();
+        $domains = DomainHospital::from('domains_hospitals as domain')
+            ->select('domain.domains')
+            ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
+            ->where('hos.id', '=',  $hospitalsId)
+            ->get();
+
+
+        $domain = [];
+        foreach ($hospitals as $hospital) {
+            $domain = [
+                'email' => $hospital['domains']
+            ];
+        }
+        if (empty($domain)) {
+            $domain['email'] = $domainEmail;
+        }
+
+        if (empty($domains) || $domainEmail === $domain['email']) {
+
+            try {
+                \DB::beginTransaction();
+
+                $user = User::where('id', $id)->first();
+                if ($user) {
+                    $user->update($data, ['status' => 2]);
+                }
+
+
+                /* Salva mais de um hospital ao usuário*/
+                UsersHospitals::where('id_user', $user->id)->delete(); //Deleta os registros
+                if (!empty($hospitalsId)) {
+                    foreach ($hospitalsId  as $id_hospital) {
+                        UsersHospitals::create(['id_hospital' => $id_hospital, 'id_user' => $user->id]);
+                    }
+                }
+
+
+                /* Salva permissões do Usuário */
+                UserPermissoes::where('id_user', $user->id)->delete(); //Deleta os registros
+                if (!empty($permissions)) {
+                    foreach ($permissions as $id_permission) {
+                        UserPermissoes::create(['id_permissao' => $id_permission, 'id_user' => $user->id]);
+                    }
+                }
+
+                //GERA LOG
+                $log = Auth::user();
+                $saveLog = new UserLog();
+                $saveLog->id_user = $log->id;
+                $saveLog->ip_user = $request->ip();
+                $saveLog->id_log = 11;
+                $saveLog->save();
+
+                \DB::commit();
+            } catch (\Throwable $th) {
+                dd($th->getMessage());
+                \DB::rollback();
+                return ['error' => 'Could not write data', 400];
+            }
+
+            $status = Password::sendResetLink(
+                $request->only('email'),
+            );
+
+            if ($status == Password::RESET_LINK_SENT) {
+                return [
+                    'status' => __($status),
+                    'message' => "User approved successfully!",
+                    'data' => $user
+                ];
+            }
+
+            throw ValidationException::withMessages([
+                'email' => [trans($status)],
+            ]);
+        } else {
+            return response()->json(['error' => 'Domain is invalid for this hospital'], 400);
+        }
+    }
+    public function approveDoctorUser($id, Request $request)
+    {
+        if ($request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
+                return response()->json(['error' => "Unauthorized not administrator"], 401);
+            }
+        }
+        $id = $request->id;
+        $data = $request->only(['name', 'crm', 'phone', 'email', 'especialidade', 'novidades']);
+
+        //Validar se email existe!
+        $user = User::where('id', $id)->first();
+
+        if ($user->role_id != 4) {
+            return response()->json(['error' => "You cant approve the user in this route"], 401);
+        }
+
+        if ($user->status == 1) {
+            return response()->json(['error' => "user already activated"], 401);
+        }
+
+        try {
+            \DB::beginTransaction();
+
+            $user = User::where('id', $id)->first();
+            if ($user) {
+                $user->update($data, ['status' => 2]);
+            }
+
+
+            //GERA LOG
+            $log = Auth::user();
+            $saveLog = new UserLog();
+            $saveLog->id_user = $log->id;
+            $saveLog->ip_user = $request->ip();
+            $saveLog->id_log = 11;
+            $saveLog->save();
+
+            \DB::commit();
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+            \DB::rollback();
+            return ['error' => 'Could not write data', 400];
+        }
+
+        $status = Password::sendResetLink(
+            $request->only('email'),
+        );
+
+        if ($status == Password::RESET_LINK_SENT) {
+            return [
+                'status' => __($status),
+                'message' => "User approved successfully!",
+                'data' => $user
+            ];
+        }
+
+        throw ValidationException::withMessages([
+            'email' => [trans($status)],
+        ]);
     }
 }

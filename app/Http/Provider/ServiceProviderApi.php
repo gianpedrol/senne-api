@@ -27,42 +27,7 @@ class Client
         return $body;
     }
 
-    public function getUnits(string $buildingId): array
-    {
-        $response = $this->httpClient->post(self::REQUEST_BASE_PATH.'/consultarLocaisObra', [
-            'json' => [
-                'idEmpresa' => $this->companyId,
-                'idObra' => $buildingId,
-            ],
-        ]);
-
-        $body = json_decode($response->getBody());
-
-        return $body->locais;
-    }
-
-    public function createRequest(array $data): object
-    {
-        $response = $this->httpClient
-            ->post(self::REQUEST_BASE_PATH.'/incluirSolicitacao', [
-                'json' => $data,
-            ])
-        ;
-
-        return json_decode($response->getBody());
-    }
-
-    public function getCustomer(string $document): object
-    {
-        $response = $this->httpClient->post(self::REQUEST_BASE_PATH.'/consultarCliente', [
-            'json' => [
-                'idEmpresa' => $this->companyId,
-                'cpfCnpj' => $document,
-            ],
-        ]);
-
-        return json_decode($response->getBody());
-    }
+  
 
     public function getCustomerSolicitations(string $document): object
     {   
@@ -94,19 +59,6 @@ class Client
         return json_decode($response->getBody());
     }
 
-
-    public function getSchedule ($data)
-    {
-        $response = $this->httpClient        
-            ->post(self::REQUEST_BASE_PATH_NEW.'/consultarDisponibilidadeAgendamento', [                
-            'headers' => [
-                'Authorization'=> 'Bearer ' . self::REQUEST_TOKEN_NEW
-            ],
-                'json' => $data,                
-            ]);
-
-        return json_decode($response->getBody());
-    }
 
     public function createSchedule ($data)
     {

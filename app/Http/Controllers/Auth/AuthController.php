@@ -23,9 +23,12 @@ use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+    public function login(Request $request, $role_id)
     {
         $user = User::where('email', $request->email)->first();
+
+        dd($user->role_id);
+
 
         if ($user->status == 0) {
             return response()->json([

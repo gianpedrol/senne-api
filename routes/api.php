@@ -51,7 +51,7 @@ Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'ver
 //ROTA DE NÃO AUTORIZADO
 Route::get('/401', [AuthController::class, 'unauthorized'])->name('login');
 //ROTA DE LOGIN
-Route::post('auth/login', [AuthController::class, 'login']);
+Route::post('auth/login/{role_id}', [AuthController::class, 'login']);
 Route::post('auth/logout', [AuthController::class, 'logout']);
 
 
@@ -70,7 +70,7 @@ Route::post('patient/register', [RegisterController::class, 'registerPatient']);
 Route::post('doctor/register', [RegisterController::class, 'registerDoctor']);
 Route::get('doctor/speciality', [RegisterController::class, 'getSpeciality']);
 Route::get('hospitals/list', [RegisterController::class, 'gethospital']);
-Route::get('hospitals/list', [RegisterController::class, 'gethospital']);
+Route::get('hospitals/list/{id}', [RegisterController::class, 'gethospitalId']);
 Route::get('hospitals/domain/list', [RegisterController::class, 'getHospitalDomain']);
 Route::post('user/hospital/register', [RegisterController::class, 'RegisterUserHospital']);
 Route::post('partner/register', [RegisterController::class, 'registerPartner']);

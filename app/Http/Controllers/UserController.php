@@ -81,6 +81,7 @@ class UserController extends Controller
             ->get();
 
         $domain = [];
+
         foreach ($hospitals as $hospital) {
             $domain = [
                 'email' => $hospital['domains']

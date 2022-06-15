@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\emailPendentRegister;
 use App\Models\User;
 use Illuminate\Http\Request;
 use DB;
@@ -157,10 +158,30 @@ class RegisterController extends Controller
         return response()->json([$medical_specility]);
     }
 
-    public function getHospital(Request $request)
+    public function getHospitalId(Request $request, $id)
     {
+
+        $hospitals = DomainHospital::from('domains_hospitals as domain')
+            ->select('hos.name', 'domain.domains',)
+            ->join('hospitais as hos', 'domain.codprocedencia', '=', 'hos.codprocedencia')
+            ->where('hos.id', '=', $id)
+            ->get();
+
+        if (empty($hospitals)) {
+            $hospital = Hospitais::where('id', $id)->first();
+
+            return response()->json($hospital);
+        }
+        
+        return response()->json($hospitals);
+    }
+
+    public function getHospital()
+    {
+
         $hospitals = Hospitais::all();
         return response()->json($hospitals);
+
     }
 
     public function registerPartner(Request $request)
@@ -169,6 +190,7 @@ class RegisterController extends Controller
 
         $usersMasters = User::where('role_id', 1)->get();
         $sendTo = [];
+
         foreach ($usersMasters as $user) {
             $sendTo = [
                 'email' => $user->email
@@ -195,9 +217,9 @@ class RegisterController extends Controller
 
         $user = User::where('email', $data['email'])->first();
 
-        if (!empty($user)) {
+        /*  if (!empty($user)) {
             return response()->json(['error' => "User already exists!"], 200);
-        }
+        }*/
 
         try {
             \DB::beginTransaction();
@@ -240,9 +262,15 @@ class RegisterController extends Controller
                     UserPermissoes::create(['id_permissao' => $id_permission, 'id_user' => $newUser->id]);
                 }
             }
-
-
             \DB::commit();
+            try {
+                /* Enviar e-mail para o usuário com sua senha de acesso */
+                Mail::to($newUser->email)->send(new emailPendentRegister($data));
+                return response()->json(['status' => 'solicitation sended', $newUser], 200);
+            } catch (Exception $ex) {
+                dd($ex);
+                return response()->json(['error' => 'cannot be sended', $ex], 500);
+            }
         } catch (\Throwable $th) {
             dd($th->getMessage());
             \DB::rollback();
@@ -276,7 +304,6 @@ class RegisterController extends Controller
             ->join('hospitais as hos', 'domain.codprocedencia', '=', 'hos.codprocedencia')
             ->where('domain.domains', '=', $domain)
             ->get();
-
         return response()->json($hospitals);
     }
 

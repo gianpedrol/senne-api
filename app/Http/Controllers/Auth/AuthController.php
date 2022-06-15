@@ -27,11 +27,9 @@ class AuthController extends Controller
     {
         $user = User::where('email', $request->email)->first();
 
-        if ($role_id != $user->role_id) {
-            return response()->json([
-                'message'   => 'The user cannot login at this route',
-            ], 500);
-        }
+        /* if ($role_id != $user->role_id) {
+
+        }*/
 
         if ($user->status == 0) {
             return response()->json([
@@ -106,6 +104,10 @@ class AuthController extends Controller
                 $user['permissoes'] = UserPermissoes::where('id_user', $user->id)->select('id_permissao as id')->get();
                 return response()->json(['message' => "User Logged in!", 'token' => $array['token'], 'user' => $user], 200);
             }
+        } else {
+            return response()->json([
+                'message'   => 'The user cannot login at this route',
+            ], 500);
         }
     }
 

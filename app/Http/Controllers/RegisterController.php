@@ -172,7 +172,7 @@ class RegisterController extends Controller
 
             return response()->json($hospital);
         }
-        
+
         return response()->json($hospitals);
     }
 
@@ -181,7 +181,6 @@ class RegisterController extends Controller
 
         $hospitals = Hospitais::all();
         return response()->json($hospitals);
-
     }
 
     public function registerPartner(Request $request)
@@ -217,9 +216,9 @@ class RegisterController extends Controller
 
         $user = User::where('email', $data['email'])->first();
 
-        /*  if (!empty($user)) {
+        if (!empty($user)) {
             return response()->json(['error' => "User already exists!"], 200);
-        }*/
+        }
 
         try {
             \DB::beginTransaction();

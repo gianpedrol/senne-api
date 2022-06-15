@@ -27,8 +27,11 @@ class AuthController extends Controller
     {
         $user = User::where('email', $request->email)->first();
 
-        dd($user->role_id);
-
+        if ($role_id != $user->role_id) {
+            return response()->json([
+                'message'   => 'The user cannot login at this route',
+            ], 500);
+        }
 
         if ($user->status == 0) {
             return response()->json([

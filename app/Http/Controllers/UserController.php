@@ -290,7 +290,7 @@ class UserController extends Controller
             $saveLog = new UserLog();
             $saveLog->id_user = $log->id;
             $saveLog->ip_user = $request->ip();
-            $saveLog->id_log = 5;
+            $saveLog->id_log = 12;
             $saveLog->save();
         } catch (\Exception $e) {
             return response()->json(['message' => 'Fail on delete a user'], 400);
@@ -755,6 +755,14 @@ class UserController extends Controller
                         UserPermissoes::create(['id_permissao' => $id_permission, 'id_user' => $user->id]);
                     }
                 }
+
+                //GERA LOG
+                $log = Auth::user();
+                $saveLog = new UserLog();
+                $saveLog->id_user = $log->id;
+                $saveLog->ip_user = $request->ip();
+                $saveLog->id_log = 11;
+                $saveLog->save();
 
                 \DB::commit();
             } catch (\Throwable $th) {

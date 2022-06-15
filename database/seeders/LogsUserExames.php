@@ -21,6 +21,8 @@ class LogsUserExames extends Seeder
             ['log_description' => 'Acessou um Laudo Principal', 'id' => 8],
             ['log_description' => 'Acessou um Atendimento', 'id' => 9],
             ['log_description' => 'Acessou Lista Atendimentos', 'id' => 10],
+            ['log_description' => 'Aprovou um Usuário', 'id' => 11],
+            ['log_description' => 'Inativou um Usuário', 'id' => 12]
 
         ];
 

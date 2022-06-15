@@ -32,6 +32,8 @@ use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
+//use DB;
+
 class UserController extends Controller
 {
     public function createUserMaster(Request $request)
@@ -409,47 +411,71 @@ class UserController extends Controller
         if ($request->user()->role_id != 1) {
             return response()->json(['error' => "Unauthorized "], 401);
         }
+
+        $data = $request->all();
+        //$status = explode(',', $request->status);
+        $data['status'] = explode(',', $request->status);
+
+
+        $per_page = (isset($request->per_page) && $request->per_page > 0) ? $request->per_page : 10;
+
+        $sort = (isset($request->per_page) && !empty($request->sort)) ? $request->sort : 'id';
+
+
         //Trazemos os usuarios que possui vinculo com hospitais
-        $data = User::from('users as user')
-            ->select('user.id', 'user.name', 'user.email', 'user.role_id')
+        $all_users = User::from('users as user')
+            ->select(
+                'user.id',
+                'user.name',
+                'user.email',
+                'user.role_id'
+            )
             ->where('user.role_id', '!=', 1)
-            ->get()
-            ->toArray();
+            ->when(!empty($request->name), function ($query) use ($data) {
+                return $query->where('user.name', 'like', '%' . $data['name'] . '%');
+            })
+            ->when(!empty($request->status), function ($query) use ($data) {
+                return $query->whereIn('user.status', $data['status']);
+            })
+            ->when(!empty($request->orderby) && $sort == 'id', function ($query) use ($data) {
+                return $query->orderBy('id', $data['orderby']);
+            })
+            ->when(!empty($request->orderby) && $sort == 'name', function ($query) use ($data) {
+                return $query->orderBy('name', $data['orderby']);
+            })
+            ->paginate($per_page);
 
-        /*$users = User::where('role_id', '!=', 1)->get();
-
-        // Trazemos usuarios que não possui vinculo com hospitais
-        $user_db = [];
-        foreach ($users as $key => $user) {
-            // dd($user);
-            $user_nothos = UsersHospitals::where('id_user', $user->id)->first();
-
-            if (empty($user_nothos) || empty($userlog)) {
-                $user_db[$key]['id'] = $user->id;
-                $user_db[$key]['name'] = $user->name;
-                $user_db[$key]['email'] = $user->email;
-            }
-        }*/
-
-
-        // Juntamos os usuários em uma só array
-        $all_users = array_merge($data);
+        //dd($all_users);
 
 
         //Rodamos o loop para trazer o ultimo log de cada usuário
         $retorno = [];
         foreach ($all_users as $key1 => $user_only) {
-            //$user_only['permissoes'] = UserPermissoes::where('id_user', $user_only['id'])->select('id_permissao as id')->get();
             $user_only['dateLogin'] = UserLog::where('id_user', $user_only['id'])->orderBy('id_log', 'DESC')->first('created_at');
-            // $user_only['hospitais'] = UsersHospitals::where('id_user', $user_only['id'])->get();
             $user_only['hospitais'] = UsersHospitals::from('users_hospitals as userhos')
                 ->select('hos.id as id_hospital', 'hos.name as name', 'hos.uuid', 'hos.grupo_id', 'group.name as GroupName')
                 ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
                 ->join('groups as group', 'group.id', '=', 'hos.grupo_id')
                 ->where('id_user', $user_only['id'])
+                ->when(!empty($request->procedencia), function ($query) use ($data) {
+                    return $query->where('hos.name', 'like', '%' . $data['procedencia'] . '%');
+                })
                 ->get();
             $retorno[] = $user_only;
         }
+
+        $all_users = $all_users->toArray();
+
+        //Construct paginate info
+        $retorno['first_page_url'] = $all_users['first_page_url'];
+        $retorno['from'] = $all_users['from'];
+        $retorno['last_page'] = $all_users['last_page'];
+        $retorno['next_page_url'] = $all_users['next_page_url'];
+        $retorno['path'] = $all_users['path'];
+        $retorno['per_page'] = $all_users['per_page'];
+        $retorno['prev_page_url'] = $all_users['prev_page_url'];
+        $retorno['to'] = $all_users['to'];
+        $retorno['total'] = $all_users['total'];
 
         return response()->json(
             ['status' => 'success', 'Users' => $retorno],

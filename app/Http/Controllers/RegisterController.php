@@ -217,87 +217,116 @@ class RegisterController extends Controller
 
         $data = $request->only(['name', 'cpf', 'phone', 'email', 'department']);
         $permissions = $request->permissions;
-        $hospitals = $request->hospitals;
+        $hospitalsId = $request->hospitals;
 
         $user = User::where('email', $data['email'])->first();
 
         if (!empty($user)) {
             return response()->json(['error' => "User already exists!"], 200);
         }
+        /* CHECAR SE EMAIL CONFERE COM DOMINIO */
+        $userEmail = $data['email'];
+        $dominio = explode('@', $userEmail);
+        //dd($dominio[1]);
+        $domainEmail = $dominio[1];
 
-        try {
-            \DB::beginTransaction();
 
-            //Define nivel user Senne
-            $role_id = 2;
 
-            //$senha_md5= Str::random(8);//Descomentar após testes
-            $senha_md5 = '654321';
-            $senha_temp = bcrypt($senha_md5);
+        $hospital = Hospitais::where('id', $hospitalsId)->first();
 
-            $newUser = new User();
-            $newUser->name = $data['name'];
-            $newUser->email = $data['email'];
-            $newUser->cpf = $data['cpf'];
-            $newUser->phone = $data['phone'];
-            $newUser->id_department = $data['department'];
-            $newUser->status = 2;
-            $newUser->role_id = $role_id;
-            $newUser->password = $senha_temp;
-            $newUser->save();
+        $hospitals = DomainHospital::from('domains_hospitals as domain')
+            ->select('hos.name', 'domain.domains',)
+            ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
+            ->where('hos.id', '=', $hospitalsId)
+            ->get()
+            ->toArray();
 
-            /* Salva mais de um hospital ao usuário*/
-            if (!empty($hospitals)) {
-                foreach ($hospitals as $id_hospital) {
-                    UsersHospitals::create(['id_hospital' => $id_hospital, 'id_user' => $newUser->id]);
-                }
-            }
+        $domains = DomainHospital::from('domains_hospitals as domain')
+            ->select('domain.domains')
+            ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
+            ->where('hos.id', '=',  $hospitalsId)
+            ->get();
 
-            /* Salva mais de um hospital ao usuário*/
-            if (!empty($hospitals)) {
+        $domain = [];
 
-                $info_hospital = Hospitais::where('id', $hospitals[0])->first();
-                UsersGroup::create(['id_group' => $info_hospital->grupo_id, 'id_user' => $newUser->id]);
-            }
-
-            /* Salva permissões do Usuário */
-            if (!empty($permissions)) {
-                foreach ($permissions as $id_permission) {
-                    UserPermissoes::create(['id_permissao' => $id_permission, 'id_user' => $newUser->id]);
-                }
-            }
-            \DB::commit();
-            try {
-                /* Enviar e-mail para o usuário com sua senha de acesso */
-                Mail::to($newUser->email)->send(new emailPendentRegister($data));
-                return response()->json(['status' => 'solicitation sended', $newUser], 200);
-            } catch (Exception $ex) {
-                dd($ex);
-                return response()->json(['error' => 'cannot be sended', $ex], 500);
-            }
-        } catch (\Throwable $th) {
-            dd($th->getMessage());
-            \DB::rollback();
-            return ['error' => 'Could not write data', 400];
-        }
-
-        /*   $status = Password::sendResetLink(
-            $request->only('email'),
-        );
-
-        if ($status == Password::RESET_LINK_SENT) {
-            return [
-                'status' => __($status)
+        foreach ($hospitals as $hospital) {
+            $domain = [
+                'email' => $hospital['domains']
             ];
         }
 
-        throw ValidationException::withMessages([
-            'email' => [trans($status)],
-        ]);*/
+        if (empty($domain)) {
+            $domain['email'] = $domainEmail;
+        }
 
-        return response()->json([
-            'message' => "User registered successfully!", 'data' => $newUser
-        ], 200);
+        if (empty($domains) || $domainEmail === $domain['email']) {
+            try {
+                \DB::beginTransaction();
+
+                //Define nivel user Senne
+                $role_id = 2;
+
+                //$senha_md5= Str::random(8);//Descomentar após testes
+                $senha_md5 = '654321';
+                $senha_temp = bcrypt($senha_md5);
+
+                $newUser = new User();
+                $newUser->name = $data['name'];
+                $newUser->email = $data['email'];
+                $newUser->cpf = $data['cpf'];
+                $newUser->phone = $data['phone'];
+                $newUser->status = 3;
+                $newUser->role_id = $role_id;
+                $newUser->password = $senha_temp;
+                $newUser->save();
+
+
+                if (!empty($hospitals)) {
+                    UsersHospitals::create(['id_hospital' =>  $hospitalsId, 'id_user' => $newUser->id]);
+                }
+
+                /* Salva mais de um hospital ao usuário*/
+                /* if (!empty($hospitals)) {
+               foreach ($hospitals as $id_hospital) {
+               UsersHospitals::create(['id_hospital' =>  $id_hospital, 'id_user' => $newUser->id]);                        
+               }
+           }*/
+
+                /* Salva mais de um hospital ao usuário*/
+                /*  if (!empty($hospitals)) {
+               dd($hospitals);
+               $info_hospital = Hospitais::where('id', $hospitals[0])->first();
+               UsersGroup::create(['id_group' => $info_hospital->grupo_id, 'id_user' => $newUser->id]);
+           }*/
+
+                /* Salva permissões do Usuário */
+                if (!empty($permissions)) {
+                    foreach ($permissions as $id_permission) {
+                        UserPermissoes::create(['id_permissao' => $id_permission, 'id_user' => $newUser->id]);
+                    }
+                }
+
+                \DB::commit();
+                try {
+                    /* Enviar e-mail para o usuário com sua senha de acesso */
+                    Mail::to($newUser->email)->send(new emailPendentRegister($data));
+                    return response()->json(['status' => 'solicitation sended', $newUser], 200);
+                } catch (Exception $ex) {
+                    dd($ex);
+                    return response()->json(['error' => 'cannot be sended', $ex], 500);
+                }
+            } catch (\Throwable $th) {
+                dd($th->getMessage());
+                \DB::rollback();
+                return ['error' => 'Could not write data', 400];
+            }
+
+            return response()->json([
+                'message' => "User registered successfully!", 'data' => $newUser
+            ], 200);
+        } else {
+            return response()->json(['error' => 'Domain is invalid for this hospital'], 400);
+        }
     }
 
     public function getHospitalDomain(Request $request)

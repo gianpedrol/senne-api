@@ -75,7 +75,6 @@ class HospitalController extends Controller
 
         $items = json_decode($response->getBody());
 
-
         /* SEPARA OS DADOS DA API */
         foreach ($items->items as $item) {
 

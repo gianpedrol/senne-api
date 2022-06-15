@@ -115,8 +115,12 @@ class UserController extends Controller
                 $newUser->save();
 
 
-                if (!empty($hospitals)) {
-                    UsersHospitals::create(['id_hospital' =>  $hospitalsId, 'id_user' => $newUser->id]);
+                /* Salva mais de um hospital ao usuário*/
+                UsersHospitals::where('id_user', $newUser->id)->delete(); //Deleta os registros
+                if (!empty($hospitalsId)) {
+                    foreach ($hospitalsId  as $id_hospital) {
+                        UsersHospitals::create(['id_hospital' => $id_hospital, 'id_user' => $newUser->id]);
+                    }
                 }
 
                 /* Salva mais de um hospital ao usuário*/
@@ -690,67 +694,92 @@ class UserController extends Controller
         $id = $request->id;
         $data = $request->only('name', 'phone', 'cpf', 'email');
         $permissions = $request->permissions;
-        $hospitals = $request->hospitals;
+        $hospitalsId = $request->hospitals;
 
         //Validar se email existe!
         $user = User::where('id', $id)->first();
 
-        try {
-            \DB::beginTransaction();
+        /* CHECAR SE EMAIL CONFERE COM DOMINIO */
+        $userEmail = $data['email'];
+        $dominio = explode('@', $userEmail);
+        //dd($dominio[1]);
+        $domainEmail = $dominio[1];
+        $hospital = Hospitais::where('id', $hospitalsId)->first();
+        $hospitals = DomainHospital::from('domains_hospitals as domain')
+            ->select('hos.name', 'domain.domains',)
+            ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
+            ->where('hos.id', '=', $hospitalsId)
+            ->get()
+            ->toArray();
+        $domains = DomainHospital::from('domains_hospitals as domain')
+            ->select('domain.domains')
+            ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
+            ->where('hos.id', '=',  $hospitalsId)
+            ->get();
 
-            $user = User::where('id', $id)->first();
-            if ($user) {
-                $user->update($data);
-            }
 
-
-            /* Salva mais de um hospital ao usuário*/
-            UsersHospitals::where('id_user', $user->id)->delete(); //Deleta os registros
-            if (!empty($hospitals)) {
-                foreach ($hospitals as $id_hospital) {
-                    UsersHospitals::create(['id_hospital' => $id_hospital, 'id_user' => $user->id]);
-                }
-            }
-
-
-            /* Salva permissões do Usuário */
-            UserPermissoes::where('id_user', $user->id)->delete(); //Deleta os registros
-            if (!empty($permissions)) {
-                foreach ($permissions as $id_permission) {
-                    UserPermissoes::create(['id_permissao' => $id_permission, 'id_user' => $user->id]);
-                }
-            }
-            //GERA LOG
-            $log = Auth::user();
-            $saveLog = new UserLog();
-            $saveLog->id_user = $log->id;
-            $saveLog->ip_user = $request->ip();
-            $saveLog->id_log = 3;
-            $saveLog->save();
-
-            \DB::commit();
-        } catch (\Throwable $th) {
-            dd($th->getMessage());
-            \DB::rollback();
-            return ['error' => 'Could not write data', 400];
-        }
-
-        //dd($user->email);
-
-        $status = Password::sendResetLink(
-            $request->only('email'),
-        );
-
-        if ($status == Password::RESET_LINK_SENT) {
-            return [
-                'status' => __($status),
-                'message' => "User approved successfully!",
-                'data' => $user
+        $domain = [];
+        foreach ($hospitals as $hospital) {
+            $domain = [
+                'email' => $hospital['domains']
             ];
         }
+        if (empty($domain)) {
+            $domain['email'] = $domainEmail;
+        }
 
-        throw ValidationException::withMessages([
-            'email' => [trans($status)],
-        ]);
+        if (empty($domains) || $domainEmail === $domain['email']) {
+
+            try {
+                \DB::beginTransaction();
+
+                $user = User::where('id', $id)->first();
+                if ($user) {
+                    $user->update($data, ['status' => 2]);
+                }
+
+
+                /* Salva mais de um hospital ao usuário*/
+                UsersHospitals::where('id_user', $user->id)->delete(); //Deleta os registros
+                if (!empty($hospitalsId)) {
+                    foreach ($hospitalsId  as $id_hospital) {
+                        UsersHospitals::create(['id_hospital' => $id_hospital, 'id_user' => $user->id]);
+                    }
+                }
+
+
+                /* Salva permissões do Usuário */
+                UserPermissoes::where('id_user', $user->id)->delete(); //Deleta os registros
+                if (!empty($permissions)) {
+                    foreach ($permissions as $id_permission) {
+                        UserPermissoes::create(['id_permissao' => $id_permission, 'id_user' => $user->id]);
+                    }
+                }
+
+                \DB::commit();
+            } catch (\Throwable $th) {
+                dd($th->getMessage());
+                \DB::rollback();
+                return ['error' => 'Could not write data', 400];
+            }
+
+            $status = Password::sendResetLink(
+                $request->only('email'),
+            );
+
+            if ($status == Password::RESET_LINK_SENT) {
+                return [
+                    'status' => __($status),
+                    'message' => "User approved successfully!",
+                    'data' => $user
+                ];
+            }
+
+            throw ValidationException::withMessages([
+                'email' => [trans($status)],
+            ]);
+        } else {
+            return response()->json(['error' => 'Domain is invalid for this hospital'], 400);
+        }
     }
 }

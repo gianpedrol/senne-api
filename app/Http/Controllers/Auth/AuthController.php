@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 use DB;
-
+use Illuminate\Validation\ValidationException;
 use App\Models\User;
 use App\Models\UserLog;
 use App\Models\UserPermissoes;
@@ -39,46 +39,73 @@ class AuthController extends Controller
             ], 404);
         }
 
-        $array = ['message' => ''];
-        $creds = $request->only('email', 'password');
-        $token = Auth::attempt($creds);
+        if ($user->status == 2) {
 
+            $status = Password::sendResetLink(
+                $request->only('email'),
+            );
 
+            if ($status == Password::RESET_LINK_SENT) {
 
-        if ($token) {
-            $user['email'] = $creds;
-            $array['token'] = $token;
-        } else {
-            $array['message'] = 'Incorrect username or password';
+                return response()->json([
+                    'status' => __($status),
+                    'message'   => 'The user is not activated, check your email'
+                ], 400);
+            }
+
+            throw ValidationException::withMessages([
+                'email' => [trans($status)],
+            ]);
         }
 
-        $user = User::where('email', $user['email'])->first();
-        $log = User::where('email', $user['email'])->first();
-
-        $saveLog = new UserLog();
-        $saveLog->id_user = $log->id;
-        $saveLog->ip_user = $request->ip();
-        $saveLog->id_log = 1;
-        $saveLog->save();
-
-        $user = [];
-        $user = Auth::user();
-
-        if (!$user) {
+        if ($user->status == 3) {
             return response()->json([
-                'message'   => 'The user can t be found',
+                'message'   => 'User is awaiting approval',
             ], 404);
-        } else {
+        }
 
-            $user['hospitals'] = UsersHospitals::from('users_hospitals as userhos')
-                ->select('hos.id', 'hos.grupo_id', 'hos.name as name',  'hos.uuid')
-                ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
-                ->where('id_user', $user->id)
-                ->get();
+        if ($user->role_id == 1 || $role_id == $user->role_id) {
+            $array = ['message' => ''];
+            $creds = $request->only('email', 'password');
+            $token = Auth::attempt($creds);
 
 
-            $user['permissoes'] = UserPermissoes::where('id_user', $user->id)->select('id_permissao as id')->get();
-            return response()->json(['message' => "User Logged in!", 'token' => $array['token'], 'user' => $user], 200);
+
+            if ($token) {
+                $user['email'] = $creds;
+                $array['token'] = $token;
+            } else {
+                $array['message'] = 'Incorrect username or password';
+            }
+
+            $user = User::where('email', $user['email'])->first();
+            $log = User::where('email', $user['email'])->first();
+
+            $saveLog = new UserLog();
+            $saveLog->id_user = $log->id;
+            $saveLog->ip_user = $request->ip();
+            $saveLog->id_log = 1;
+            $saveLog->save();
+
+            $user = [];
+            $user = Auth::user();
+
+            if (!$user) {
+                return response()->json([
+                    'message'   => 'The user can t be found',
+                ], 404);
+            } else {
+
+                $user['hospitals'] = UsersHospitals::from('users_hospitals as userhos')
+                    ->select('hos.id', 'hos.grupo_id', 'hos.name as name',  'hos.uuid')
+                    ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
+                    ->where('id_user', $user->id)
+                    ->get();
+
+
+                $user['permissoes'] = UserPermissoes::where('id_user', $user->id)->select('id_permissao as id')->get();
+                return response()->json(['message' => "User Logged in!", 'token' => $array['token'], 'user' => $user], 200);
+            }
         }
     }
 

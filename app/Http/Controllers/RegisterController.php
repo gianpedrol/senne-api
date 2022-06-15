@@ -179,7 +179,12 @@ class RegisterController extends Controller
     public function getHospital()
     {
 
-        $hospitals = Hospitais::all();
+        $hospitals = Hospitais::from('hospitais as hos')
+            ->select('hos.*', 'domains.domains')
+            ->leftJoin('domains_hospitals as domains', 'hos.codprocedencia', '=', 'domains.codprocedencia')
+            ->where('hos.id', '!=', 0)
+            ->get();
+
         return response()->json($hospitals);
     }
 

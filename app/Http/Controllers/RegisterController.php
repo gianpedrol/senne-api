@@ -18,6 +18,7 @@ use App\Models\UserPermissoes;
 use App\Models\UsersGroup;
 use App\Models\UsersHospitals;
 use Exception;
+
 /* 
 Status 
 

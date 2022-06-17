@@ -34,6 +34,7 @@ ROLE ID
 3 - PACIENTE
 4 - MÉDICO PARTICULAR
 */
+
 class RegisterController extends Controller
 {
     public function registerPatient(Request $request)
@@ -136,7 +137,6 @@ class RegisterController extends Controller
                 dd($ex);
                 return response()->json(['error' => 'cannot be sended', $ex], 500);
             }
-            
         } catch (\Throwable $th) {
             dd($th->getMessage());
             \DB::rollback();
@@ -291,16 +291,16 @@ class RegisterController extends Controller
                 $newUser->save();
 
 
-                if (!empty($hospitals)) {
+                /* if (!empty($hospitals)) {
                     UsersHospitals::create(['id_hospital' =>  $hospitalsId, 'id_user' => $newUser->id]);
-                }
+                }*/
 
                 /* Salva mais de um hospital ao usuário*/
-                /* if (!empty($hospitals)) {
-               foreach ($hospitals as $id_hospital) {
-               UsersHospitals::create(['id_hospital' =>  $id_hospital, 'id_user' => $newUser->id]);                        
-               }
-           }*/
+                if (!empty($hospitals)) {
+                    foreach ($hospitals as $id_hospital) {
+                        UsersHospitals::create(['id_hospital' =>  $id_hospital, 'id_user' => $newUser->id]);
+                    }
+                }
 
                 /* Salva mais de um hospital ao usuário*/
                 /*  if (!empty($hospitals)) {

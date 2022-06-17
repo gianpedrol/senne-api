@@ -709,6 +709,7 @@ class UserController extends Controller
         }
         $id = $request->id;
         $data = $request->only('name', 'phone', 'cpf', 'email');
+        $crm = $request->crm;
         $permissions = $request->permissions;
         $hospitalsId = $request->hospitals;
 
@@ -760,8 +761,10 @@ class UserController extends Controller
                 $user = User::where('id', $id)->first();
                 if ($user) {
                     $user->update($data, ['status' => 2]);
+                    if (!empty($crm)) {
+                        User::where('id', $id)->update(['crm' => $crm]);
+                    }
                 }
-
 
                 /* Salva mais de um hospital ao usuário*/
                 UsersHospitals::where('id_user', $user->id)->delete(); //Deleta os registros
@@ -831,9 +834,7 @@ class UserController extends Controller
             return response()->json(['error' => "You cant approve the user in this route"], 401);
         }
 
-        if ($user->status == 1) {
-            return response()->json(['error' => "user already activated"], 401);
-        }
+
 
         try {
             \DB::beginTransaction();

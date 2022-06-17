@@ -296,8 +296,8 @@ class RegisterController extends Controller
                 }*/
 
                 /* Salva mais de um hospital ao usuário*/
-                if (!empty($hospitals)) {
-                    foreach ($hospitals as $id_hospital) {
+                if (!empty($hospitalsId)) {
+                    foreach ($hospitalsId  as $id_hospital) {
                         UsersHospitals::create(['id_hospital' =>  $id_hospital, 'id_user' => $newUser->id]);
                     }
                 }

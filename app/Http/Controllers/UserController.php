@@ -442,6 +442,7 @@ class UserController extends Controller
                 'user.id',
                 'user.name',
                 'user.email',
+                'user.status',
                 'user.role_id'
             )
             ->where('user.role_id', '!=', 1)

@@ -481,18 +481,18 @@ class UserController extends Controller
         $all_users = $all_users->toArray();
 
         //Construct paginate info
-        $retorno['first_page_url'] = $all_users['first_page_url'];
-        $retorno['from'] = $all_users['from'];
-        $retorno['last_page'] = $all_users['last_page'];
-        $retorno['next_page_url'] = $all_users['next_page_url'];
-        $retorno['path'] = $all_users['path'];
-        $retorno['per_page'] = $all_users['per_page'];
-        $retorno['prev_page_url'] = $all_users['prev_page_url'];
-        $retorno['to'] = $all_users['to'];
-        $retorno['total'] = $all_users['total'];
+        $paginate['first_page_url'] = $all_users['first_page_url'];
+        $paginate['from'] = $all_users['from'];
+        $paginate['last_page'] = $all_users['last_page'];
+        $paginate['next_page_url'] = $all_users['next_page_url'];
+        $paginate['path'] = $all_users['path'];
+        $paginate['per_page'] = $all_users['per_page'];
+        $paginate['prev_page_url'] = $all_users['prev_page_url'];
+        $paginate['to'] = $all_users['to'];
+        $paginate['total'] = $all_users['total'];
 
         return response()->json(
-            ['status' => 'success', 'Users' => $retorno],
+            ['status' => 'success', 'Users' => $retorno, $paginate],
             200
         );
     }

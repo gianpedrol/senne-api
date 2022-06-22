@@ -57,7 +57,8 @@ Route::post('auth/logout', [AuthController::class, 'logout']);
 
 // password reset
 Route::prefix('password')->group(function () {
-    Route::post('forgot', [NewPasswordController::class, 'forgotPassword']);
+    // Route::post('forgot', [NewPasswordController::class, 'forgotPassword']);
+    Route::post('forgot', [NewPasswordController::class, 'forgetPass']);
     Route::post('reset', [NewPasswordController::class, 'resetPassword']);
 });
 

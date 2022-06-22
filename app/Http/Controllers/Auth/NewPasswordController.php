@@ -5,15 +5,22 @@ namespace App\Http\Controllers\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Jobs\sendEmailPasswordReset;
+use App\Mail\emailPasswordReset;
 use App\Models\User;
+use App\Models\PasswordReset;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Auth\Events\PasswordReset;
+//use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password as RulesPassword;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 
 class NewPasswordController extends Controller
 {
@@ -23,6 +30,7 @@ class NewPasswordController extends Controller
             'email' => 'required|email',
         ]);
 
+        $data = $request->email;
 
         $email = $request->email;
         $user = User::where('email', $email)->first();
@@ -30,22 +38,49 @@ class NewPasswordController extends Controller
 
         if ($user) {
 
-            $status = Password::sendResetLink(
-                $request->only('email')
-            );
 
-            if ($status == Password::RESET_LINK_SENT) {
+            /*$url = Password::sendResetLink(
+                $request->only('email')
+            );*/
+
+            try {
+                $user->sendPasswordLink($user);
+                /*
+                User::where('email', $email)->sendPasswordLink(
+                    $user,
+                    $url
+                );*/
+            } catch (Exception $ex) {
+                dd($ex);
+                return response()->json(['error' => 'cannot be sended', $ex], 500);
+            }
+
+            /*if ($status == Password::RESET_LINK_SENT) {
                 return [
                     'status' => __($status)
                 ];
-            }
+            }*/
 
-            throw ValidationException::withMessages([
+            /*  throw ValidationException::withMessages([
                 'email' => [trans($status)],
-            ]);
+            ]);*/
         } else {
             return response()->json(['error' => "User Not found!"], 404);
         }
+    }
+
+    public function forgetPass(Request $request)
+    {
+
+        $user = User::where('email', $request->email)->first();
+
+
+        $url = $user->sendPasswordLink($user);
+
+        Mail::send(new emailPasswordReset($user, $url));
+
+
+        return ['message', 'We have e-mailed your password reset link!'];
     }
 
     public function resetPassword(Request $request)

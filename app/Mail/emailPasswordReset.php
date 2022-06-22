@@ -20,10 +20,12 @@ class emailPasswordReset extends Mailable
      *
      * @return void
      */
-    public function __construct(User $user, $url)
+    public function __construct($user, $url)
     {
         $this->user = $user;
         $this->url = $url;
+
+        //dd($this->url);
     }
 
     /**
@@ -34,8 +36,7 @@ class emailPasswordReset extends Mailable
     public function build()
     {
         $this->subject('Senne troca de senha');
-        $this->to($this->user->email,$this->user->name);
-        return $this->markdown('mail.emailResetPassword',['user'=>$this->user,'url'=>$this->url]);
-        return response()->json('Email Enviado');
+        $this->to($this->user->email, $this->user->name);
+        return $this->markdown('mail.emailResetPassword')->with(['user' => $this->user, 'url' => $this->url]);
     }
 }

@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Jobs\sendEmailPasswordReset;
+use App\Mail\emailPasswordReset;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\ResetPasswordNotification;
+use Carbon\Carbon;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Laravel\Sanctum\HasApiTokens;
 use PHPUnit\TextUI\XmlConfiguration\Group;
@@ -14,8 +17,9 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
-
-
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+use PhpParser\Node\Expr\New_;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -70,6 +74,23 @@ class User extends Authenticatable implements JWTSubject
         $url = 'https://teste-senne.mageda.com.br/reset-password?token=' . $token . '&key=' . $encrypted;
 
         $this->notify(new ResetPasswordNotification($url));
+    }
+
+    public function sendPasswordLink($user)
+    {
+        $token = Str::random(64);
+
+        DB::table('password_resets')->insert([
+            'email' => $user->email,
+            'token' => $token,
+            'created_at' => Carbon::now()
+        ]);
+
+        $encrypted = Crypt::encryptString($user->email);
+
+        $url = 'https://teste-senne.mageda.com.br/reset-password?token=' . $token . '&key=' . $encrypted;
+
+        return $url;
     }
 
     /* Função para adicionar a URL do site automaticamente na imagem após puxar do banco

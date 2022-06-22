@@ -72,15 +72,31 @@ class User extends Authenticatable implements JWTSubject
         $email = $this->email;
         $encrypted = Crypt::encryptString($email);
 
+        $token = Str::random(64);
+
+        DB::table('password_resets')->insert([
+            'email' => $email,
+            'token' => $token,
+            'created_at' => Carbon::now()
+        ]);
+
         $url = 'https://teste-senne.mageda.com.br/reset-password?token=' . $token . '&key=' . $encrypted;
 
         $this->notify(new ResetPasswordNotification($url));
     }
 
-    public function sendPasswordLink($token)
+    public function sendPasswordLink($user)
     {
-        $email = $this->email;
-        $encrypted = Crypt::encryptString($email);
+
+        $token = Str::random(64);
+
+        DB::table('password_resets')->insert([
+            'email' => $user->email,
+            'token' => $token,
+            'created_at' => Carbon::now()
+        ]);
+
+        $encrypted = Crypt::encryptString($user->email);
 
         $url = 'https://teste-senne.mageda.com.br/reset-password?token=' . $token . '&key=' . $encrypted;
 

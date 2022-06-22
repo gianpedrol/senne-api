@@ -44,7 +44,7 @@ class NewPasswordController extends Controller
             );*/
 
             try {
-                $token = Str::random(64);
+
                 $user->sendPasswordLink($token);
                 /*
                 User::where('email', $email)->sendPasswordLink(
@@ -85,18 +85,8 @@ class NewPasswordController extends Controller
 
         if ($user) {
 
-
-            /*$url = Password::sendResetLink(
-                $request->only('email')
-            );*/
-
             try {
                 $user->sendPasswordLink($user);
-                /*
-                User::where('email', $email)->sendPasswordLink(
-                    $user,
-                    $url
-                );*/
             } catch (Exception $ex) {
                 dd($ex);
                 return response()->json(['error' => 'cannot be sended', $ex], 500);
@@ -118,6 +108,7 @@ class NewPasswordController extends Controller
 
     public function updatePassword(Request $request)
     {
+
         try {
             $decrypted = Crypt::decryptString($request->key);
         } catch (DecryptException $e) {
@@ -127,23 +118,25 @@ class NewPasswordController extends Controller
         $request->only('token', 'password', 'password_confirmation');
 
 
-        $status = Password::reset(
-            $request = ['email' => $decrypted, 'token' => $request->token, 'password' => $request->password, 'password_confirmation' => $request->password_confirmation],
+        //dd($decrypted);
 
-            // dd($this->$user);
-            function ($user) use ($request) {
-                //$user->email = $decrypted;
-                $user->forceFill([
-                    'password' => Hash::make($request['password']),
-                    'remember_token' => Str::random(60),
-                ])->save();
+        $updatePassword = DB::table('password_resets')
+            ->where([
+                'email' =>  $decrypted,
+                'token' => $request->token
+            ])
+            ->first();
 
-                $user->tokens()->delete();
+        if (!$updatePassword) {
+            return (['error', 'Invalid token!']);
+        }
 
-                event(new PasswordReset($user));
-                //dd($user);
-            }
-        );
+        $user = User::where('email', $decrypted)
+            ->update(['password' => Hash::make($request->password)]);
+
+        DB::table('password_resets')->where(['email' => $request->email])->delete();
+
+        return (['message', 'Your password has been changed!', 'user' => $user]);
     }
     public function resetPassword(Request $request)
     {

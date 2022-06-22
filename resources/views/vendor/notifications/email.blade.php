@@ -34,7 +34,6 @@
 
             }
         }
-
     </style>
 </head>
 
@@ -74,13 +73,13 @@
             <td style="padding-left: 36px;padding-top: 30px;font-family: Montserrat; color:white; font-weight: 500;">
 
                 @isset($actionText) <?php
-switch ($level) {
-    case 'success':
-    case 'error':
-        $color = $level;
-        break;
-}
-?>
+                switch ($level) {
+                    case 'success':
+                    case 'error':
+                        $color = $level;
+                        break;
+                }
+                ?>
                     @component('mail::button', ['url' => $actionUrl])
                         {{ $actionText }}
                     @endcomponent

@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -47,8 +48,8 @@ class ResetPasswordNotification extends Notification
         return (new MailMessage)
             ->subject('Altere sua senha')
             //->line($this->user)
-            ->action('Validar e-mail de cadastro', $this->url)
-            ->line('Thank you for using our application!');
+            ->action('Validar e-mail de cadastro', $this->url);
+        //->line('Thank you for using our application!');
     }
 
     /**

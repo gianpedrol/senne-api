@@ -35,7 +35,7 @@ class emailPasswordReset extends Mailable
      */
     public function build()
     {
-        $this->subject('Senne troca de senha');
+        $this->subject('Senne alteração de senha');
         $this->to($this->user->email, $this->user->name);
         return $this->markdown('mail.emailResetPassword')->with(['user' => $this->user, 'url' => $this->url]);
     }

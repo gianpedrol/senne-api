@@ -98,10 +98,6 @@ class NewPasswordController extends Controller
 
             $userEmail = User::where('email', $decrypted)->first();
 
-            if ($userEmail->status != 1) {
-                return response()->json(['error' => 'unathorized, check if you are active']);
-            }
-
             $status = Password::reset(
                 $request = ['email' => $decrypted, 'token' => $request->token, 'password' => $request->password, 'password_confirmation' => $request->password_confirmation],
                 function ($user) use ($request) {
@@ -144,12 +140,12 @@ class NewPasswordController extends Controller
                 ->first();
 
             if (!$updatePassword) {
-                return (['error', 'Invalid token!']);
+                return response()->json(['error' => 'Invalid token!'], 404);
             }
             $user = User::where('email', $decrypted)->first();
 
             if ($user->status != 1) {
-                return response()->json(['error' => 'unathorized, check if you are active']);
+                return response()->json(['error' => 'unathorized, check if you are active'], 400);
             }
 
             $user = User::where('email', $decrypted)

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\URL;
 use League\Flysystem\Exception;
 
 use App\Http\Controllers\Controller;
+use App\Mail\emailUpdatePermissions;
 use App\Models\DomainHospital;
 use App\Models\Hospitais;
 use App\Models\UserLog;
@@ -235,9 +236,9 @@ class UserController extends Controller
                 foreach ($permissions as $id_permission) {
                     UserPermissoes::create(['id_permissao' => $id_permission, 'id_user' => $user->id]);
                 }
+                Mail::to($user->email)->send(new emailUpdatePermissions($data));
             }
-
-
+            
             //GERA LOG
             $log = Auth::user();
             $saveLog = new UserLog();

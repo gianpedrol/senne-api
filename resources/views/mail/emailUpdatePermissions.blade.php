@@ -1,3 +1,4 @@
+<!--------------------------------------------------------------------------------------->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -50,34 +51,28 @@
 
         <tr>
             <td width="500" style="padding-left: 36px; font-family: Montserrat; color: #EC6726">
-                <h2 style="font-weight: bold">Olá, {{ $user->name }}</h2>
-                <h3>Você solicitou a alteração de senha</h3>
+                <h2 style="font-weight: bold">Olá,{{ $data['name'] }}</h2>
+                <h3>Suas permissões de acesso foram alteradas</h3>
             </td>
 
         </tr>
 
         <tr>
             <td width="350" style="padding-left: 36px; font-family: Montserrat;">
-                <p>Clique no botão abixo e crie sua nova senha</p>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum, quisquam qui eum dolores necessitatibus
+                    consequatur natus facere aliquid odit officiis?</p>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam ullam corrupti obcaecati molestias
+                    quisquam tempore odit commodi nisi explicabo sequi? Ut expedita dignissimos excepturi laborum
+                    ratione. Ut, provident! Quae, sit?</p>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nisi libero aliquam rem dolorem sequi ab
+                    asperiores nam expedita commodi temporibus?</p>
             </td>
 
-
-
-
         </tr>
-        <tr>
-            <td align="left" width="350" style="padding-left: 36px; font-family: Montserrat;">
-                <a style="color:white;
-                text-decoration: none; background-color:#EC6726; padding: 8px;border-radius: 3px;"
-                    href="{{ $url }}" target="_blank" rel="noopener">Alterar Senha </a>
-            </td>
-        </tr>
-
         <tr>
             <td style="padding-left: 36px;padding-top: 30px;font-family: Montserrat; color:white; font-weight: 500;">
 
-                <h3 style="color:#EC6726; font-size:14px ">Em caso de dúvida, consulte o administrador de
-                    sua unidade.
+                <h3 style="color:#EC6726; font-size:14px ">Em caso de dúvida, consulte o administrador de sua unidade.
                 </h3>
 
             </td>

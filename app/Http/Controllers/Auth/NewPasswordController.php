@@ -44,7 +44,8 @@ class NewPasswordController extends Controller
             );*/
 
             try {
-                $user->sendPasswordLink($user);
+                $token = Str::random(64);
+                $user->sendPasswordLink($token);
                 /*
                 User::where('email', $email)->sendPasswordLink(
                     $user,
@@ -72,17 +73,78 @@ class NewPasswordController extends Controller
     public function forgetPass(Request $request)
     {
 
-        $user = User::where('email', $request->email)->first();
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $data = $request->email;
+
+        $email = $request->email;
+        $user = User::where('email', $email)->first();
 
 
-        $url = $user->sendPasswordLink($user);
-
-        Mail::send(new emailPasswordReset($user, $url));
+        if ($user) {
 
 
-        return ['message', 'We have e-mailed your password reset link!'];
+            /*$url = Password::sendResetLink(
+                $request->only('email')
+            );*/
+
+            try {
+                $user->sendPasswordLink($user);
+                /*
+                User::where('email', $email)->sendPasswordLink(
+                    $user,
+                    $url
+                );*/
+            } catch (Exception $ex) {
+                dd($ex);
+                return response()->json(['error' => 'cannot be sended', $ex], 500);
+            }
+
+            /*if ($status == Password::RESET_LINK_SENT) {
+                return [
+                    'status' => __($status)
+                ];
+            }*/
+
+            /*  throw ValidationException::withMessages([
+                'email' => [trans($status)],
+            ]);*/
+        } else {
+            return response()->json(['error' => "User Not found!"], 404);
+        }
     }
 
+    public function updatePassword(Request $request)
+    {
+        try {
+            $decrypted = Crypt::decryptString($request->key);
+        } catch (DecryptException $e) {
+            //
+        }
+
+        $request->only('token', 'password', 'password_confirmation');
+
+
+        $status = Password::reset(
+            $request = ['email' => $decrypted, 'token' => $request->token, 'password' => $request->password, 'password_confirmation' => $request->password_confirmation],
+
+            // dd($this->$user);
+            function ($user) use ($request) {
+                //$user->email = $decrypted;
+                $user->forceFill([
+                    'password' => Hash::make($request['password']),
+                    'remember_token' => Str::random(60),
+                ])->save();
+
+                $user->tokens()->delete();
+
+                event(new PasswordReset($user));
+                //dd($user);
+            }
+        );
+    }
     public function resetPassword(Request $request)
     {
 

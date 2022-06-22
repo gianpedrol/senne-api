@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\ResetPasswordNotification;
+use App\Notifications\updatePasswordNotification;
 use Carbon\Carbon;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Laravel\Sanctum\HasApiTokens;
@@ -76,21 +77,14 @@ class User extends Authenticatable implements JWTSubject
         $this->notify(new ResetPasswordNotification($url));
     }
 
-    public function sendPasswordLink($user)
+    public function sendPasswordLink($token)
     {
-        $token = Str::random(64);
-
-        DB::table('password_resets')->insert([
-            'email' => $user->email,
-            'token' => $token,
-            'created_at' => Carbon::now()
-        ]);
-
-        $encrypted = Crypt::encryptString($user->email);
+        $email = $this->email;
+        $encrypted = Crypt::encryptString($email);
 
         $url = 'https://teste-senne.mageda.com.br/reset-password?token=' . $token . '&key=' . $encrypted;
 
-        return $url;
+        $this->notify(new updatePasswordNotification($url));
     }
 
     /* Função para adicionar a URL do site automaticamente na imagem após puxar do banco

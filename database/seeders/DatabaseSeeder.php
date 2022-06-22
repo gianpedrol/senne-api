@@ -14,12 +14,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UserSeeder::class);
-        //$this->call(PermissoesSeeder::class);
-        // $this->call(LogsSeeder::class);
-        //$this->call(LogsUserExames::class);
-        //$this->call(DepartmentSeeder::class);
-        //
+        $this->call(UserSeeder::class);
+        $this->call(PermissoesSeeder::class);
+        $this->call(LogsSeeder::class);
+        $this->call(LogsUserExames::class);
+        $this->call(DepartmentSeeder::class);
+
         $this->call(MagedaDomain::class);
     }
 }

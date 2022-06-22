@@ -72,15 +72,7 @@ class User extends Authenticatable implements JWTSubject
         $email = $this->email;
         $encrypted = Crypt::encryptString($email);
 
-        $token = Str::random(64);
-
-        DB::table('password_resets')->insert([
-            'email' => $email,
-            'token' => $token,
-            'created_at' => Carbon::now()
-        ]);
-
-        $url = 'https://teste-senne.mageda.com.br/reset-password?token=' . $token . '&key=' . $encrypted;
+        $url = 'https://teste-senne.mageda.com.br/reset-password?token=' . $token . '&key=' . $encrypted . '&status=' . 1;
 
         $this->notify(new ResetPasswordNotification($url));
     }
@@ -98,9 +90,9 @@ class User extends Authenticatable implements JWTSubject
 
         $encrypted = Crypt::encryptString($user->email);
 
-        $url = 'https://teste-senne.mageda.com.br/reset-password?token=' . $token . '&key=' . $encrypted;
+        $url = 'https://teste-senne.mageda.com.br/reset-password?token=' . $token . '&key=' . $encrypted . '&status=' . 2;
 
-        $this->notify(new updatePasswordNotification($url));
+        return ($url);
     }
 
     /* Função para adicionar a URL do site automaticamente na imagem após puxar do banco

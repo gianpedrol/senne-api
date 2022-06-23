@@ -47,6 +47,33 @@ class ExameController extends Controller
 
         return $items;
     }
+
+    /**
+     * @OA\Get(
+     *   tags={"List Attedance"},
+     *   path="/api/treatment/exams/{uuid}/{numatendimento}",
+     *   summary="Summary",
+     *      @OA\Parameter(
+     *      name="uuid",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *     @OA\Parameter(
+     *      name="numatendimento",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),    
+     *   @OA\Response(response=200, description="OK"),
+     *   @OA\Response(response=401, description="Unauthorized"),
+     *   @OA\Response(response=404, description="Not Found")
+     * )
+     */
     public function listAttendance($uuid, $atendimento,  Request $request)
     {
 
@@ -87,6 +114,40 @@ class ExameController extends Controller
         return $items;
     }
 
+    /**
+     * @OA\Get(
+     *   tags={"List Attedance Hospital - Date"},
+     *   path="/api/treatment/exams/{uuid}/{startdate}/{finaldate}",
+     *   summary="Summary",
+     *      @OA\Parameter(
+     *      name="uuid",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *     @OA\Parameter(
+     *      name="startdate",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *     @OA\Parameter(
+     *      name="finaldate",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),       
+     *   @OA\Response(response=200, description="OK"),
+     *   @OA\Response(response=401, description="Unauthorized"),
+     *   @OA\Response(response=404, description="Not Found")
+     * )
+     */
     public function listAttendanceDate($uuid, $startdate, $finaldate, Request $request)
     {
 
@@ -122,7 +183,32 @@ class ExameController extends Controller
 
         return $response;
     }
-
+    /**
+     * @OA\Get(
+     *   tags={"List Attedance Details"},
+     *   path="/api/treatment/details/{uuid}/{atendimento}",
+     *   summary="Summary",
+     *      @OA\Parameter(
+     *      name="uuid",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *     @OA\Parameter(
+     *      name="atendimento",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),     
+     *   @OA\Response(response=200, description="OK"),
+     *   @OA\Response(response=401, description="Unauthorized"),
+     *   @OA\Response(response=404, description="Not Found")
+     * )
+     */
     public function listAttendanceDetails($uuid, $atendimento,  Request $request)
     {
 
@@ -158,7 +244,32 @@ class ExameController extends Controller
         $items = $response->getBody();
         return $items;
     }
-
+    /**
+     * @OA\Get(
+     *   tags={"List Principal Report"},
+     *   path="/api/treatment/report/{uuid}/{r_id}",
+     *   summary="Summary",
+     *      @OA\Parameter(
+     *      name="uuid",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *     @OA\Parameter(
+     *      name="r_id",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),       
+     *   @OA\Response(response=200, description="OK"),
+     *   @OA\Response(response=401, description="Unauthorized"),
+     *   @OA\Response(response=404, description="Not Found")
+     * )
+     */
     public function principalReport($uuid, $atendimento, $r_id, Request $request)
     {
 

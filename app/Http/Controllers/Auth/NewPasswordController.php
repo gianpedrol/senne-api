@@ -54,6 +54,44 @@ class NewPasswordController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     * path="/api/password/forgot",
+     * operationId="ResetPassword",
+     * tags={"ResetPassword"},
+     * summary="Reset Password",
+     * description="Reset Password",
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(),
+     *         @OA\MediaType(
+     *            mediaType="multipart/form-data",
+     *            @OA\Schema(
+     *               type="object",
+     *               required={"email"},
+     *               @OA\Property(property="email", type="email")
+     *            ),
+     *        ),
+     *    ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Mail sended",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Mail sended",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(response=400, description="Bad request"),
+     * @OA\Response(response=401, description="Unauthorized"),
+     *      @OA\Response(response=404, description="Resource Not Found"),
+     * )
+     */
     public function forgotPassword(Request $request)
     {
 
@@ -83,6 +121,7 @@ class NewPasswordController extends Controller
             return response()->json(['error' => "User Not found!"], 404);
         }
     }
+
 
     public function resetPassword(Request $request)
     {

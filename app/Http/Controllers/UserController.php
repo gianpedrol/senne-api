@@ -55,6 +55,59 @@ ROLE ID
 class UserController extends Controller
 {
 
+    /**
+     * @OA\Post(
+     * path="/api/user/create",
+     * operationId="Register User Hospital - Inside Platform",
+     * tags={"Register User Hospital - Inside Platform"},
+     * summary="Register User Hospital - Inside Platform",
+     * description="Register User Hospital - Inside Platform ",
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(),
+     *            @OA\MediaType(
+     *            mediaType="multipart/form-data",
+     *            @OA\Schema(
+     *               type="object",
+     *               required={"email"},
+     *               @OA\Property(property="name", type="text"),
+     *               @OA\Property(property="email", type="email"),
+     *               @OA\Property(property="cpf", type="text"),
+     *               @OA\Property(property="crm", type="text"),
+     *               @OA\Property(property="phone", type="text"),
+     *               @OA\Property(property="department", type="text"),        
+     *               @OA\Property(
+     *                 property="hospitals",
+     *                 type="array",
+     *                 @OA\Items()
+     *               ), 
+     *               @OA\Property(
+     *                 property="permissions",
+     *                 type="array",
+     *                 @OA\Items()
+     *               ),      
+     *            ),
+     *           )
+     *        ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="User registered successfully!",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="User registered successfully!",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(response=400, description="Bad request"),
+     *      @OA\Response(response=401, description="Unauthorized"),
+     *      @OA\Response(response=404, description="Resource Not Found"),
+     * )
+     */
     public function createUser(Request $request)
     {
 
@@ -197,6 +250,66 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @OA\Put(
+     * path="edit/user/{id}",
+     * operationId="Update User Hospital",
+     * tags={"Update User Hospital"},
+     * summary="Update User Hospital",
+     * description="Update User Hospital ",
+     *      @OA\Parameter(
+     *      name="id",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(),
+     *            @OA\MediaType(
+     *            mediaType="multipart/form-data",
+     *            @OA\Schema(
+     *               type="object",
+     *               required={"email"},
+     *               @OA\Property(property="name", type="text"),
+     *               @OA\Property(property="email", type="email"),
+     *               @OA\Property(property="cpf", type="text"),
+     *               @OA\Property(property="phone", type="text"),
+     *               @OA\Property(property="department", type="text"),        
+     *               @OA\Property(
+     *                 property="hospitals",
+     *                 type="array",
+     *                 @OA\Items()
+     *               ), 
+     *               @OA\Property(
+     *                 property="permissions",
+     *                 type="array",
+     *                 @OA\Items()
+     *               ),      
+     *            ),
+     *           )
+     *        ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="User registered successfully!",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="User registered successfully!",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(response=400, description="Bad request"),
+     *      @OA\Response(response=401, description="Unauthorized"),
+     *      @OA\Response(response=404, description="Resource Not Found"),
+     * )
+     */
     public function update(Request $request)
     {
         if ($request->user()->role_id != 1) {
@@ -238,7 +351,7 @@ class UserController extends Controller
                 }
                 Mail::to($user->email)->send(new emailUpdatePermissions($data));
             }
-            
+
             //GERA LOG
             $log = Auth::user();
             $saveLog = new UserLog();
@@ -257,7 +370,42 @@ class UserController extends Controller
 
         return response()->json(['message' => 'user updated']);
     }
-
+    /**
+     * 
+     * @OA\Del(
+     * path="delete/user/{id}",
+     * operationId="Delete User",
+     * tags={"Delete User"},
+     * summary="Delete User",
+     * description="Delete User ",
+     *      @OA\Parameter(
+     *      name="id",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   )
+     *      @OA\Response(
+     *          response=201,
+     *          description="user successfully deleted",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="user successfully deleted",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(response=400, description="Bad request"),
+     *      @OA\Response(response=401, description="Unauthorized"),
+     *      @OA\Response(response=404, description="Resource Not Found"),
+     * )
+     */
     public function delete(Request $request)
     {
         if ($request->user()->role_id != 1) {
@@ -282,6 +430,52 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @OA\Put(
+     * path="/api/inactivate/user/{id}",
+     * operationId="Inactive User ",
+     * tags={"Inactive User "},
+     * summary="Inactive User ",
+     * description="Inactive User  ",
+     *      @OA\Parameter(
+     *      name="id",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(),
+     *            @OA\MediaType(
+     *            mediaType="multipart/form-data",
+     *            @OA\Schema(
+     *               type="object",
+     *               required={"status"},
+     *               @OA\Property(property="status", type="number"),
+     *           )
+     *          )
+     *        ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="User inactivated successfully!",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="User inactivated successfully!",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(response=400, description="Bad request"),
+     *      @OA\Response(response=401, description="Unauthorized"),
+     *      @OA\Response(response=404, description="Resource Not Found"),
+     * )
+     */
     public function inactivateUser($id, Request $request)
     {
         if ($request->user()->role_id != 1) {
@@ -314,6 +508,24 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *   tags={"Logs User "},
+     *   path="list/logs/user/{id}",
+     *   summary="Summary",
+     *      @OA\Parameter(
+     *      name="id",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *   @OA\Response(response=200, description="OK"),
+     *   @OA\Response(response=401, description="Unauthorized"),
+     *   @OA\Response(response=404, description="Not Found")
+     * )
+     */
     public function logsUser(Request $request)
     {
         if ($request->user()->role_id != 1) {
@@ -371,12 +583,21 @@ class UserController extends Controller
             );
         }
     }
-
+    /**
+     * @OA\Get(
+     *   tags={"All Logs Users "},
+     *   path="list/logs/users",
+     *   summary="Summary",
+     *   @OA\Response(response=200, description="OK"),
+     *   @OA\Response(response=401, description="Unauthorized"),
+     *   @OA\Response(response=404, description="Not Found")
+     * )
+     */
     public function logsUserAll(Request $request)
     {
-        /*  if ($request->user()->role_id != 1) {
+        if ($request->user()->role_id != 1) {
             return response()->json(['error' => "Unauthorized "], 401);
-        }*/
+        }
 
         // dd($request->limit);
 
@@ -420,7 +641,16 @@ class UserController extends Controller
             200
         );
     }
-
+    /**
+     * @OA\Get(
+     *   tags={"All Users "},
+     *   path="list/users",
+     *   summary="Summary",
+     *   @OA\Response(response=200, description="OK"),
+     *   @OA\Response(response=401, description="Unauthorized"),
+     *   @OA\Response(response=404, description="Not Found")
+     * )
+     */
     public function listAllUser(Request $request)
     {
         if ($request->user()->role_id != 1) {
@@ -498,7 +728,24 @@ class UserController extends Controller
             200
         );
     }
-
+    /**
+     * @OA\Get(
+     *   tags={"User Information "},
+     *   path="/api/show/user/{id}",
+     *   summary="Summary",
+     *      @OA\Parameter(
+     *      name="id",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),   
+     *   @OA\Response(response=200, description="OK"),
+     *   @OA\Response(response=401, description="Unauthorized"),
+     *   @OA\Response(response=404, description="Not Found")
+     * )
+     */
     public function showUser(Request $request)
     {
         if ($request->user()->role_id != 1) {
@@ -532,7 +779,24 @@ class UserController extends Controller
             );
         }
     }
-
+    /**
+     * @OA\Get(
+     *   tags={"All Users of Group "},
+     *   path="/api/list/group/user/{id}",
+     *   summary="Summary",
+     *      @OA\Parameter(
+     *      name="id",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),   
+     *   @OA\Response(response=200, description="OK"),
+     *   @OA\Response(response=401, description="Unauthorized"),
+     *   @OA\Response(response=404, description="Not Found")
+     * )
+     */
     public function listUserGroups($id, Request $request)
     {
         $group = Groups::where('id', $id)->first();
@@ -600,7 +864,24 @@ class UserController extends Controller
             200
         );
     }
-
+    /**
+     * @OA\Get(
+     *   tags={"All Users of Hospital "},
+     *   path="/api/hospital/user/list/{id}",
+     *   summary="Summary",
+     *      @OA\Parameter(
+     *      name="id",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),   
+     *   @OA\Response(response=200, description="OK"),
+     *   @OA\Response(response=401, description="Unauthorized"),
+     *   @OA\Response(response=404, description="Not Found")
+     * )
+     */
     public function getUsersHospital($id, Request $request)
     {
         if ($request->user()->role_id != 1) {
@@ -685,6 +966,45 @@ class UserController extends Controller
         );
     }
 
+    /**
+     * @OA\Post(
+     * path="/api/upload/user/image",
+     * operationId="Upload User Image",
+     * tags={"Upload User Image"},
+     * summary="Upload User Image",
+     * description="Upload User Image ",
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(),
+     *            @OA\MediaType(
+     *            mediaType="multipart/form-data",
+     *            @OA\Schema(
+     *               type="object",
+     *               required={"image", "id_user"},
+     *               @OA\Property(property="image", type="text"),
+     *               @OA\Property(property="id_user", type="number"),         
+     *            ),
+     *           )
+     *        ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Image registered successfully!",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Image registered successfully!",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(response=400, description="Bad request"),
+     *      @OA\Response(response=401, description="Unauthorized"),
+     *      @OA\Response(response=404, description="Resource Not Found"),
+     * )
+     */
     public function updateImageUser(Request $request)
     {
         if ($request->user()->role_id != 1) {
@@ -726,6 +1046,59 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     * path="/api/approve/user/{id}",
+     * operationId="Approve User",
+     * tags={"Approve User"},
+     * summary="Approve User",
+     * description="Approve User ",
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(),
+     *            @OA\MediaType(
+     *            mediaType="multipart/form-data",
+     *            @OA\Schema(
+     *               type="object",
+     *               required={"email"},
+     *               @OA\Property(property="name", type="text"),
+     *               @OA\Property(property="email", type="email"),
+     *               @OA\Property(property="cpf", type="text"),
+     *               @OA\Property(property="crm", type="text"),
+     *               @OA\Property(property="phone", type="text"),
+     *               @OA\Property(property="department", type="text"),        
+     *               @OA\Property(
+     *                 property="hospitals",
+     *                 type="array",
+     *                 @OA\Items()
+     *               ), 
+     *               @OA\Property(
+     *                 property="permissions",
+     *                 type="array",
+     *                 @OA\Items()
+     *               ),      
+     *            ),
+     *           )
+     *        ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="User registered successfully!",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="User registered successfully!",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(response=400, description="Bad request"),
+     *      @OA\Response(response=401, description="Unauthorized"),
+     *      @OA\Response(response=404, description="Resource Not Found"),
+     * )
+     */
     public function approveUser($id, Request $request)
     {
         if ($request->user()->role_id != 1) {

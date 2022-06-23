@@ -41,6 +41,16 @@ class HospitalController extends Controller
     /*
         RECEBE API E SALVA NO BANCO    
     */
+    /**
+     * @OA\Get(
+     *   tags={"List All Hospitals "},
+     *   path="/api/list/procedencia",
+     *   summary="Summary",  
+     *   @OA\Response(response=200, description="OK"),
+     *   @OA\Response(response=401, description="Unauthorized"),
+     *   @OA\Response(response=404, description="Not Found")
+     * )
+     */
     public function getProcedencia(Request $request)
     {
 

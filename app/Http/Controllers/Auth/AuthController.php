@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Password;
 
 /* 
 Status 
-
+/***
 0 - inativo
 1 - ativo
 2 - precisa alterar senha, para ativar

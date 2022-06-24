@@ -234,7 +234,7 @@ class RegisterController extends Controller
     /**
      * @OA\Get(
      *   tags={"List Speciality "},
-     *   path="api/doctor/speciality",
+     *   path="/api/doctor/speciality",
      *   summary="Summary",
      *   @OA\Response(response=200, description="OK"),
      *   @OA\Response(response=401, description="Unauthorized"),
@@ -268,7 +268,7 @@ class RegisterController extends Controller
     /**
      * @OA\Get(
      *   tags={"List Hospitals "},
-     *   path="api/hospital/list/{id}",
+     *   path="/api/hospital/list/{id}",
      *   summary="Summary",
      *      @OA\Parameter(
      *      name="id",
@@ -304,7 +304,7 @@ class RegisterController extends Controller
     /**
      * @OA\Get(
      *   tags={"List Hospitals "},
-     *   path="api/hospital/list",
+     *   path="/api/hospital/list",
      *   summary="Summary",
      *   @OA\Response(response=200, description="OK"),
      *   @OA\Response(response=401, description="Unauthorized"),

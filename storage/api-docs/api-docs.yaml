@@ -394,12 +394,12 @@ paths:
           description: Unauthorized
         404:
           description: 'Resource Not Found'
-  api/doctor/speciality:
+  /api/doctor/speciality:
     get:
       tags:
         - 'List Speciality '
       summary: Summary
-      operationId: 4173b720efa5af10550da0610b260760
+      operationId: 4bd579e9184be8c3e0546f827cb69a70
       responses:
         200:
           description: OK
@@ -407,12 +407,12 @@ paths:
           description: Unauthorized
         404:
           description: 'Not Found'
-  'api/hospital/list/{id}':
+  '/api/hospital/list/{id}':
     get:
       tags:
         - 'List Hospitals '
       summary: Summary
-      operationId: 95f8e63945775467945587685ca0e386
+      operationId: 702aee826629cdce5df1fd592d58b425
       parameters:
         -
           name: id
@@ -427,12 +427,12 @@ paths:
           description: Unauthorized
         404:
           description: 'Not Found'
-  api/hospital/list:
+  /api/hospital/list:
     get:
       tags:
         - 'List Hospitals '
       summary: Summary
-      operationId: 901bdf8313532893b42d826467b54584
+      operationId: df829d818cacac1ced9c05232d22f270
       responses:
         200:
           description: OK

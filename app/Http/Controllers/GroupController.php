@@ -97,8 +97,9 @@ class GroupController extends Controller
             }
         }
 
-        $client = 'mUlsPn8LSRPaYu1zJkbf2w..';
-        $client_secret = 'U8fQdDraw7r7Yq74mpQ0IA..';
+        $client = 'A2PsnYpypc_u66U0ANnzfQ..';
+        $client_secret = 'M3nxpLJbYPNqkfnkR5tuqg..';
+
         $resp = Http::withBasicAuth($client, $client_secret)->asForm()->post(
             'http://sistemas.senneliquor.com.br:8804/ords/gateway/oauth/token',
             [

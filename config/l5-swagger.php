@@ -229,7 +229,7 @@ return [
          * Configs plugin allows to fetch external configs instead of passing them to SwaggerUIBundle.
          * See more at: https://github.com/swagger-api/swagger-ui#configs-plugin
         */
-        'additional_config_url' => null,
+        'additional_config_url' => true,
 
         /*
          * Apply a sort to the operation list of each API. It can be 'alpha' (sort by paths alphanumerically),
@@ -279,7 +279,7 @@ return [
          * Constants which can be used in annotations
          */
         'constants' => [
-            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'http://my-default-host.com'),
+            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'https://my-default-host.com'),
         ],
     ],
 ];

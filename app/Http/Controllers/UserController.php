@@ -897,13 +897,35 @@ class UserController extends Controller
                 'message'   => 'The Hospital can t be found',
             ], 404);
         } else {
+            $data = $request->all();
+            //$status = explode(',', $request->status);
+            $data['status'] = explode(',', $request->status);
+
+
+            $per_page = (isset($request->per_page) && $request->per_page > 0) ? $request->per_page : 10;
+
+            $sort = (isset($request->per_page) && !empty($request->sort)) ? $request->sort : 'id';
+
 
             $hospital['users'] = UsersHospitals::from('users_hospitals as userhos')
                 ->select('us.name', 'us.id', 'us.email', 'us.status')
                 ->join('users as us', 'us.id', '=', 'userhos.id_user')
                 ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
                 ->where('userhos.id_hospital', '=', $id)
-                ->get();
+                ->where('us.role_id', '!=', 1)
+                ->when(!empty($request->name), function ($query) use ($data) {
+                    return $query->where('user.name', 'like', '%' . $data['name'] . '%');
+                })
+                ->when(!empty($request->status), function ($query) use ($data) {
+                    return $query->whereIn('user.status', $data['status']);
+                })
+                ->when(!empty($request->orderby) && $sort == 'id', function ($query) use ($data) {
+                    return $query->orderBy('id', $data['orderby']);
+                })
+                ->when(!empty($request->orderby) && $sort == 'name', function ($query) use ($data) {
+                    return $query->orderBy('name', $data['orderby']);
+                })
+                ->paginate($per_page);
 
             //Rodamos o loop para trazer o ultimo log de cada usuário
             $all_users = $hospital['users'];
@@ -916,6 +938,19 @@ class UserController extends Controller
 
                 $retorno[] = $user_login;
             }
+
+            $all_users = $all_users->toArray();
+
+            //Construct paginate info
+            $paginate['first_page_url'] = $all_users['first_page_url'];
+            $paginate['from'] = $all_users['from'];
+            $paginate['last_page'] = $all_users['last_page'];
+            $paginate['next_page_url'] = $all_users['next_page_url'];
+            $paginate['path'] = $all_users['path'];
+            $paginate['per_page'] = $all_users['per_page'];
+            $paginate['prev_page_url'] = $all_users['prev_page_url'];
+            $paginate['to'] = $all_users['to'];
+            $paginate['total'] = $all_users['total'];
 
 
             return response()->json(

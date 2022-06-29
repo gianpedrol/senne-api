@@ -911,6 +911,7 @@ class UserController extends Controller
 
             foreach ($all_users as $key1 => $user_login) {
                 $user_login['dateLogin'] = UserLog::where('id_user', $user_login['id'])->orderBy('id_log', 'DESC')->first('created_at');
+                $user_login['permissoes'] = UserPermissoes::where('id_user', $user_login['id'])->select('id_permissao as id')->get();
 
 
                 $retorno[] = $user_login;

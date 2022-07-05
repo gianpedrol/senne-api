@@ -814,12 +814,32 @@ class UserController extends Controller
             }
         }
 
-        $data = User::from('users as user')
+        $data = $request->all();
+
+        $data['status'] = explode(',', $request->status);
+
+
+        $per_page = (isset($request->per_page) && $request->per_page > 0) ? $request->per_page : 10;
+
+        $sort = (isset($request->per_page) && !empty($request->sort)) ? $request->sort : 'id';
+
+        $allUsers = User::from('users as user')
             ->select('user.id', 'user.name', 'user.email', 'user.role_id', 'user.status')
             ->where('user.role_id', '!=', 1)
-            ->get()
-            ->toArray();
-        $users = User::where('role_id', '!=', 1)->get();
+            ->when(!empty($request->name), function ($query) use ($data) {
+                return $query->where('user.name', 'like', '%' . $data['name'] . '%');
+            })
+            ->when(!empty($request->status), function ($query) use ($data) {
+                return $query->whereIn('user.status', $data['status']);
+            })
+            ->when(!empty($request->orderby) && $sort == 'id', function ($query) use ($data) {
+                return $query->orderBy('id', $data['orderby']);
+            })
+            ->when(!empty($request->orderby) && $sort == 'name', function ($query) use ($data) {
+                return $query->orderBy('name', $data['orderby']);
+            })
+            ->paginate($per_page);
+        //$users = User::where('role_id', '!=', 1)->get();
 
 
 
@@ -839,11 +859,11 @@ class UserController extends Controller
 
 
         // Juntamos os usuários em uma só array
-        $all_users = array_merge($data);
+        // $all_users = array_merge($allUsers);
 
         //Rodamos o loop para trazer o ultimo log de cada usuário
         $retorno = [];
-        foreach ($all_users as $key1 => $user_only) {
+        foreach ($allUsers as $key1 => $user_only) {
             $user_only['permissoes'] = UserPermissoes::where('id_user', $user_only['id'])->select('id_permissao as id')->get();
             $user_only['dateLogin'] = UserLog::where('id_user', $user_only['id'])->orderBy('id_log', 'DESC')->first('created_at');
             // $user_only['hospitais'] = UsersHospitals::where('id_user', $user_only['id'])->get();
@@ -852,6 +872,9 @@ class UserController extends Controller
                 ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
                 ->where('id_user', '=', $user_only['id'])
                 ->where('hos.grupo_id', $id)
+                ->when(!empty($request->procedencia), function ($query) use ($data) {
+                    return $query->where('hos.name', 'like', '%' . $data['procedencia'] . '%');
+                })
                 ->get();
 
             if (count($user_only['hospitais']) > 0) {
@@ -859,8 +882,21 @@ class UserController extends Controller
             }
         }
 
+        $all_users = $allUsers->toArray();
+
+        //Construct paginate info
+        $paginate['first_page_url'] = $all_users['first_page_url'];
+        $paginate['from'] = $all_users['from'];
+        $paginate['last_page'] = $all_users['last_page'];
+        $paginate['next_page_url'] = $all_users['next_page_url'];
+        $paginate['path'] = $all_users['path'];
+        $paginate['per_page'] = $all_users['per_page'];
+        $paginate['prev_page_url'] = $all_users['prev_page_url'];
+        $paginate['to'] = $all_users['to'];
+        $paginate['total'] = $all_users['total'];
+
         return response()->json(
-            ['status' => 'success', 'Group' => $group, 'Users' => $retorno],
+            ['status' => 'success', 'Group' => $group, 'Users' => $retorno, 'pagination' => $paginate],
             200
         );
     }
@@ -1260,7 +1296,7 @@ class UserController extends Controller
             }
         }
         $id = $request->id;
-        $data = $request->only(['name', 'crm', 'phone', 'email', 'especialidade', 'novidades']);
+        $codmedico = $request->codmedico;
 
         //Validar se email existe!
         $user = User::where('id', $id)->first();
@@ -1276,7 +1312,7 @@ class UserController extends Controller
 
             $user = User::where('id', $id)->first();
             if ($user) {
-                $user->update($data, ['status' => 2]);
+                $user->update(['status' => 2, 'cod_doctor' => $codmedico]);
             }
 
 
@@ -1310,5 +1346,34 @@ class UserController extends Controller
         throw ValidationException::withMessages([
             'email' => [trans($status)],
         ]);
+    }
+
+    public function listDoctorUserApi(Request $request)
+    {
+
+
+        $crm = $request->crm;
+        $ufCrm = $request->ufcrm;
+
+
+        $client = 'A2PsnYpypc_u66U0ANnzfQ..';
+        $client_secret = 'M3nxpLJbYPNqkfnkR5tuqg..';
+        $resp = Http::withBasicAuth($client, $client_secret)->asForm()->post(
+            'http://sistemas.senneliquor.com.br:8804/ords/gateway/oauth/token',
+            [
+                'grant_type' => 'client_credentials',
+
+            ]
+        );
+
+        $token = json_decode($resp->getBody());
+
+        $bearer = $token->access_token;
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $bearer
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/pesq_medico?CrmMedico=' .  $crm . '&UFCrmMedico=' . $ufCrm);
+
+
+        return $response;
     }
 }

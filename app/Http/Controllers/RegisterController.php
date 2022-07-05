@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 use App\Mail\emailRegisterPartner;
+use App\Mail\emailSolicitationDoctor;
 use App\Models\DomainHospital;
 use App\Models\Hospitais;
 use App\Models\UserPermissoes;
@@ -182,7 +183,7 @@ class RegisterController extends Controller
     {
 
 
-        $data = $request->only(['name', 'crm', 'phone', 'email', 'especialidade', 'novidades']);
+        $data = $request->only(['name', 'cpf', 'crm', 'phone', 'email', 'especialidade', 'novidades']);
 
         $user = User::where('email', $data['email'])->first();
 
@@ -203,6 +204,7 @@ class RegisterController extends Controller
             $newUser = new User();
             $newUser->name = $data['name'];
             $newUser->email = $data['email'];
+            $newUser->cpf = $data['cpf'];
             $newUser->crm = $data['crm'];
             $newUser->phone = $data['phone'];
             $newUser->especialidade = $data['especialidade'];
@@ -219,6 +221,8 @@ class RegisterController extends Controller
             try {
                 /* Enviar e-mail para o usuário com sua senha de acesso */
                 Mail::to($newUser->email)->send(new emailPendentRegister($data));
+                /* Enviar e-mail para Senne aprovar médico na plataforma */
+                Mail::to(['gian@mageda.digital', 'elson@mageda.digital', 'gustavo@mageda.digital', 'ti@senneliquor.com.br'])->send(new emailSolicitationDoctor($data));
                 return response()->json(['status' => 'solicitation sended', $newUser], 200);
             } catch (Exception $ex) {
                 dd($ex);
@@ -460,6 +464,8 @@ class RegisterController extends Controller
         if (!empty($user)) {
             return response()->json(['error' => "User already exists!"], 200);
         }
+
+        
         /* CHECAR SE EMAIL CONFERE COM DOMINIO */
         $userEmail = $data['email'];
         $dominio = explode('@', $userEmail);

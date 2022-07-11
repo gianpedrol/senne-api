@@ -183,7 +183,7 @@ class RegisterController extends Controller
     {
 
 
-        $data = $request->only(['name', 'cpf', 'crm', 'phone', 'email', 'especialidade', 'novidades']);
+        $data = $request->only(['name', 'crm', 'phone', 'email', 'especialidade', 'novidades']);
 
         $user = User::where('email', $data['email'])->first();
 
@@ -203,8 +203,7 @@ class RegisterController extends Controller
 
             $newUser = new User();
             $newUser->name = $data['name'];
-            $newUser->email = $data['email'];
-            $newUser->cpf = $data['cpf'];
+            $newUser->email = $data['email'];;
             $newUser->crm = $data['crm'];
             $newUser->phone = $data['phone'];
             $newUser->especialidade = $data['especialidade'];
@@ -465,7 +464,7 @@ class RegisterController extends Controller
             return response()->json(['error' => "User already exists!"], 200);
         }
 
-        
+
         /* CHECAR SE EMAIL CONFERE COM DOMINIO */
         $userEmail = $data['email'];
         $dominio = explode('@', $userEmail);

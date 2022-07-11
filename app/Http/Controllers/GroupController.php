@@ -99,7 +99,6 @@ class GroupController extends Controller
 
         $client = 'A2PsnYpypc_u66U0ANnzfQ..';
         $client_secret = 'M3nxpLJbYPNqkfnkR5tuqg..';
-
         $resp = Http::withBasicAuth($client, $client_secret)->asForm()->post(
             'http://sistemas.senneliquor.com.br:8804/ords/gateway/oauth/token',
             [
@@ -121,16 +120,16 @@ class GroupController extends Controller
 
         $items = json_decode($response->getBody());
 
-
-        foreach ($items->items as $item) {
-            // dd($item);
-            if ($item->codgrupo == null) {
-                $item->codgrupo = 1;
+        foreach ($items->Procedencia as $item) {
+            foreach ($item->procedencia as $item) {
+                if ($item->codgrupo == null) {
+                    $item->codgrupo = 1;
+                }
+                $data[] = [
+                    'name' => $item->grupo,
+                    'codgrupo' => $item->codgrupo
+                ];
             }
-            $data[] = [
-                'name' => $item->grupo,
-                'codgrupo' => $item->codgrupo
-            ];
         }
 
         /* CASO NÃO TENHA NENHUM GRUPO CADASTRADO NO BANCO ELE IRÁ CRIAR*/

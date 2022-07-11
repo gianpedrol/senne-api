@@ -85,18 +85,17 @@ class HospitalController extends Controller
 
         $items = json_decode($response->getBody());
 
-        /* SEPARA OS DADOS DA API */
-        foreach ($items->items as $item) {
-
-            $data[] = [
-                'id_api' => $item->codprocedencia,
-                'name' => $item->nomeprocedencia,
-                'grupo' => $item->grupo,
-                'uuid' => $item->uuid,
-                'codgrupo' => $item->codgrupo
-            ];
+        foreach ($items->Procedencia as $item) {
+            foreach ($item->procedencia as $item) {
+                $data[] = [
+                    'id_api' => $item->codprocedencia,
+                    'name' => $item->nomeprocedencia,
+                    'grupo' => $item->grupo,
+                    'uuid' => $item->uuid,
+                    'codgrupo' => $item->codgrupo
+                ];
+            }
         }
-
 
         /*/* CASO NÃO TENHA NENHUM HOSPITAL CADASTRADO NO BANCO ELE IRÁ CRIAR*/
         foreach ($data as $save_proc) {

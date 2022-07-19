@@ -45,14 +45,14 @@
         div.info-container-left {
             display: inline-block;
             max-width: 50%;
-            padding: 30px;
+            padding-left: 30px;
             text-align: left;
         }
 
         div.info-container-right {
             display: inline-block;
             max-width: 50%;
-            padding: 30px;
+            padding-right: 30px;
             text-align: left;
             margin-left: 140px;
 
@@ -107,6 +107,20 @@
             font-size: 22px;
             color: #000;
             font-weight: bold;
+        }
+
+
+        footer {
+            border-top: 3px solid #ccc;
+            margin-top: 90px;
+            padding-top: 20px;
+        }
+
+        footer p {
+            font-size: 12px;
+            margin: 0;
+            padding: 0;
+            text-align: center;
         }
     </style>
 </head>
@@ -199,6 +213,12 @@
         </div>
 
     </div>
+
+    <footer>
+        <p>São Paulo: Av. Angélica, 2071, 3o. Andar - Consolação -Tel: (11) 3286-8989 | www.senneliquor.com.br
+        </p>
+        <p>Campinas: Av. Francisco Glicério, 2331 CJ 12 - Vila Itapura -Tel: (19) 4141-7270 | sac@senneliquor.com.br</p>
+    </footer>
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->

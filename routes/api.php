@@ -67,6 +67,9 @@ Route::prefix('password')->group(function () {
 Route::post('auth/register', [AuthController::class, 'create']);
 
 
+
+
+
 /**Rotas de registro de usuários**/
 Route::post('patient/register', [RegisterController::class, 'registerPatient']);
 Route::post('doctor/register', [RegisterController::class, 'registerDoctor']);
@@ -182,4 +185,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('approve/user/doctor/{id}', [UserController::class, 'approveDoctorUser']);
     //Aprova Usuário
     Route::get('list/user/doctor', [UserController::class, 'listDoctorUserApi']);
+
+    /** ROTA IMPRIMIR PROTOCOLO / CRIAR USUARIO AMBULATORIAL */
+    Route::post('print/user/protocol', [UserController::class, 'printProtocol']);
 });

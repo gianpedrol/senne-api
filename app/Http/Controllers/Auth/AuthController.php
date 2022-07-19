@@ -129,6 +129,28 @@ class AuthController extends Controller
                 'message'   => 'User is awaiting approval',
             ], 404);
         }
+        if ($role_id = 5) {
+            $array = ['message' => ''];
+            $credentials = $request->only('cpf', 'password');
+            if ($request->cpf != null) {
+                $user = User::where('cpf', $credentials['cpf'])->first();
+                $token = auth()->login($user);
+                if ($token) {
+                    $array['token'] = $token;
+                } else {
+                    $array['message'] = 'Incorrect username or password';
+                }
+
+                if (!$user) {
+                    return response()->json([
+                        'message'   => 'The user can t be found',
+                    ], 404);
+                } else {
+
+                    return response()->json(['message' => "User Logged in!", 'token' => $array['token'], 'user' => $user], 200);
+                }
+            }
+        }
 
         if ($user->role_id == 1 || $role_id == $user->role_id) {
             $array = ['message' => ''];
@@ -155,6 +177,7 @@ class AuthController extends Controller
 
             $user = [];
             $user = Auth::user();
+
 
             if (!$user) {
                 return response()->json([

@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use League\Flysystem\Exception;
-
+use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use App\Mail\emailUpdatePermissions;
 use App\Models\DomainHospital;
@@ -29,6 +29,7 @@ use App\Models\LogsExames;
 use App\Models\UsersGroup;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Support\Facades\Password;
+use Barryvdh\DomPDF\Facade\Pdf;
 use PHPUnit\TextUI\XmlConfiguration\Group;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Validator;
@@ -1376,5 +1377,47 @@ class UserController extends Controller
 
 
         return $response;
+    }
+
+    public function printProtocol(Request $request)
+    {
+
+        $data = $request->only(['cpf', 'name', 'exams', 'numatendimento', 'namedoctor', 'colectdate', 'finaldate']);
+
+        $user = User::where('cpf', $data['cpf'])->first();
+
+
+        try {
+            \DB::beginTransaction();
+
+            $senha_md5 = Str::random(8);
+            $senha_temp = bcrypt($senha_md5);
+
+            if (!empty($user)) {
+                User::where('cpf', $data['cpf'])->update(['password' =>  $senha_temp]);
+            } else {
+                //Define nivel user Senne
+                $role_id = 5;
+
+                //$senha_md5 = Str::random(8); //Descomentar após testes
+
+                $newUser = new User();
+                $newUser->name = $data['name'];
+                $newUser->cpf = $data['cpf'];
+                $newUser->role_id = $role_id;
+                $newUser->password = $senha_temp;
+                $newUser->save();
+            }
+
+            \DB::commit();
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+            \DB::rollback();
+            return ['error' => 'Could not write data', 400];
+        }
+        $pdf = \PDF::loadView('pdf.protocol', compact('data', 'senha_md5'))->setPaper('a4')
+            ->stream();
+
+        return $pdf;
     }
 }

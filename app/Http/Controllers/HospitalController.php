@@ -126,6 +126,7 @@ class HospitalController extends Controller
         /* LISTA TODOS OS HOSPITAIS APÓS CONSULTA E SALVAR NOVOS DADOS  */
         $hospitals = Hospitais::all();
 
+       
         if (count($hospitals) > 0) {
             foreach ($hospitals as $hospital) {
                 $procedencia[] = [
@@ -133,6 +134,7 @@ class HospitalController extends Controller
                     'name' => $hospital->name,
                     'grupo' => $hospital->grupo_id,
                     'uuid' => $hospital->uuid,
+                    'codprocedencia' => $hospital->codprocedencia
                 ];
             }
 

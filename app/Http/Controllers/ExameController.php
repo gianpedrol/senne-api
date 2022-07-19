@@ -92,7 +92,7 @@ class ExameController extends Controller
         $bearer = $token->access_token;
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/atendimento/' . $uuid . '/' . $atendimento);
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/atend_exames?NumAtendimento=' . $atendimento);
 
         /* CONSULTA API DE SISTEMA DA SENNE */
         //$response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento/' . $uuid . '/' . $atendimento);
@@ -166,7 +166,7 @@ class ExameController extends Controller
         $bearer = $token->access_token;
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/proced_atendimentos/' . $uuid . '/' . $startdate . '/' . $finaldate);
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/lista_atendimentos?DataInicial=' . $startdate . '&DataFinal=' . $finaldate);
 
 
         $hospital = Hospitais::where('uuid', $uuid)->first();
@@ -227,7 +227,7 @@ class ExameController extends Controller
         $bearer = $token->access_token;
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento_detalhe/' . $uuid . '/' . $atendimento);
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/atendimento_detalhe/' . $uuid . '/' . $atendimento);
 
         $hospital = Hospitais::where('uuid', $uuid)->first();
 

@@ -1416,7 +1416,7 @@ class UserController extends Controller
             return ['error' => 'Could not write data', 400];
         }
         $pdf = \PDF::loadView('pdf.protocol', compact('data', 'senha_md5'))->setPaper('a4')
-            ->download();
+            ->download('protocol.pdf');
 
         return $pdf;
     }

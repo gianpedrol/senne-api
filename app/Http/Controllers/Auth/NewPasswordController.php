@@ -136,6 +136,9 @@ class NewPasswordController extends Controller
             $request->only('token', 'password', 'password_confirmation');
 
             $userEmail = User::where('email', $decrypted)->first();
+            if (empty($userEmail)) {
+                return response()->json(['error' => 'User not found'], 404);
+            }
 
             $status = Password::reset(
                 $request = ['email' => $decrypted, 'token' => $request->token, 'password' => $request->password, 'password_confirmation' => $request->password_confirmation],

@@ -46,7 +46,7 @@
             <td align="right"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
         </tr>
     </table>
-    <table width="550">
+    <table width="500">
         <tr style=" font-family: Montserrat; color: #343A40; font-weight: 500">
             <td align="center">
                 <p style="text-align:center; max-width: 350px;">O cadastro solicitado foi realizado

@@ -104,6 +104,15 @@ class User extends Authenticatable implements JWTSubject
         }
     }
 
+    /* Função para adicionar a URL do site automaticamente na imagem após puxar do banco
+    URL determinada no .env */
+    public function getPDFAttribute($value)
+    {
+        if ($value) {
+            return config('app.url') . 'pdf/' . $value;
+        }
+    }
+
 
     public function hospitalsUser()
     {

@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Http;
 //use App\Http\Controllers\Auth\DB;
 use App\Models\Groups;
 use App\Models\LogsExames;
+use App\Models\StorePDF;
 use App\Models\UsersGroup;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Support\Facades\Password;
@@ -1398,6 +1399,7 @@ class UserController extends Controller
             foreach ($files as $file) {
                 unlink($file);
             }
+            DB::table('table_pdf_value')->delete();
         }
 
         try {
@@ -1429,12 +1431,28 @@ class UserController extends Controller
             return ['error' => 'Could not write data', 400];
         }
 
-        $numAtendimento = $data['numatendimento'];
+        $numPDF = Str::random(9);
 
         $pdf = PDF::loadView('pdf.protocol', compact('data', 'senha_md5'))->setPaper('a4');
 
-        $pdf->save(public_path('pdf/protocol' . $numAtendimento . '.pdf'));
+        $pdf->save(public_path('pdf/protocol' . $numPDF . '.pdf'));
 
-        return response()->json(public_path('pdf/protocol' . $numAtendimento . '.pdf'));
+
+        try {
+            \DB::beginTransaction();
+
+            StorePDF::create(['pdf' => 'protocol' . $numPDF . '.pdf']);
+
+            \DB::commit();
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+            \DB::rollback();
+            return ['error' => 'Could not write data', 400];
+        }
+
+        $value =  StorePDF::where('pdf', 'protocol' . $numPDF . '.pdf')->first();
+
+
+         return response()->json([config('app.url') . 'pdf/' . $value->pdf], 200);
     }
 }

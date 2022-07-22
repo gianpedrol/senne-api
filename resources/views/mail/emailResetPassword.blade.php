@@ -1,4 +1,3 @@
-
 <!--------------------------------------------------------------------------------------->
 <!DOCTYPE html>
 <html lang="en">
@@ -53,14 +52,16 @@
                 <p style="text-align:center; max-width: 350px; margin-bottom: 50px;">Enviaremos uma mensagem assim
                     que o acesso for liberado. </p>
 
-                    
+
                 <a style="color:white; text-decoration: none; background-color:#ABB056; padding: 10px 50px; border-radius: 40px;"
                     href="{{ $url }}" target="_blank" rel="noopener">Alterar Senha </a>
-                
-                    <p style="text-align:center; max-width: 350px; margin-top: 30px;">Caso o botão não esteja funcionando, clique no link abaixo ou copie e cole em seu navegador. </p>
-                    <a href="{{ $url }}">{{$url}}</a>
 
-                    <p style="text-align:center; max-width: 350px; font-weight: bold; font-size: 16px;">Caso não tenha sido você, entre em contato conosco.  </p>
+                <p style="text-align:center; max-width: 350px; margin-top: 30px;">Caso o botão não esteja funcionando,
+                    clique no link abaixo ou copie e cole em seu navegador. </p>
+                <a href="{{ $url }}">{{ $url }}</a>
+
+                <p style="text-align:center; max-width: 350px; font-weight: bold; font-size: 16px;">Caso não tenha sido
+                    você, entre em contato conosco. </p>
 
 
             </td>

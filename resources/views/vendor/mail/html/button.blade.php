@@ -3,13 +3,15 @@
         <td align="center">
             <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
                 <tr>
-                    <td align="left">
+                    <td align="center">
                         <table border="0" cellpadding="0" cellspacing="0" role="presentation">
                             <tr>
-                                <td align="left">
-                                    <a style="color:white; text-decoration: none;  background-color:#EC6726; padding: 8px;border-radius: 3px;"
-                                        href="{{ $url }}" target="_blank"
-                                        rel="noopener">{{ $slot }}</a>
+                                <td align="center">
+                                    <a style="color:white; text-decoration: none; background-color:#ABB056; padding: 10px 30px; border-radius: 40px;"
+                                        href="{{ $url }}" target="_blank" rel="noopener">Cadastre sua senha
+                                    </a>
+
+
                                 </td>
                             </tr>
                         </table>

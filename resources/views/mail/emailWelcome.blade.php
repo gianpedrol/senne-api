@@ -1,3 +1,4 @@
+<!--------------------------------------------------------------------------------------->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,7 +13,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
-
+        tr.linha {
+            max-width: 500px !important;
+        }
     </style>
 </head>
 
@@ -38,40 +41,19 @@
         <tr style=" font-family: Montserrat; color: #B8BD5A">
             <td align="left"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
             <td align="center">
-                <h2 style="font-size: 18px; font-weight: bold; text-align: center">Olá, tudo bem?</h2>
+                <h2 style="font-size: 18px; font-weight: bold">Olá, tudo bem?</h2>
             </td>
             <td align="right"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
         </tr>
     </table>
-    <table width="500">
+    <table width="550">
         <tr style=" font-family: Montserrat; color: #343A40; font-weight: 500">
             <td align="center">
                 <p style="text-align:center; max-width: 350px; font-weight: bold; padding: 30px 0">Seja bem-vindo ao
                     portal<br>
                     Senne Liquor.</p>
-
-
-                @isset($actionText) <?php
-                switch ($level) {
-                    case 'success':
-                    case 'error':
-                        $color = $level;
-                        break;
-                }
-                ?>
-                    @component('mail::button', ['url' => $actionUrl])
-                    @endcomponent
-
-
-                @endisset
-                <p style="text-align:center; max-width: 350px; margin-top: 30px;">Caso o botão não esteja funcionando,
-                    clique no link abaixo ou copie e cole em seu navegador. </p>
-                <a href="{{ $actionUrl }}">{{ $actionUrl }}</a>
-
-
-
-
-
+                    
+                <p>Agora você faz parte da nossa rede e terá acesso a conteúdos exclusivos. </p>
             </td>
         </tr>
     </table>

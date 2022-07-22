@@ -13,78 +13,62 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
-        @media only screen and (max-width: 600px) {
-            .inner-body {
-                width: 100% !important;
-            }
-
-            .footer {
-                width: 100% !important;
-            }
-        }
-
-        @media only screen and (max-width: 500px) {
-            .button {
-                width: 100% !important;
-                color: white;
-                text-decoration: none;
-                background-color: #EC6726;
-                padding: 8px;
-                border-radius: 3px;
-
-            }
+        tr.linha {
+            max-width: 500px !important;
         }
     </style>
 </head>
 
-<body bgcolor="#F0ECEB" topmargin="0" marginwidth="0" marginheight="0">
+<body topmargin="0" marginwidth="0" marginheight="0">
     <table>
         <tr>
-            <td align="left" height="100">
+            <td align="center" height="100">
                 <img src="https://teste-api-senne.mageda.com.br/uploads/logosenne.png" alt="Senne Liquor" width="138"
                     height="57">
             </td>
         </tr>
-        <tr>
-            <td height="20"></td>
-        </tr>
 
         <tr>
-            <td width="500" style="padding-left: 36px; font-family: Montserrat; color: #EC6726">
-                <h2 style="font-weight: bold">Olá,{{ $data['name'] }}</h2>
-                <h3>Suas permissões de acesso foram alteradas</h3>
-            </td>
-
-        </tr>
-
-        <tr>
-            <td width="350" style="padding-left: 36px; font-family: Montserrat;">
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum, quisquam qui eum dolores necessitatibus
-                    consequatur natus facere aliquid odit officiis?</p>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam ullam corrupti obcaecati molestias
-                    quisquam tempore odit commodi nisi explicabo sequi? Ut expedita dignissimos excepturi laborum
-                    ratione. Ut, provident! Quae, sit?</p>
-                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nisi libero aliquam rem dolorem sequi ab
-                    asperiores nam expedita commodi temporibus?</p>
-            </td>
-
-        </tr>
-        <tr>
-            <td style="padding-left: 36px;padding-top: 30px;font-family: Montserrat; color:white; font-weight: 500;">
-
-                <h3 style="color:#EC6726; font-size:14px ">Em caso de dúvida, consulte o administrador de sua unidade.
-                </h3>
-
+            <td align="center"
+                style="background-image: url('https://teste-api-senne.mageda.com.br/uploads/Frame.png'); background-size: cover
+            ; height: 170px; width: 500px;">
+                <img style="margin-top: 50px;" src="https://teste-api-senne.mageda.com.br/uploads/icon.png"
+                    alt="" srcset="">
             </td>
         </tr>
-
-        <tr>
-            <td style="padding-left: 36px;padding-top: 30px;font-family: Montserrat;">
-                <h3 style="color:#EC6726; font-size:14px ">Equipe Senne</h3>
-            </td>
-        </tr>
-
     </table>
+    <table width="500">
+        <tr style=" font-family: Montserrat; color: #B8BD5A">
+            <td align="left"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
+            <td align="center">
+                <h2 style="font-size: 18px; font-weight: bold">Olá, tudo bem?</h2>
+            </td>
+            <td align="right"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
+        </tr>
+    </table>
+    <table width="550">
+        <tr style=" font-family: Montserrat; color: #343A40; font-weight: 500">
+            <td align="center">
+                <p style="text-align:center; max-width: 350px;">Recebemos uma notiﬁcação
+                    que seus dados foram alterados.
+                </p>
+                <p style="text-align:center; max-width: 350px; font-weight: bold; font-size: 16px;">Caso não tenha sido
+                    você, entre em contato conosco. </p>
+            </td>
+        </tr>
+    </table>
+    <table width="500" style="margin-top: 70px">
+        <tr
+            style="background-image: url('https://teste-api-senne.mageda.com.br/uploads/footer.png'); background-size: contain; background-repeat: 
+            no-repeat;height: 80px;">
+            <td>
+
+            </td>
+        </tr>
+    </table>
+
+
+
 </body>
 
 </html>

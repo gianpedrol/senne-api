@@ -16,6 +16,7 @@ use League\Flysystem\Exception;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use App\Mail\emailUpdatePermissions;
+use App\Mail\emailWelcome;
 use App\Models\DomainHospital;
 use App\Models\Hospitais;
 use App\Models\UserLog;
@@ -36,6 +37,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 use DB;
+use Illuminate\Support\Facades\DB as FacadesDB;
+use Illuminate\Support\Facades\Storage;
+use Svg\Tag\Path;
 
 /* 
 Status 
@@ -232,6 +236,7 @@ class UserController extends Controller
                 );
 
                 if ($status == Password::RESET_LINK_SENT) {
+                    Mail::to($request->only('email'))->send(new emailWelcome($data));
                     return [
                         'status' => __($status),
                         'message' => "User registered successfully!", 'data' => $newUser
@@ -1276,6 +1281,7 @@ class UserController extends Controller
             );
 
             if ($status == Password::RESET_LINK_SENT) {
+                Mail::to($request->only('email'))->send(new emailWelcome($data));
                 return [
                     'status' => __($status),
                     'message' => "User approved successfully!",
@@ -1386,6 +1392,13 @@ class UserController extends Controller
 
         $user = User::where('cpf', $data['cpf'])->first();
 
+        $files = glob('pdf/*.*');
+
+        if (count($files) >= 10) {
+            foreach ($files as $file) {
+                unlink($file);
+            }
+        }
 
         try {
             \DB::beginTransaction();
@@ -1415,9 +1428,13 @@ class UserController extends Controller
             \DB::rollback();
             return ['error' => 'Could not write data', 400];
         }
-        $pdf = PDF::loadView('pdf.protocol', compact('data', 'senha_md5'))->setPaper('a4')
-            ->download('protocol.pdf');
 
-        return $pdf;
+        $numAtendimento = $data['numatendimento'];
+
+        $pdf = PDF::loadView('pdf.protocol', compact('data', 'senha_md5'))->setPaper('a4');
+
+        $pdf->save(public_path('pdf/protocol' . $numAtendimento . '.pdf'));
+
+        return response()->json(public_path('pdf/protocol' . $numAtendimento . '.pdf'));
     }
 }

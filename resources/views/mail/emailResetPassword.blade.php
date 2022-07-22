@@ -28,7 +28,7 @@
 
         <tr>
             <td align="center"
-                style="background-image: url('https://teste-api-senne.mageda.com.br/uploads/frame.png'); background-size: cover
+                style="background-image: url('https://teste-api-senne.mageda.com.br/uploads/Frame.png'); background-size: cover
             ; height: 170px; width: 500px;">
                 <img style="margin-top: 50px;" src="https://teste-api-senne.mageda.com.br/uploads/icon.png"
                     alt="" srcset="">

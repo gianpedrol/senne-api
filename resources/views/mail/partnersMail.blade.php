@@ -53,6 +53,8 @@
                     recebida com sucesso.</p>
                 <p style="text-align:center; max-width: 350px;">Enviaremos uma mensagem assim
                     que o acesso for liberado. </p>
+
+
             </td>
         </tr>
     </table>

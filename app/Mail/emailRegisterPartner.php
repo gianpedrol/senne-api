@@ -31,6 +31,6 @@ class emailRegisterPartner extends Mailable
     public function build()
     {
         $data = $this->data;
-        return $this->subject('Solicitação de Cadastro')->markdown('mail.registerSolicitation')->with(['data' => $this->data]);
+        return $this->subject('Solicitação de Cadastro')->markdown('mail.senne.registerSolicitation')->with(['data' => $this->data]);
     }
 }

@@ -49,10 +49,9 @@
     <table width="550">
         <tr style=" font-family: Montserrat; color: #343A40; font-weight: 500">
             <td align="center">
-                <p style="text-align:center; max-width: 350px;">Sua solicitação de cadastro foi
-                    recebida com sucesso.</p>
-                <p style="text-align:center; max-width: 350px;">Enviaremos uma mensagem assim
-                    que o acesso for liberado. </p>
+                <p style="text-align:center; max-width: 350px;">O cadastro solicitado foi realizado
+                    com sucesso. O acesso do usuário está liberado.
+                </p>
             </td>
         </tr>
     </table>

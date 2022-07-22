@@ -28,6 +28,6 @@ class emailSolicitationDoctor extends Mailable
      */
     public function build()
     {
-        return $this->subject('Solicitação de Cadastro Médico')->markdown('mail.registerDoctorSolicitation')->with(['data' => $this->data]);
+        return $this->subject('Solicitação de Cadastro Médico')->markdown('mail.senne.registerDoctorSolicitation')->with(['data' => $this->data]);
     }
 }

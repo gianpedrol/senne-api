@@ -82,7 +82,7 @@ class RegisterController extends Controller
      */
     public function registerPatient(Request $request)
     {
-        $data = $request->only(['name', 'cpf', 'phone', 'email']);
+        $data = $request->only(['name', 'cpf', 'phone', 'email', 'policy']);
 
         $user = User::where('email', $data['email'])->first();
 
@@ -105,6 +105,7 @@ class RegisterController extends Controller
             $newUser->email = $data['email'];
             $newUser->cpf = $data['cpf'];
             $newUser->phone = $data['phone'];
+            $newUser->policy = $data['policy'];
             $newUser->status = 2;
             $newUser->role_id = $role_id;
             $newUser->password = $senha_temp;
@@ -183,7 +184,7 @@ class RegisterController extends Controller
     {
 
 
-        $data = $request->only(['name', 'crm', 'phone', 'email', 'especialidade', 'novidades']);
+        $data = $request->only(['name', 'crm', 'phone', 'email', 'especialidade', 'novidades', 'policy']);
 
         $user = User::where('email', $data['email'])->first();
 
@@ -209,7 +210,7 @@ class RegisterController extends Controller
             $newUser->especialidade = $data['especialidade'];
             $newUser->news_email = $data['novidades'];
             $newUser->status = 3;
-
+            $newUser->policy = $data['policy'];
             $newUser->role_id = $role_id;
             $newUser->password = $senha_temp;
             $newUser->save();
@@ -377,7 +378,7 @@ class RegisterController extends Controller
      ***/
     public function registerPartner(Request $request)
     {
-        $data = $request->only(['name', 'cpf', 'phone', 'email', 'nameempresa', 'razaosocial', 'cnpj', 'classification', "uf", "cep", "city", "address", "number"]);
+        $data = $request->only(['name', 'cpf', 'phone', 'email', 'nameempresa', 'razaosocial', 'cnpj', 'classification', "uf", "cep", "city", "address", "number", 'policy']);
 
         $usersMasters = User::where('role_id', 1)->get();
         $sendTo = [];
@@ -454,7 +455,7 @@ class RegisterController extends Controller
     {
 
 
-        $data = $request->only(['name', 'cpf', 'phone', 'email', 'department']);
+        $data = $request->only(['name', 'cpf', 'phone', 'email', 'department', 'policy']);
         $permissions = $request->permissions;
         $hospitalsId = $request->hospitals;
 
@@ -516,6 +517,7 @@ class RegisterController extends Controller
                 $newUser->email = $data['email'];
                 $newUser->cpf = $data['cpf'];
                 $newUser->phone = $data['phone'];
+                $newUser->policy = $data['policy'];
                 $newUser->status = 3;
                 $newUser->role_id = $role_id;
                 $newUser->password = $senha_temp;

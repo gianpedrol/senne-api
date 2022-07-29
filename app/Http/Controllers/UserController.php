@@ -1408,9 +1408,7 @@ class UserController extends Controller
             $senha_md5 = Str::random(8);
             $senha_temp = bcrypt($senha_md5);
 
-            if (!empty($user)) {
-                User::where('cpf', $data['cpf'])->update(['password' =>  $senha_temp]);
-            } else {
+            if (empty($user)) {
                 //Define nivel user Senne
                 $role_id = 5;
 
@@ -1422,6 +1420,12 @@ class UserController extends Controller
                 $newUser->role_id = $role_id;
                 $newUser->password = $senha_temp;
                 $newUser->save();
+         
+                $pdf = PDF::loadView('pdf.protocol', compact('data', 'senha_md5'))->setPaper('a4');
+
+            }else{
+                $pdf = PDF::loadView('pdf.protocol', compact('data'))->setPaper('a4');
+
             }
 
             \DB::commit();
@@ -1432,11 +1436,9 @@ class UserController extends Controller
         }
 
         $numPDF = Str::random(9);
-
-        $pdf = PDF::loadView('pdf.protocol', compact('data', 'senha_md5'))->setPaper('a4');
-
+        
+        
         $pdf->save(public_path('pdf/protocol' . $numPDF . '.pdf'));
-
 
         try {
             \DB::beginTransaction();

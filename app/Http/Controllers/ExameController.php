@@ -88,18 +88,22 @@ class ExameController extends Controller
         );
 
         $token = json_decode($resp->getBody());
+        if(empty($request->PageNo)){
+            $request->PageNo = 1;
+        }
 
         $bearer = $token->access_token;
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/atend_exames?NumAtendimento=' . $atendimento);
-
-        /* CONSULTA API DE SISTEMA DA SENNE */
-        //$response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento/' . $uuid . '/' . $atendimento);
-
-        $hospital = Hospitais::where('uuid', $uuid)->first();
-
-        $items = json_decode($response->getBody());
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/atend_exames?Tipo=3&NumAtendimento='.$atendimento.'&Acesso='. $uuid. '&PageNo='.$request->PageNo.'&NomeExame='.$request
+        ->NomeExame
+    );
+    /* CONSULTA API DE SISTEMA DA SENNE */
+    //$response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento/' . $uuid . '/' . $atendimento);
+    
+    $hospital = Hospitais::where('uuid', $uuid)->first();
+    
+    $items = json_decode($response->getBody());
 
         //GERA LOG
         $log = Auth::user();
@@ -166,7 +170,7 @@ class ExameController extends Controller
         $bearer = $token->access_token;
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/lista_atendimentos?DataInicial=' . $startdate . '&DataFinal=' . $finaldate);
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/lista_atendimentos?Acesso='.$uuid.'&Tipo=1&PageSize=100&DataInicial='.$startdate.'&DataFinal='.$finaldate.'&NomePaciente='.$request->NomePaciente);
 
 
         $hospital = Hospitais::where('uuid', $uuid)->first();
@@ -227,7 +231,7 @@ class ExameController extends Controller
         $bearer = $token->access_token;
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/atendimento_detalhe/' . $uuid . '/' . $atendimento);
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/atend_detalhe?Tipo=1&NumAtendimento='.$atendimento.'&Acesso='. $uuid );
 
         $hospital = Hospitais::where('uuid', $uuid)->first();
 

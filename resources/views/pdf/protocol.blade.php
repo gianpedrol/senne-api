@@ -200,8 +200,17 @@
         </p>
 
         <div class="box-login">
+
+
+            @if(empty($senha_md5))
+            <h2>LOGIN: {{ $data['cpf'] }}</h2>
+            <p style="font-weigh: bold">Acesse com o seu login na plataforma,<br> caso tenha esquecido acesse "esqueci a senha"</p>
+            @endif
+            @if(!empty($senha_md5))
             <h2>LOGIN: {{ $data['cpf'] }}</h2>
             <h2>SENHA : {{ $senha_md5 }}</h2>
+            @endif
+            
         </div>
         <p>O prazo de liberação dos resultados pode sofrer alterações após a avaliação da equipe
             médica.

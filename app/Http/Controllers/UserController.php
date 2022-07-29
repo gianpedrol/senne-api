@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\URL;
 use League\Flysystem\Exception;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
+use App\Mail\emailProtocolMail;
 use App\Mail\emailUpdatePermissions;
 use App\Mail\emailWelcome;
 use App\Models\DomainHospital;
@@ -1451,10 +1452,22 @@ class UserController extends Controller
             \DB::rollback();
             return ['error' => 'Could not write data', 400];
         }
+        if(!empty($newUser->email)){
+            try {
+                /* Enviar e-mail para o usuário com sua senha de acesso */
+                Mail::to($newUser->email)->send(new emailProtocolMail($data));
+                                
+                $value =  StorePDF::where('pdf', 'protocol' . $numPDF . '.pdf')->first();
+                return response()->json([config('app.url') . 'pdf/' . $value->pdf], 200);
+            } catch (Exception $ex) {
+                dd($ex);
+                return response()->json(['error' => 'cannot be sended', $ex], 500);
+            }
+        }else{
+            $value =  StorePDF::where('pdf', 'protocol' . $numPDF . '.pdf')->first();             
+                
+            return response()->json([config('app.url') . 'pdf/' . $value->pdf], 200);
+        }
 
-        $value =  StorePDF::where('pdf', 'protocol' . $numPDF . '.pdf')->first();
-
-
-         return response()->json([config('app.url') . 'pdf/' . $value->pdf], 200);
     }
 }

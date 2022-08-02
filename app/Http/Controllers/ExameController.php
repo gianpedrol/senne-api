@@ -27,12 +27,34 @@ class ExameController extends Controller
 
     public function listExame()
     {
-        /* CONSULTA API DE SISTEMA DA SENNE */
-        $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/exame');
+    /*    /* CONSULTA API DE SISTEMA DA SENNE */
+    /*    $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/exame');
 
         $items = json_decode($response->getBody());
 
-        return $items;
+        return $items;*/
+
+        $client = 'A2PsnYpypc_u66U0ANnzfQ..';
+        $client_secret = 'M3nxpLJbYPNqkfnkR5tuqg..';
+        $resp = Http::withBasicAuth($client, $client_secret)->asForm()->post(
+            'http://sistemas.senneliquor.com.br:8804/ords/gateway/oauth/token',
+            [
+                'grant_type' => 'client_credentials',
+
+            ]
+        );
+
+        $token = json_decode($resp->getBody());
+
+        $bearer = $token->access_token;
+     /*   $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $bearer
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/lista_atendimentos?Acesso='.$uuid.'&Tipo=3&DataInicial='.$startdate.'&DataFinal='.$finaldate);
+*/
+$response = Http::withHeaders([
+    'Authorization' => 'Bearer ' . $bearer
+])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/medicos');
+return $response;
     }
 
     public function resultExame(Request $request)
@@ -76,6 +98,12 @@ class ExameController extends Controller
      */
     public function listAttendance($uuid, $atendimento,  Request $request)
     {
+
+        if ($request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 3)) {
+                return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
+            }
+        }
 
         $client = 'A2PsnYpypc_u66U0ANnzfQ..';
         $client_secret = 'M3nxpLJbYPNqkfnkR5tuqg..';
@@ -152,8 +180,14 @@ class ExameController extends Controller
      *   @OA\Response(response=404, description="Not Found")
      * )
      */
-    public function listAttendanceDate($uuid, $startdate, $finaldate, Request $request)
+    public function listAttendanceDate($uuid,$startdate, $finaldate, Request $request)
     {
+
+        if ($request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 3)) {
+                return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
+            }
+        }
 
         $client = 'A2PsnYpypc_u66U0ANnzfQ..';
         $client_secret = 'M3nxpLJbYPNqkfnkR5tuqg..';
@@ -168,10 +202,9 @@ class ExameController extends Controller
         $token = json_decode($resp->getBody());
 
         $bearer = $token->access_token;
-        $response = Http::withHeaders([
+         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/lista_atendimentos?Acesso='.$uuid.'&Tipo=1&PageSize='.$request->PageSize.'&DataInicial='.$request->DataInicial.'&DataFinal='.$request->DataFinal.'&NomeMedico='.$request->NomeMedico.'NomePaciente='.$request->NomePaciente);
-
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/lista_atendimentos?Acesso='.$uuid.'&Tipo=3&DataInicial='.$startdate.'&DataFinal='.$finaldate);
         $hospital = Hospitais::where('uuid', $uuid)->first();
 
         //GERA LOG
@@ -214,6 +247,12 @@ class ExameController extends Controller
      */
     public function listAttendanceDetails($uuid, $atendimento,  Request $request)
     {
+
+        if ($request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 3)) {
+                return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
+            }
+        }
 
         $client = 'A2PsnYpypc_u66U0ANnzfQ..';
         $client_secret = 'M3nxpLJbYPNqkfnkR5tuqg..';
@@ -276,6 +315,11 @@ class ExameController extends Controller
     public function principalReport($uuid, $atendimento, $r_id, Request $request)
     {
 
+        if ($request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 3)) {
+                return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
+            }
+        }
         $log = Auth::user();
         $saveLog = new UserLog();
         $saveLog->id_user = $log->id;

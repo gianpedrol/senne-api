@@ -123,8 +123,8 @@ return $response;
         $bearer = $token->access_token;
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/atend_exames?Tipo=3&NumAtendimento='.$atendimento.'&Acesso='. $uuid. '&PageNo='.$request->PageNo.'&NomeExame='.$request
-        ->NomeExame .'&DataInicial='.$request->DataInicial.'&DataFinal='.$request->DataFinal.'&NomeMedico='.$request->NomeMedico.'NomePaciente='.$request->NomePaciente
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/atend_exames?Tipo=3&NumAtendimento='.$atendimento.'&Acesso='. $uuid. '&PageNo='.$request->PageNo.'$PageSize='.$request->PageSize.'&NomeExame='.$request
+        ->NomeExame .'&DataInicial='.$request->DataInicial.'&DataFinal='.$request->DataFinal.'&NomeMedico='.$request->NomeMedico.'&NomePaciente='.$request->NomePaciente.'&Order='.$request->Order
     );
     /* CONSULTA API DE SISTEMA DA SENNE */
     //$response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento/' . $uuid . '/' . $atendimento);
@@ -204,7 +204,7 @@ return $response;
         $bearer = $token->access_token;
          $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/lista_atendimentos?Acesso='.$uuid.'&Tipo=3&DataInicial='.$startdate.'&DataFinal='.$finaldate);
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/lista_atendimentos?Acesso='.$uuid.'&Tipo=3&DataInicial='.$startdate.'&DataFinal='.$finaldate. '&PageNo='.$request->PageNo .'&Order='.$request->Order.'&PageSize='.$request->PageSize . '&NomePaciente='.$request->NomePaciente);
         $hospital = Hospitais::where('uuid', $uuid)->first();
 
         //GERA LOG

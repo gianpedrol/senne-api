@@ -1305,8 +1305,8 @@ class UserController extends Controller
                 return response()->json(['error' => "Unauthorized not administrator"], 401);
             }
         }
-        $id = $request->id;
         $codmedico = $request->codmedico;
+        $uuidmedico = $request->hash_medico;
 
         //Validar se email existe!
         $user = User::where('id', $id)->first();
@@ -1320,10 +1320,7 @@ class UserController extends Controller
         try {
             \DB::beginTransaction();
 
-            $user = User::where('id', $id)->first();
-            if ($user) {
-                $user->update(['status' => 2, 'cod_doctor' => $codmedico]);
-            }
+            $user = User::where('id', $id)->first()->update(['status' => 2, 'cod_doctor' => $codmedico, 'uuid_doc' => $uuidmedico]);
 
 
             //GERA LOG

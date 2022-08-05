@@ -194,6 +194,7 @@ class AuthController extends Controller
             ], 500);
         }
     }
+}
 
     /**
      * @OA\Post(

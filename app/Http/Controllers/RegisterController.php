@@ -136,6 +136,8 @@ class RegisterController extends Controller
     }
 
     /**
+     * 
+     * 
      * @OA\Post(
      * path="/api/doctor/register",
      * operationId="Register Doctor",

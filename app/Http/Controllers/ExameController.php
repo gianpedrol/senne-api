@@ -118,24 +118,24 @@ class ExameController extends Controller
 
         $token = json_decode($resp->getBody());
 
-
         $loggedUser = Auth::user();
         $tipo = $loggedUser->role_id;    
 
         if($request->Order == null){ 
-            $order = 'DESC';
+            $request->Order = 'DESC';
         }
-        if($request->pageno == null){ 
-            $pageno = 0;
+        if($request->pageNo == null){ 
+            $request->pageNo = 1;
         }
-        if($request->pagesize == null){ 
-            $pagesize = 10;
+
+        if($request->pageSize == null){ 
+            $request->pageSize = 10;
         }
 
         $bearer = $token->access_token;
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/atend_exames?Tipo=1&NumAtendimento='.$atendimento.'&Acesso='. $uuid. '&Tipo='.$tipo. '&PageNo='.$pageno .'&Order='.$order.'&PageSize='.$pagesize .'&NomeExame='.$request->NomeExame .'&NomeMedico='.$request->NomeMedico.'&NomePaciente='.$request->NomePaciente
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/atend_exames?Tipo=1&NumAtendimento='.$atendimento.'&Acesso='. $uuid. '&Tipo='.$tipo. '&PageNo='. $request->pageNo .'&Order='.$request->Order.'&PageSize='. $request->pageSize .'&NomeExame='.$request->NomeExame .'&NomeMedico='.$request->NomeMedico.'&NomePaciente='.$request->NomePaciente
     );
     /* CONSULTA API DE SISTEMA DA SENNE */
     //$response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento/' . $uuid . '/' . $atendimento);

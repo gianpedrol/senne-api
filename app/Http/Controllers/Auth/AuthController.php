@@ -91,13 +91,9 @@ class AuthController extends Controller
      *      @OA\Response(response=404, description="Resource Not Found"),
      * )
      */
-    public function login(Request $request, $role_id)
+    public function login(Request $request, $id)
     {
         $user = User::where('email', $request->email)->first();
-
-        /* if ($role_id != $user->role_id) {
-
-        }*/
 
         if ($user->status == 0) {
             return response()->json([
@@ -129,7 +125,8 @@ class AuthController extends Controller
                 'message'   => 'User is awaiting approval',
             ], 404);
         }
-        if ($role_id = 5) {
+
+        if ($id == 5 && $user->role_id == 5 ) {
             $array = ['message' => ''];
             $credentials = $request->only('cpf', 'password');
             if ($request->cpf != null) {
@@ -145,26 +142,22 @@ class AuthController extends Controller
                     return response()->json([
                         'message'   => 'The user can t be found',
                     ], 404);
-                } else {
-
+                } else{
                     return response()->json(['message' => "User Logged in!", 'token' => $array['token'], 'user' => $user], 200);
                 }
             }
         }
 
-        if ($user->role_id == 1 || $role_id == $user->role_id) {
-            $array = ['message' => ''];
-            $creds = $request->only('email', 'password');
-            $token = Auth::attempt($creds);
-
-
-
-            if ($token) {
-                $user['email'] = $creds;
-                $array['token'] = $token;
-            } else {
-                $array['message'] = 'Incorrect username or password';
-            }
+        $userLogin = User::where('email', $request->email)->first();
+        if ($userLogin->role_id == $id || $userLogin->role_id == 1) {            
+            $user = User::where('email', $request->email)->first();
+            
+                $token = auth()->login($user);
+                if ($token) {
+                    $array['token'] = $token;
+                } else {
+                    $array['message'] = 'Incorrect username or password';
+                }
 
             $user = User::where('email', $user['email'])->first();
             $log = User::where('email', $user['email'])->first();
@@ -176,15 +169,12 @@ class AuthController extends Controller
             $saveLog->save();
 
             $user = [];
-            $user = Auth::user();
-
-
-            if (!$user) {
+            $user =  User::where('email', $request->email)->first();
+                if (!$user) {
                 return response()->json([
                     'message'   => 'The user can t be found',
                 ], 404);
             } else {
-
                 $user['hospitals'] = UsersHospitals::from('users_hospitals as userhos')
                     ->select('hos.id', 'hos.grupo_id', 'hos.name as name',  'hos.uuid')
                     ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')

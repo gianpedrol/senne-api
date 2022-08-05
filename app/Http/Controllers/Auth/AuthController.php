@@ -94,7 +94,10 @@ class AuthController extends Controller
     public function login(Request $request, $id)
     {
         $user = User::where('email', $request->email)->first();
-
+        if (!$user) {
+            return response()->json([
+                'message'   => 'The user can t be found',
+            ], 404);
         if ($user->status == 0) {
             return response()->json([
                 'message'   => 'The user is inativated',
@@ -151,7 +154,7 @@ class AuthController extends Controller
         $userLogin = User::where('email', $request->email)->first();
         if ($userLogin->role_id == $id || $userLogin->role_id == 1) {            
             $user = User::where('email', $request->email)->first();
-            
+
                 $token = auth()->login($user);
                 if ($token) {
                     $array['token'] = $token;

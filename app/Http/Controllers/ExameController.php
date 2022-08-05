@@ -51,10 +51,10 @@ class ExameController extends Controller
             'Authorization' => 'Bearer ' . $bearer
         ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/lista_atendimentos?Acesso='.$uuid.'&Tipo=3&DataInicial='.$startdate.'&DataFinal='.$finaldate);
 */
-$response = Http::withHeaders([
-    'Authorization' => 'Bearer ' . $bearer
-])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/medicos');
-return $response;
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $bearer
+            ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/medicos');
+            return $response;
     }
 
     public function resultExame(Request $request)
@@ -105,6 +105,19 @@ return $response;
             }
         }
 
+        $loggedUser = Auth::user();
+        $tipo = $loggedUser->role_id;    
+
+        if($request->Order == null){ 
+            $order = 'DESC';
+        }
+        if($request->PageNo == null){ 
+            $pageNo = 1;
+        }
+        if($request->PageSize == null){ 
+            $pageSize = 10;
+        }
+
         $client = 'A2PsnYpypc_u66U0ANnzfQ..';
         $client_secret = 'M3nxpLJbYPNqkfnkR5tuqg..';
         $resp = Http::withBasicAuth($client, $client_secret)->asForm()->post(
@@ -120,11 +133,14 @@ return $response;
             $request->PageNo = 1;
         }
 
+        if($request->Order == null){ 
+            $order = 'DESC';
+        }
+
         $bearer = $token->access_token;
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/atend_exames?Tipo=3&NumAtendimento='.$atendimento.'&Acesso='. $uuid. '&PageNo='.$request->PageNo.'$PageSize='.$request->PageSize.'&NomeExame='.$request
-        ->NomeExame .'&DataInicial='.$request->DataInicial.'&DataFinal='.$request->DataFinal.'&NomeMedico='.$request->NomeMedico.'&NomePaciente='.$request->NomePaciente.'&Order='.$request->Order
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/atend_exames?Tipo=1&NumAtendimento='.$atendimento.'&Acesso='. $uuid. '&Tipo='.$tipo. '&PageNo='.$pageNo .'&Order='.$order.'&PageSize='.$pageSize .'&NomeExame='.$request->NomeExame .'&NomeMedico='.$request->NomeMedico.'&NomePaciente='.$request->NomePaciente
     );
     /* CONSULTA API DE SISTEMA DA SENNE */
     //$response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento/' . $uuid . '/' . $atendimento);
@@ -199,12 +215,26 @@ return $response;
             ]
         );
 
+        $loggedUser = Auth::user();
+        $tipo = $loggedUser->role_id;    
+
+        if($request->Order == null){ 
+            $order = 'DESC';
+        }
+        if($request->PageNo == null){ 
+            $pageNo = 1;
+        }
+        if($request->PageSize == null){ 
+            $pageSize = 10;
+        }
+
         $token = json_decode($resp->getBody());
 
         $bearer = $token->access_token;
          $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/lista_atendimentos?Acesso='.$uuid.'&Tipo=3&DataInicial='.$startdate.'&DataFinal='.$finaldate. '&PageNo='.$request->PageNo .'&Order='.$request->Order.'&PageSize='.$request->PageSize . '&NomePaciente='.$request->NomePaciente);
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/lista_atendimentos?Acesso='.$uuid.'&Tipo='.$tipo.'&DataInicial='.$startdate.'&DataFinal='.$finaldate. '&PageNo='.$pageNo .'&Order='.$order.'&PageSize='.$pageSize . '&NomePaciente='.$request->NomePaciente);
+
         $hospital = Hospitais::where('uuid', $uuid)->first();
 
         //GERA LOG

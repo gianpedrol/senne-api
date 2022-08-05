@@ -78,14 +78,25 @@ class HospitalController extends Controller
 
         $token = json_decode($resp->getBody());
 
+        if($request->Order == null){ 
+            $request->Order = 'DESC';
+        }
+        if($request->pageNo == null){ 
+            $request->pageNo = 1;
+        }
+
+        if($request->pageSize == null){ 
+            $request->pageSize = 250;
+        }
+
         $bearer = $token->access_token;
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/procedencia');
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/procedencia?&PageNo='. $request->pageNo .'&Order='.$request->Order.'&PageSize='. $request->pageSize);
 
         $items = json_decode($response->getBody());
-
         foreach ($items->Procedencia as $item) {
+           
             foreach ($item->procedencia as $item) {
                 $data[] = [
                     'id_api' => $item->codprocedencia,
@@ -102,16 +113,15 @@ class HospitalController extends Controller
             if ($save_proc['codgrupo'] == null) {
                 $save_proc['codgrupo'] = 1;
             }
-            $group = Groups::where('codgroup', $save_proc['codgrupo'])->first();
+            $groups = Groups::where('codgroup', $save_proc['codgrupo'])->get();
 
-            if ($save_proc['codgrupo'] = $group['codgroup']) {
+            foreach ($groups as $group){
                 $id_group = $group->id;
             }
-
             try {
                 \DB::beginTransaction();
 
-                Hospitais::updateOrCreate(['codprocedencia' => $save_proc['id_api'], 'name' => $save_proc['name'], 'grupo_id' => $id_group, 'uuid' => $save_proc['uuid'],]);
+                Hospitais::updateOrCreate(['codprocedencia' => $save_proc['id_api'], 'name' => $save_proc['name'], 'grupo_id' =>$id_group, 'uuid' => $save_proc['uuid'],]);
 
 
                 \DB::commit();

@@ -129,7 +129,7 @@ class ExameController extends Controller
         }
 
         if($request->pageSize == null){ 
-            $request->pageSize = 10;
+            $request->pageSize = 250;
         }
 
         $bearer = $token->access_token;

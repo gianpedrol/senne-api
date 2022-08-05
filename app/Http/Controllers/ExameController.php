@@ -210,11 +210,23 @@ class ExameController extends Controller
             ]
         );
 
+       
+
         $loggedUser = Auth::user();
         $tipo = $loggedUser->role_id;    
 
+        if($request->Order == null){ 
+            $request->Order = 'DESC';
+        }
+        if($request->pageNo == null){ 
+            $request->pageNo = 1;
+        }
 
-        $token = json_decode($resp->getBody());
+        if($request->pageSize == null){ 
+            $request->pageSize = 10;
+        }
+
+                $token = json_decode($resp->getBody());
 
         $bearer = $token->access_token;
          $response = Http::withHeaders([

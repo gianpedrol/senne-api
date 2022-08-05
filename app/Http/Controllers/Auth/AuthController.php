@@ -94,10 +94,7 @@ class AuthController extends Controller
     public function login(Request $request, $id)
     {
         $user = User::where('email', $request->email)->first();
-        if (!$user) {
-            return response()->json([
-                'message'   => 'The user can t be found',
-            ], 404);
+
         if ($user->status == 0) {
             return response()->json([
                 'message'   => 'The user is inativated',
@@ -194,7 +191,6 @@ class AuthController extends Controller
             ], 500);
         }
     }
-}
 
     /**
      * @OA\Post(

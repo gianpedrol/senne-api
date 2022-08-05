@@ -213,22 +213,13 @@ class ExameController extends Controller
         $loggedUser = Auth::user();
         $tipo = $loggedUser->role_id;    
 
-        if($request->Order == null){ 
-            $order = 'DESC';
-        }
-        if($request->pageno == null){ 
-            $pageno = 1;
-        }
-        if($request->pagesize == null){ 
-            $pagesize = 10;
-        }
 
-                $token = json_decode($resp->getBody());
+        $token = json_decode($resp->getBody());
 
         $bearer = $token->access_token;
          $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/lista_atendimentos?Acesso='.$uuid.'&Tipo='.$tipo.'&DataInicial='.$startdate.'&DataFinal='.$finaldate. '&PageNo='.$pageno .'&Order='.$order.'&PageSize='.$pagesize . '&NomePaciente='.$request->NomePaciente);
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/lista_atendimentos?Acesso='.$uuid.'&Tipo='.$tipo.'&DataInicial='.$startdate.'&DataFinal='.$finaldate. '&PageNo='.$request->pageNo .'&Order='.$request->Order.'&PageSize='.$request->pageSize . '&NomePaciente='.$request->NomePaciente);
 
         $hospital = Hospitais::where('uuid', $uuid)->first();
 

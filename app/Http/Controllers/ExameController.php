@@ -221,7 +221,7 @@ class ExameController extends Controller
         if($request->Order == null){ 
             $order = 'DESC';
         }
-        if($request->PageNo == null){ 
+        if($request->pageno == null){ 
             $pageNo = 1;
         }
         if($request->PageSize == null){ 

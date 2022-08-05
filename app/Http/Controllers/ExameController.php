@@ -223,9 +223,7 @@ class ExameController extends Controller
             $pagesize = 10;
         }
 
-        dd($request->all());
-
-        $token = json_decode($resp->getBody());
+                $token = json_decode($resp->getBody());
 
         $bearer = $token->access_token;
          $response = Http::withHeaders([

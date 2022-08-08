@@ -128,9 +128,15 @@ class AuthController extends Controller
 
         if ($id == 5 && $user->role_id == 5 ) {
             $array = ['message' => ''];
-            $credentials = $request->only('cpf', 'password');
-            if ($request->cpf != null) {
-                $user = User::where('cpf', $credentials['cpf'])->first();
+            $credentials = $request->only('login_protocol', 'password');
+
+            $user = User::where('login_protocol', $credentials['login_protocol'])->first();
+
+            if(empty($user)){
+                return response()->json(['status'=> 'error', 'message' => 'the login is wrong' ], 401  );
+            }
+            
+            if ($request->login_protocol != null) {
                 $token = auth()->login($user);
                 if ($token) {
                     $array['token'] = $token;

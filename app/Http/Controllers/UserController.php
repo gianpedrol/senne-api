@@ -1387,10 +1387,10 @@ class UserController extends Controller
     public function printProtocol(Request $request)
     {
 
-        $data = $request->only(['cpf', 'name', 'exams', 'numatendimento', 'namedoctor', 'colectdate', 'finaldate']);
+        $data = $request->only(['login_protocol', 'passtemp','name', 'exams', 'numatendimento', 'namedoctor', 'colectdate', 'finaldate']);
 
-        $user = User::where('cpf', $data['cpf'])->first();
-
+        $user = User::where('login_protocol', $data['login_protocol'])->first();
+        
         $files = glob('pdf/*.*');
 
         if (count($files) >= 10) {
@@ -1403,7 +1403,7 @@ class UserController extends Controller
         try {
             \DB::beginTransaction();
 
-            $senha_md5 = Str::random(8);
+            $senha_md5 =  $data['passtemp'];
             $senha_temp = bcrypt($senha_md5);
 
             if (empty($user)) {
@@ -1414,7 +1414,7 @@ class UserController extends Controller
 
                 $newUser = new User();
                 $newUser->name = $data['name'];
-                $newUser->cpf = $data['cpf'];
+                $newUser->login_protocol = $data['login_protocol'];
                 $newUser->role_id = $role_id;
                 $newUser->password = $senha_temp;
                 $newUser->save();

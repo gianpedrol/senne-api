@@ -1390,7 +1390,7 @@ class UserController extends Controller
         $data = $request->only(['login_protocol', 'passtemp','name', 'exams', 'numatendimento', 'namedoctor', 'colectdate', 'finaldate']);
 
         $user = User::where('login_protocol', $data['login_protocol'])->first();
-        
+
         $files = glob('pdf/*.*');
 
         if (count($files) >= 10) {
@@ -1422,7 +1422,9 @@ class UserController extends Controller
                 $pdf = PDF::loadView('pdf.protocol', compact('data', 'senha_md5'))->setPaper('a4');
 
             }else{
-                $pdf = PDF::loadView('pdf.protocol', compact('data'))->setPaper('a4');
+                $senha_md5 =  $data['passtemp'];
+                $user->update(['password' =>  $senha_md5 ]);
+                $pdf = PDF::loadView('pdf.protocol', compact('data', 'senha_md5'))->setPaper('a4');
 
             }
 

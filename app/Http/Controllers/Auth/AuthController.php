@@ -149,6 +149,11 @@ class AuthController extends Controller
                         'message'   => 'The user can t be found',
                     ], 404);
                 } else{
+                    $user['hospitals'] = UsersHospitals::from('users_hospitals as userhos')
+                    ->select('hos.id', 'hos.grupo_id', 'hos.name as name',  'hos.uuid')
+                    ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
+                    ->where('id_user', $user->id)
+                    ->get();
                     return response()->json(['message' => "User Logged in!", 'token' => $array['token'], 'user' => $user], 200);
                 }
             }

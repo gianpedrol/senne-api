@@ -1387,9 +1387,11 @@ class UserController extends Controller
     public function printProtocol(Request $request)
     {
 
-        $data = $request->only(['login_protocol', 'passtemp','name', 'exams', 'numatendimento', 'namedoctor', 'colectdate', 'finaldate']);
+        $data = $request->only(['login_protocol', 'passtemp','uuid','name', 'exams', 'numatendimento', 'namedoctor', 'colectdate', 'finaldate']);
 
         $user = User::where('login_protocol', $data['login_protocol'])->first();
+
+        $hospital = Hospitais::where('uuid',$data['uuid']) ->first();
 
         $files = glob('pdf/*.*');
 
@@ -1418,14 +1420,20 @@ class UserController extends Controller
                 $newUser->role_id = $role_id;
                 $newUser->password = $senha_temp;
                 $newUser->save();
-         
+                                
+                UsersHospitals::updateOrCreate(['id_hospital' => $hospital->id, 'id_user' => $newUser->id]);
+
                 $pdf = PDF::loadView('pdf.protocol', compact('data', 'senha_md5'))->setPaper('a4');
 
             }else{
+
                 $senha_md5 =  $data['passtemp'];
                 $senha_temp = bcrypt($senha_md5);
-
+                
                 $user->update(['password' =>  $senha_temp ]);
+
+                UsersHospitals::updateOrCreate(['id_hospital' => $hospital->id, 'id_user' => $user->id]);
+        
                 $pdf = PDF::loadView('pdf.protocol', compact('data', 'senha_md5'))->setPaper('a4');
 
             }

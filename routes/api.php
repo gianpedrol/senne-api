@@ -150,6 +150,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/treatment/details/{uuid}/{atendimento}', [ExameController::class, 'listAttendanceDetails']);
     //PDF LAUDO PRINCIPAL
     Route::get('/treatment/report/{uuid}/{atendimento}/{r_id}', [ExameController::class, 'principalReport']);
+    
+    Route::get('/treatment/exam/{uuid}/{atendimento}/{r_id}/{seqexame}', [ExameController::class, 'downloadExams']);
 
 
 

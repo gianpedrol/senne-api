@@ -359,4 +359,21 @@ class ExameController extends Controller
 
         return response()->json(['http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudocplt/' . $r_id], 200);
     }
+
+
+    public function downloadExams($uuid, $atendimento, $r_id, $seqexame, Request $request)
+    {
+
+
+        $log = Auth::user();
+        $saveLog = new UserLog();
+        $saveLog->id_user = $log->id;
+        $saveLog->ip_user = $request->ip();
+        $saveLog->id_log = 8;
+        $saveLog->numatendimento = $atendimento;
+        $saveLog->uuid_hospital_atendimento = $uuid;
+        $saveLog->save();
+
+        return response()->json(['http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudo?Hash='. $r_id.'&SeqExame='.  $seqexame], 200);
+    }
 }

@@ -1423,7 +1423,9 @@ class UserController extends Controller
 
             }else{
                 $senha_md5 =  $data['passtemp'];
-                $user->update(['password' =>  $senha_md5 ]);
+                $senha_temp = bcrypt($senha_md5);
+
+                $user->update(['password' =>  $senha_temp ]);
                 $pdf = PDF::loadView('pdf.protocol', compact('data', 'senha_md5'))->setPaper('a4');
 
             }

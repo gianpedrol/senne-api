@@ -131,7 +131,7 @@ class UserController extends Controller
         $user = User::where('email', $data['email'])->first();
 
         if (!empty($user)) {
-            return response()->json(['error' => "User already exists!"], 200);
+            return response()->json(['error' =>"User already exists!"], 400);
         }
 
         /* CHECAR SE EMAIL CONFERE COM DOMINIO */
@@ -584,6 +584,7 @@ class UserController extends Controller
                 ->when(!empty($request->sort), function ($query) use ($data) {
                     return $query->orderBy($data['sort'], $data['sortOrder']);
                 })
+                ->orderBy('DESC')
                 ->get();
             return response()->json(
                 ['status' => 'success', 'User' => $user],
@@ -640,6 +641,7 @@ class UserController extends Controller
                 return $query->orderBy($data['sort'], $data['sortOrder']);
             })
             ->where('us.role_id', '!=', 1)
+            ->orderBy('DESC')
             ->paginate($request->limit);
 
 
@@ -831,10 +833,11 @@ class UserController extends Controller
         $per_page = (isset($request->per_page) && $request->per_page > 0) ? $request->per_page : 10;
 
         $sort = (isset($request->per_page) && !empty($request->sort)) ? $request->sort : 'id';
-
+        $authUser = Auth::user();
         $allUsers = User::from('users as user')
             ->select('user.id', 'user.name', 'user.email', 'user.role_id', 'user.status')
             ->where('user.role_id', '!=', 1)
+            ->where('user.id', '!=', $authUser->id)
             ->when(!empty($request->name), function ($query) use ($data) {
                 return $query->where('user.name', 'like', '%' . $data['name'] . '%');
             })
@@ -951,13 +954,14 @@ class UserController extends Controller
 
             $sort = (isset($request->per_page) && !empty($request->sort)) ? $request->sort : 'id';
 
-
+            $authUser = Auth::user();
             $hospital['users'] = UsersHospitals::from('users_hospitals as userhos')
                 ->select('us.name', 'us.id', 'us.email', 'us.status')
                 ->join('users as us', 'us.id', '=', 'userhos.id_user')
                 ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
                 ->where('userhos.id_hospital', '=', $id)
                 ->where('us.role_id', '!=', 1)
+                ->where('us.id', '!=', $authUser->id)
                 ->when(!empty($request->name), function ($query) use ($data) {
                     return $query->where('user.name', 'like', '%' . $data['name'] . '%');
                 })

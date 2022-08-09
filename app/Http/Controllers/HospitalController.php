@@ -134,7 +134,7 @@ class HospitalController extends Controller
 
 
         /* LISTA TODOS OS HOSPITAIS APÓS CONSULTA E SALVAR NOVOS DADOS  */
-        $hospitals = Hospitais::all();
+        $hospitals = Hospitais::all()->sortBy('name');
 
        
         if (count($hospitals) > 0) {

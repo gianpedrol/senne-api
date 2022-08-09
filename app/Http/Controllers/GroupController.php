@@ -142,13 +142,15 @@ class GroupController extends Controller
         }
         /* LISTA TODOS OS GRUPOS APÓS CONSULTA E SALVAR NOVOS DADOS  */
         $groups =  Groups::all();
+        
 
         if (count($groups) > 0) {
             foreach ($groups as $group) {
-
+                
                 $showGroups[] = [
                     'id' => $group->id,
                     'name' => $group->name,
+                    'image' => $group->image
                 ];
             }
 

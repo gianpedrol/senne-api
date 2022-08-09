@@ -32,7 +32,7 @@ use PHPUnit\TextUI\XmlConfiguration\Group;
 /* TESTE DE API */
 
 Route::get('/ping', function () {
-    return ['pong' => true];
+    return ['pong' => false];
 });
 /* TESTE DE API FIM */
 

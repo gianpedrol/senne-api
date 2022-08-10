@@ -568,7 +568,7 @@ class UserController extends Controller
             ], 404);
         } else {
 
-
+ 
             $user['logs'] = UserLog::from('logs_user as log')
                 ->select('log.id_log', 'act.log_description as log_description', 'log.created_at as timeAction', 'log.ip_user',  'log.numatendimento', 'hos.uuid', 'hos.name as hospitalName', 'group.name as groupName')
                 ->join('logs_action as act', 'act.id', '=', 'log.id_log')

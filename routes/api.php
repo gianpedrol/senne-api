@@ -177,6 +177,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('user/create', [UserController::class, 'createUser']);
     //rota para mostrar usuário
     Route::get('show/user/{id}', [UserController::class, 'showUser']);
+    Route::post('resend/user/mail', [UserController::class, 'resendEmailActivateUser']);
 
     //inativa um usuario
     Route::put('inactivate/user/{id}', [UserController::class, 'inactivateUser']);

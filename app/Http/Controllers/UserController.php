@@ -1483,4 +1483,41 @@ class UserController extends Controller
         }
 
     }
+
+    public function resendEmailActivateUser(Request $request){
+
+        $email = $request->only('email');
+
+        $user = User::where('email', $email['email'])->first();
+
+        if(empty($user)){
+            return response()->json(['error' => 'user not found'], 404);
+        }else{
+            $data = $user->email;
+
+            try{
+    
+                $status = Password::sendResetLink(
+                    $request->only('email'),
+                );
+    
+                if ($status == Password::RESET_LINK_SENT) {
+                    Mail::to($request->only('email'))->send(new emailWelcome($data));
+                    return [
+                        'status' => __($status),
+                        ];
+                }
+    
+                throw ValidationException::withMessages([
+                    'email' => [trans($status)],
+                ]);
+            } catch (\Throwable $th) {
+                dd($th->getMessage());
+                \DB::rollback();
+                return ['error' => 'Could not write data', 400];
+            }
+            
+        }
+        
+    }
 }

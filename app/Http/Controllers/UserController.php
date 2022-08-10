@@ -584,7 +584,7 @@ class UserController extends Controller
                 ->when(!empty($request->sort), function ($query) use ($data) {
                     return $query->orderBy($data['sort'], $data['sortOrder']);
                 })
-                ->orderBy('DESC')
+                ->orderBy('created_at','DESC')
                 ->get();
             return response()->json(
                 ['status' => 'success', 'User' => $user],
@@ -641,7 +641,7 @@ class UserController extends Controller
                 return $query->orderBy($data['sort'], $data['sortOrder']);
             })
             ->where('us.role_id', '!=', 1)
-            ->orderBy('DESC')
+            ->orderBy('created_at','DESC')
             ->paginate($request->limit);
 
 

@@ -15,7 +15,8 @@ class MagedaDomain extends Seeder
     public function run()
     {
         $domain = [
-            ['codprocedencia' => 7, 'domains' => 'mageda.digital'],
+            ['codprocedencia' => 58, 'domains' => 'mageda.digital'],
+            ['codprocedencia' => 58, 'domains' => 'senneliquor.com.br'],            
         ];
 
         DB::table('domains_hospitals')->insert($domain);

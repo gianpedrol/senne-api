@@ -15,7 +15,7 @@ use PHPUnit\TextUI\XmlConfiguration\Group;
 use App\Models\UsersGroup;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
-
+use DB;
 
 class GroupController extends Controller
 
@@ -133,11 +133,9 @@ class GroupController extends Controller
 
         $items = json_decode($response->getBody());
 
+
         foreach ($items->Procedencia as $item) {
             foreach ($item->procedencia as $item) {
-                if ($item->codgrupo == null) {
-                    $item->codgrupo = 1;
-                }
                 $data[] = [
                     'name' => $item->grupo,
                     'codgrupo' => $item->codgrupo
@@ -154,7 +152,7 @@ class GroupController extends Controller
             }
         }
         /* LISTA TODOS OS GRUPOS APÓS CONSULTA E SALVAR NOVOS DADOS  */
-        $groups =  Groups::all();
+        $groups =  DB::table('groups')->paginate(6);
         
 
         if (count($groups) > 0) {
@@ -189,8 +187,9 @@ class GroupController extends Controller
         }
 
         /* LISTA TODOS OS GRUPOS APÓS CONSULTA E SALVAR NOVOS DADOS  */
-        $groups =  Groups::all();
-
+        $groups =  DB::table('grooups')->orderBy('id')
+        ->paginate(2);
+dd($groups);
         if (count($groups) > 0) {
             foreach ($groups as $group) {
 

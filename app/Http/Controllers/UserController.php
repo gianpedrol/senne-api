@@ -1191,82 +1191,18 @@ class UserController extends Controller
                 return response()->json(['error' => "Unauthorized not administrator"], 401);
             }
         }
-        $id = $request->id;
-        $data = $request->only('name', 'phone', 'cpf', 'email');
-        $crm = $request->crm;
-        $permissions = $request->permissions;
-        $hospitalsId = $request->hospitals;
-
-        //Validar se email existe!
-        $user = User::where('id', $id)->first();
-        //dd($user);
-
-        if ($user == null) {
-            return response()->json(['error' => "user cannot be found"], 401);
-        }
-        if ($user->status == 1) {
-            return response()->json(['error' => "user already activated"], 401);
-        }
-
-        /* CHECAR SE EMAIL CONFERE COM DOMINIO */
-        $userEmail = $data['email'];
-        $dominio = explode('@', $userEmail);
-        //dd($dominio[1]);
-        $domainEmail = $dominio[1];
-        $hospital = Hospitais::where('id', $hospitalsId)->first();
-        $hospitals = DomainHospital::from('domains_hospitals as domain')
-            ->select('hos.name', 'domain.domains',)
-            ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
-            ->where('hos.id', '=', $hospitalsId)
-            ->get()
-            ->toArray();
-        $domains = DomainHospital::from('domains_hospitals as domain')
-            ->select('domain.domains')
-            ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
-            ->where('hos.id', '=',  $hospitalsId)
-            ->get();
-
-
-        $domain = [];
-        foreach ($hospitals as $hospital) {
-            $domain = [
-                'email' => $hospital['domains']
-            ];
-        }
-        if (empty($domain)) {
-            $domain['email'] = $domainEmail;
-        }
-
-        if (empty($domains) || $domainEmail === $domain['email']) {
-
-            try {
+            
+        
+             try {
                 \DB::beginTransaction();
 
-                $user = User::where('id', $id)->first();
+                $user = User::where('id', $request->id)->first();
                 if ($user) {
-                    $user->update($data, ['status' => 2]);
-                    if (!empty($crm)) {
-                        User::where('id', $id)->update(['crm' => $crm]);
-                    }
+                    $user->update(['status' => 2]);
                 }
+                
 
-                /* Salva mais de um hospital ao usuário*/
-                UsersHospitals::where('id_user', $user->id)->delete(); //Deleta os registros
-                if (!empty($hospitalsId)) {
-                    foreach ($hospitalsId  as $id_hospital) {
-                        UsersHospitals::create(['id_hospital' => $id_hospital, 'id_user' => $user->id]);
-                    }
-                }
-
-
-                /* Salva permissões do Usuário */
-                UserPermissoes::where('id_user', $user->id)->delete(); //Deleta os registros
-                if (!empty($permissions)) {
-                    foreach ($permissions as $id_permission) {
-                        UserPermissoes::create(['id_permissao' => $id_permission, 'id_user' => $user->id]);
-                    }
-                }
-
+                $data = ['email' =>$user->email, 'name' => $user->name];
                 //GERA LOG
                 $log = Auth::user();
                 $saveLog = new UserLog();
@@ -1276,31 +1212,31 @@ class UserController extends Controller
                 $saveLog->save();
 
                 \DB::commit();
+                $status = Password::sendResetLink(
+                  [
+                    'email'  =>  $user->email,
+                    ]
+                );
+    
+                if ($status == Password::RESET_LINK_SENT) {
+                    Mail::to($data['email'])->send(new emailWelcome($data));
+                    return [
+                        'status' => __($status),
+                        'message' => "User approved successfully!",
+                        'data' => $user
+                    ];
+                }
+    
+                throw ValidationException::withMessages([
+                    'email' => [trans($status)],
+                ]);
             } catch (\Throwable $th) {
                 dd($th->getMessage());
                 \DB::rollback();
                 return ['error' => 'Could not write data', 400];
             }
 
-            $status = Password::sendResetLink(
-                $request->only('email'),
-            );
 
-            if ($status == Password::RESET_LINK_SENT) {
-                Mail::to($request->only('email'))->send(new emailWelcome($data));
-                return [
-                    'status' => __($status),
-                    'message' => "User approved successfully!",
-                    'data' => $user
-                ];
-            }
-
-            throw ValidationException::withMessages([
-                'email' => [trans($status)],
-            ]);
-        } else {
-            return response()->json(['error' => 'Domain is invalid for this hospital'], 400);
-        }
     }
     public function approveDoctorUser($id, Request $request)
     {

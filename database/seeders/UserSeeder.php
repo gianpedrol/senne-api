@@ -25,6 +25,16 @@ class UserSeeder extends Seeder
                 'password' => bcrypt('654321'),
                 'remember_token' => '',
             ],
+            [
+                'id' => 1,
+                'name' => 'Gabriela ',
+                'cpf' => '',
+                'role_id' => '1',
+                'status' => 1,
+                'email' => 'gabriela.senne@senneliquor.com.br',
+                'password' => bcrypt('%&yAXNF'),
+                'remember_token' => '',
+            ],
                 
         ];
 

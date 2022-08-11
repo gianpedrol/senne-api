@@ -324,6 +324,7 @@ class RegisterController extends Controller
             ->select('hos.*', 'domains.domains')
             ->leftJoin('domains_hospitals as domains', 'hos.codprocedencia', '=', 'domains.codprocedencia')
             ->where('hos.id', '!=', 0)
+            ->orderBy('name')
             ->get();
 
         return response()->json($hospitals);

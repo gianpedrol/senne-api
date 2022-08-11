@@ -132,9 +132,11 @@ class HospitalController extends Controller
             }
         }
 
-
+        if(empty($request->paginate)){
+            $request->paginate = 10;
+        }
         /* LISTA TODOS OS HOSPITAIS APÓS CONSULTA E SALVAR NOVOS DADOS  */
-        $hospitals = DB::table('hospitais')->paginate(15);
+        $hospitals = DB::table('hospitais')->paginate( $request->paginate);
 
        
         if (count($hospitals) > 0) {

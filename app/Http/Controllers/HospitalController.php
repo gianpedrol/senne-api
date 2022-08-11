@@ -17,7 +17,7 @@ use App\Models\UsersHospitals;
 use App\Models\UserPermissoes;
 use PHPUnit\TextUI\XmlConfiguration\Group;
 use App\Models\UsersGroup;
-
+use DB;
 
 class HospitalController extends Controller
 {
@@ -134,7 +134,7 @@ class HospitalController extends Controller
 
 
         /* LISTA TODOS OS HOSPITAIS APÓS CONSULTA E SALVAR NOVOS DADOS  */
-        $hospitals = Hospitais::all()->sortBy('name');
+        $hospitals = DB::table('hospitais')->paginate(15);
 
        
         if (count($hospitals) > 0) {
@@ -149,7 +149,7 @@ class HospitalController extends Controller
             }
 
             return response()->json(
-                ['status' => 'success', 'Hospitals' => $procedencia],
+                ['status' => 'success', 'Hospitals' => $hospitals],
                 200
             );
         } else {

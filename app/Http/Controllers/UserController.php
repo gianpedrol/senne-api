@@ -150,7 +150,7 @@ class UserController extends Controller
         ->get()
         ->toArray();
 
-        dd($hospitals);
+    //    dd($hospitals);
        
         $hospital = Hospitais::where('id', $hospitalsId)->first();
         $domain = [];

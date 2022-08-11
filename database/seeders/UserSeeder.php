@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
                 'remember_token' => '',
             ],
             [
-                'id' => 1,
+                'id' => 2,
                 'name' => 'Gabriela ',
                 'cpf' => '',
                 'role_id' => '1',

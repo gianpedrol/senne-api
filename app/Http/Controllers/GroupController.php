@@ -161,7 +161,7 @@ class GroupController extends Controller
                 $showGroups[] = [
                     'id' => $group->id,
                     'name' => $group->name,
-                    'image' => $group->image
+                    'image' => config('app.url') . 'uploads/' . $group->image
                 ];
             }
 

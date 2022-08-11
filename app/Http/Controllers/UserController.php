@@ -1192,14 +1192,14 @@ class UserController extends Controller
             }
         }
             
-        
+        $user = User::where('id', $request->id)->first();
+        if ($user) {
              try {
                 \DB::beginTransaction();
 
-                $user = User::where('id', $request->id)->first();
-                if ($user) {
+
                     User::where('id', $request->id)->update(['status' => 2]);
-                }
+                
                 
 
                 $data = ['email' =>$user->email, 'name' => $user->name];
@@ -1236,7 +1236,11 @@ class UserController extends Controller
                 return ['error' => 'Could not write data', 400];
             }
 
-
+        }else{
+            
+            return response()->json(['error' => 'user not found'],400);
+        }
+       
     }
     public function approveDoctorUser($id, Request $request)
     {

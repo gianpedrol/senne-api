@@ -154,7 +154,7 @@ class GroupController extends Controller
         /* LISTA TODOS OS GRUPOS APÓS CONSULTA E SALVAR NOVOS DADOS  */
         $groups =  DB::table('groups')->paginate(6);
         
-
+        //
         if (count($groups) > 0) {
             foreach ($groups as $group) {
                 

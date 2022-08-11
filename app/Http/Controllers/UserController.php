@@ -1198,7 +1198,7 @@ class UserController extends Controller
 
                 $user = User::where('id', $request->id)->first();
                 if ($user) {
-                    $user->update(['status' => 2]);
+                    User::where('id', $request->id)->update(['status' => 2]);
                 }
                 
 

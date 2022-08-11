@@ -125,10 +125,11 @@ class GroupController extends Controller
         if($request->pageSize == null){ 
             $request->pageSize = 250;
         }
+
         $bearer = $token->access_token;
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/procedencia?&PageNo='. $request->pageNo .'&Order='.$request->Order.'&PageSize='. $request->pageSize);
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/procedencia?&Order='.$request->Order.'&PageSize='. $request->pageSize);
 
         $items = json_decode($response->getBody());
 

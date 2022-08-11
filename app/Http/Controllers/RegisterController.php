@@ -479,18 +479,20 @@ class RegisterController extends Controller
         $hospital = Hospitais::where('id', $hospitalsId)->first();
 
         $hospitals = DomainHospital::from('domains_hospitals as domain')
-            ->select('hos.name', 'domain.domains',)
-            ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
-            ->where('hos.id', '=', $hospitalsId)
-            ->get()
-            ->toArray();
+        ->select('hos.name', 'domain.domains')
+        ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
+        ->where('hos.id', '=', $hospitalsId)
+        ->where('domain.domains','=', $domainEmail)
+        ->get()
+        ->toArray();
 
-        $domains = DomainHospital::from('domains_hospitals as domain')
-            ->select('domain.domains')
-            ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
-            ->where('hos.id', '=',  $hospitalsId)
-            ->get();
+       
+        $hospital = Hospitais::where('id', $hospitalsId)->first();
 
+        if(empty($hospital)){
+            return response()->json(['error' => 'hospital cant be found'], 404);
+        }
+        
         $domain = [];
 
         foreach ($hospitals as $hospital) {
@@ -499,11 +501,7 @@ class RegisterController extends Controller
             ];
         }
 
-        if (empty($domain)) {
-            $domain['email'] = $domainEmail;
-        }
-
-        if (empty($domains) || $domainEmail === $domain['email']) {
+                if ($hospitals == true || empty($domain) == true) {
             try {
                 \DB::beginTransaction();
 

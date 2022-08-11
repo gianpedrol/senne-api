@@ -143,16 +143,20 @@ class UserController extends Controller
         
              
         $hospitals = DomainHospital::from('domains_hospitals as domain')
-        ->select('hos.name', 'domain.domains',)
+        ->select('hos.name', 'domain.domains')
         ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
         ->where('hos.id', '=', $hospitalsId)
         ->where('domain.domains','=', $domainEmail)
         ->get()
         ->toArray();
 
-    //    dd($hospitals);
        
         $hospital = Hospitais::where('id', $hospitalsId)->first();
+
+        if(empty($hospital)){
+            return response()->json(['error' => 'hospital cant be found'], 404);
+        }
+        
         $domain = [];
 
         foreach ($hospitals as $hospital) {

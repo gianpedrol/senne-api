@@ -226,15 +226,14 @@ class ExameController extends Controller
             $request->pageSize = 10;
         }
 
-                $token = json_decode($resp->getBody());
+        $token = json_decode($resp->getBody());
 
         $bearer = $token->access_token;
          $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
         ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/lista_atendimentos?Acesso='.$uuid.'&Tipo='.$tipo.'&DataInicial='.$startdate.'&DataFinal='.$finaldate. '&PageNo='.$request->pageNo .'&Order='.$request->Order.'&PageSize='.$request->pageSize . '&NomePaciente='.$request->NomePaciente);
-
         $hospital = Hospitais::where('uuid', $uuid)->first();
-
+        
         //GERA LOG
         $log = Auth::user();
         $saveLog = new UserLog();

@@ -1316,11 +1316,9 @@ class UserController extends Controller
     public function printProtocol(Request $request)
     {
 
-        $data = $request->only(['login_protocol', 'passtemp','uuid','name', 'exams', 'numatendimento', 'namedoctor', 'colectdate', 'finaldate']);
+        $data = $request->only(['login_protocol', 'passtemp','name', 'exams', 'numatendimento', 'namedoctor', 'colectdate', 'finaldate']);
 
         $user = User::where('login_protocol', $data['login_protocol'])->first();
-
-        $hospital = Hospitais::where('uuid',$data['uuid']) ->first();
 
         $files = glob('pdf/*.*');
 
@@ -1330,6 +1328,32 @@ class UserController extends Controller
             }
             DB::table('table_pdf_value')->delete();
         }
+
+
+        $client = 'A2PsnYpypc_u66U0ANnzfQ..';
+        $client_secret = 'M3nxpLJbYPNqkfnkR5tuqg..';
+        $resp = Http::withBasicAuth($client, $client_secret)->asForm()->post(
+            'http://sistemas.senneliquor.com.br:8804/ords/gateway/oauth/token',
+            [
+                'grant_type' => 'client_credentials',
+
+            ]
+        );
+
+        $token = json_decode($resp->getBody());
+
+        $bearer = $token->access_token;
+
+        $loggedUser = Auth::user();
+        $tipo = $loggedUser->role_id;    
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $bearer
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/valida_senha_paciente?UsuarioPaciente='.$data['login_protocol'].'&SenhaPaciente='. $data['passtemp']);
+
+       
+        $items = json_decode($response->getBody());
+
+        $patientUuid = $items->Hash;
 
         try {
             \DB::beginTransaction();
@@ -1341,17 +1365,15 @@ class UserController extends Controller
                 //Define nivel user Senne
                 $role_id = 5;
 
-                //$senha_md5 = Str::random(8); //Descomentar após testes
-
                 $newUser = new User();
                 $newUser->name = $data['name'];
                 $newUser->login_protocol = $data['login_protocol'];
                 $newUser->role_id = $role_id;
                 $newUser->password = $senha_temp;
+                $newUser->cod_pf = $patientUuid;
                 $newUser->save();
                                 
-                UsersHospitals::updateOrCreate(['id_hospital' => $hospital->id, 'id_user' => $newUser->id]);
-
+               
                 $pdf = PDF::loadView('pdf.protocol', compact('data', 'senha_md5'))->setPaper('a4');
 
             }else{
@@ -1443,6 +1465,5 @@ class UserController extends Controller
             }
             
         }
-        
-    }
+    }    
 }

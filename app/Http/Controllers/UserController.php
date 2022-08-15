@@ -1382,8 +1382,6 @@ class UserController extends Controller
                 $senha_temp = bcrypt($senha_md5);
                 
                 $user->update(['password' =>  $senha_temp ]);
-
-                UsersHospitals::updateOrCreate(['id_hospital' => $hospital->id, 'id_user' => $user->id]);
         
                 $pdf = PDF::loadView('pdf.protocol', compact('data', 'senha_md5'))->setPaper('a4');
 

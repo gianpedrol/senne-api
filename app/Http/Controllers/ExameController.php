@@ -99,7 +99,7 @@ class ExameController extends Controller
     public function listAttendance($uuid, $atendimento,  Request $request)
     {
 
-        if ($request->user()->role_id != 1) {
+        if ($request->user()->role_id != 1  && $request->user()->role_id != 5) {
             if (!$request->user()->permission_user($request->user()->id, 3)) {
                 return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
             }
@@ -274,7 +274,7 @@ class ExameController extends Controller
     public function listAttendanceDetails($uuid, $atendimento,  Request $request)
     {
 
-        if ($request->user()->role_id != 1) {
+        if ($request->user()->role_id != 1  && $request->user()->role_id != 5) {
             if (!$request->user()->permission_user($request->user()->id, 3)) {
                 return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
             }
@@ -341,7 +341,7 @@ class ExameController extends Controller
     public function principalReport($uuid, $atendimento, $r_id, Request $request)
     {
 
-        if ($request->user()->role_id != 1) {
+        if ($request->user()->role_id != 1  && $request->user()->role_id != 5) {
             if (!$request->user()->permission_user($request->user()->id, 3)) {
                 return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
             }
@@ -363,6 +363,11 @@ class ExameController extends Controller
     {
 
 
+        if ($request->user()->role_id != 1  && $request->user()->role_id != 5) {
+            if (!$request->user()->permission_user($request->user()->id, 3)) {
+                return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
+            }
+        }
         $log = Auth::user();
         $saveLog = new UserLog();
         $saveLog->id_user = $log->id;

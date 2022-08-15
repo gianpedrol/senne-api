@@ -127,36 +127,39 @@ class AuthController extends Controller
                 'message'   => 'User is awaiting approval',
             ], 404);
         }
+         /**CASO SEJA ROLE ID 5 USUARIO DE ATENDIMENTO */
+         if($id == 5){
+            $credentialsProtocol = $request->only('login_protocol', 'password');
+            $userProtocol = User::where('login_protocol', $credentialsProtocol['login_protocol'])->first();            
+
+             if ($request->login_protocol != null &&  $userProtocol->role_id ==5) {             
+                 
+                 if(empty($user)){
+                     return response()->json(['status'=> 'error', 'message' => 'the login is wrong' ], 401  );
+                 }
+                 $token = Auth::attempt($credentialsProtocol);
+                 if ($token) {
+                     $array['token'] = $token;
+                 } else {
+                     $array['message'] = 'Incorrect username or password';
+                 }
+ 
+                 if (!$user) {
+                     return response()->json([
+                         'message'   => 'The user can t be found',
+                     ], 404);
+                 } else {
+                     return response()->json(['message' => "User Logged in!", 'token' => $array['token'], 'user' => $user], 200);
+                 }
+             }             
+            }
+            /** FIM ROLE ID 5  */
 
         $userLogin = User::where('email', $request->email)->first();
-        
+
         if ($userLogin->role_id == $id || $userLogin->role_id == 1) {  
 
-            /**CASO SEJA ROLE ID 5 USUARIO DE ATENDIMENTO */
-
-            $credentials = $request->only('login_protocol', 'password');
-            $userProtocol = User::where('login_protocol', $credentials['login_protocol'])->first();
-            if ($request->login_protocol != null &&  $userProtocol->role_id ==5) {             
-                
-                if(empty($user)){
-                    return response()->json(['status'=> 'error', 'message' => 'the login is wrong' ], 401  );
-                }
-                $token = Auth::attempt($credentials);
-                if ($token) {
-                    $array['token'] = $token;
-                } else {
-                    $array['message'] = 'Incorrect username or password';
-                }
-
-                if (!$user) {
-                    return response()->json([
-                        'message'   => 'The user can t be found',
-                    ], 404);
-                } else {
-                    return response()->json(['message' => "User Logged in!", 'token' => $array['token'], 'user' => $user], 200);
-                }
-            }             
-            /** FIM ROLE ID 5  */
+           
             $user = User::where('email', $request->email)->first();
 
                 $token = auth()->login($user);

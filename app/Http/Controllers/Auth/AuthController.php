@@ -130,14 +130,14 @@ class AuthController extends Controller
          /**CASO SEJA ROLE ID 5 USUARIO DE ATENDIMENTO */
          if($id == 5){
             $credentialsProtocol = $request->only('login_protocol', 'password');
-            $userProtocol = User::where('login_protocol', $credentialsProtocol['login_protocol'])->first();            
 
-             if ($request->login_protocol != null &&  $userProtocol->role_id ==5) {             
-                 
-                 if(empty($user)){
-                     return response()->json(['status'=> 'error', 'message' => 'the login is wrong' ], 401  );
-                 }
-                 $token = Auth::attempt($credentialsProtocol);
+            $userProtocol = User::where('login_protocol', $credentialsProtocol['login_protocol'])->first();            
+            if(empty($user)){
+                return response()->json(['status'=> 'error', 'message' => 'the login is wrong' ], 401  );
+            }
+            if ($userProtocol->role_id == 5) {             
+                
+                $token = Auth::attempt($credentialsProtocol);
                  if ($token) {
                      $array['token'] = $token;
                  } else {
@@ -149,7 +149,7 @@ class AuthController extends Controller
                          'message'   => 'The user can t be found',
                      ], 404);
                  } else {
-                     return response()->json(['message' => "User Logged in!", 'token' => $array['token'], 'user' => $user], 200);
+                     return response()->json(['message' => "User Logged in!", 'token' => $array['token'], 'user' => $userProtocol], 200);
                  }
              }             
             }

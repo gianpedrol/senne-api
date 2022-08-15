@@ -52,6 +52,7 @@ Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'ver
 Route::get('/401', [AuthController::class, 'unauthorized'])->name('login');
 //ROTA DE LOGIN
 Route::post('auth/login/{id}', [AuthController::class, 'login']);
+Route::post('auth/atendimento/login', [AuthController::class, 'loginAmbulatorial']);
 Route::post('auth/logout', [AuthController::class, 'logout']);
 
 

@@ -14,7 +14,7 @@ class ExameController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api');
-
+        
         if (!auth()->user()) {
             return response()->json(['error' => 'Unauthorized access'], 401);
         }
@@ -194,7 +194,7 @@ class ExameController extends Controller
     public function listAttendanceDate($uuid,$startdate, $finaldate, Request $request)
     {
 
-        if ($request->user()->role_id != 1) {
+        if ($request->user()->role_id != 1 && $request->user()->role_id != 5 ) {
             if (!$request->user()->permission_user($request->user()->id, 3)) {
                 return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
             }
@@ -227,7 +227,6 @@ class ExameController extends Controller
         }
 
         $token = json_decode($resp->getBody());
-
         $bearer = $token->access_token;
          $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer

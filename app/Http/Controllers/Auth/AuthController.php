@@ -93,6 +93,8 @@ class AuthController extends Controller
      */
     public function login(Request $request, $id)
     {
+
+        
         $user = User::where('email', $request->email)->first();
 
         if ($user->status == 0) {
@@ -126,18 +128,20 @@ class AuthController extends Controller
             ], 404);
         }
 
-        if ($id == 5 && $user->role_id == 5 ) {
-            $array = ['message' => ''];
+        $userLogin = User::where('email', $request->email)->first();
+        
+        if ($userLogin->role_id == $id || $userLogin->role_id == 1) {  
+
+            /**CASO SEJA ROLE ID 5 USUARIO DE ATENDIMENTO */
+
             $credentials = $request->only('login_protocol', 'password');
-
-            $user = User::where('login_protocol', $credentials['login_protocol'])->first();
-
-            if(empty($user)){
-                return response()->json(['status'=> 'error', 'message' => 'the login is wrong' ], 401  );
-            }
-            
-            if ($request->login_protocol != null) {
-                $token = auth()->login($user);
+            $userProtocol = User::where('login_protocol', $credentials['login_protocol'])->first();
+            if ($request->login_protocol != null &&  $userProtocol->role_id ==5) {             
+                
+                if(empty($user)){
+                    return response()->json(['status'=> 'error', 'message' => 'the login is wrong' ], 401  );
+                }
+                $token = Auth::attempt($credentials);
                 if ($token) {
                     $array['token'] = $token;
                 } else {
@@ -148,19 +152,11 @@ class AuthController extends Controller
                     return response()->json([
                         'message'   => 'The user can t be found',
                     ], 404);
-                } else{
-                    $user['hospitals'] = UsersHospitals::from('users_hospitals as userhos')
-                    ->select('hos.id', 'hos.grupo_id', 'hos.name as name',  'hos.uuid')
-                    ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
-                    ->where('id_user', $user->id)
-                    ->get();
+                } else {
                     return response()->json(['message' => "User Logged in!", 'token' => $array['token'], 'user' => $user], 200);
                 }
-            }
-        }
-
-        $userLogin = User::where('email', $request->email)->first();
-        if ($userLogin->role_id == $id || $userLogin->role_id == 1) {            
+            }             
+            /** FIM ROLE ID 5  */
             $user = User::where('email', $request->email)->first();
 
                 $token = auth()->login($user);
@@ -201,8 +197,10 @@ class AuthController extends Controller
                 'message'   => 'The user cannot login at this route',
             ], 500);
         }
+
     }
 
+    
     /**
      * @OA\Post(
      * path="/api/auth/login/{id}",
@@ -345,7 +343,6 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-
 
         $log = Auth::user();
         $saveLog = new UserLog();

@@ -297,8 +297,11 @@ class ExameController extends Controller
         $bearer = $token->access_token;
 
         $loggedUser = Auth::user();
-        $tipo = $loggedUser->role_id;    
-
+        $tipo = $loggedUser->role_id;  
+        
+        if($loggedUser->role_id == 2 ){
+            $tipo =1;
+        }  
         if($request->Order == null){ 
             $request->Order = 'DESC';
         }
@@ -311,7 +314,7 @@ class ExameController extends Controller
         }
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/atend_detalhe?Tipo=1&NumAtendimento='.$atendimento.'&Acesso='. $uuid);
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/atend_detalhe?Tipo='.$tipo.'&NumAtendimento='.$atendimento.'&Acesso='. $uuid);
 
         $hospital = Hospitais::where('uuid', $uuid)->first();
 

@@ -47,10 +47,7 @@
     <table width="500">
         <tr style=" font-family: Montserrat; color: #343A40; font-weight: 500">
             <td align="center">
-                <p style="text-align:center; max-width: 350px; font-weight: bold;">Sua solicitação de cadastro foi
-                    recebida com sucesso.</p>
-                <p style="text-align:center; max-width: 350px; margin-bottom: 50px;">Enviaremos uma mensagem assim
-                    que o acesso for liberado. </p>
+                <p style="text-align:center; max-width: 350px; font-weight: bold;">Sua solicitação de redefinição de senha foi recebida com sucesso.</p>
 
 
                 <a style="color:white; text-decoration: none; background-color:#ABB056; padding: 10px 50px; border-radius: 40px;"

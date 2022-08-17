@@ -20,7 +20,8 @@ use App\Models\UserPermissoes;
 use App\Models\UsersGroup;
 use App\Models\UsersHospitals;
 use Illuminate\Support\Facades\Password;
-
+use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Support\Facades\Crypt;
 
 /* 
 Status 
@@ -96,7 +97,10 @@ class AuthController extends Controller
 
         
         $user = User::where('email', $request->email)->first();
-
+        
+        if(empty($user)){
+            return response()->json(['status'=> 'error', 'message' => 'the login is wrong' ], 401  );
+        }
         if ($user->status == 0) {
             return response()->json([
                 'message'   => 'The user is inativated',
@@ -130,9 +134,11 @@ class AuthController extends Controller
          /**CASO SEJA ROLE ID 5 USUARIO DE ATENDIMENTO */
          if($id == 5){
             $credentialsProtocol = $request->only('login_protocol', 'password');
-
+            
             $userProtocol = User::where('login_protocol', $credentialsProtocol['login_protocol'])->first();            
-            if(empty($user)){
+            $passVerication = Hash::check($request->password,  $userProtocol->password);
+
+            if(empty($userProtocol) ||  $passVerication == false){
                 return response()->json(['status'=> 'error', 'message' => 'the login is wrong' ], 401  );
             }
             if ($userProtocol->role_id == 5) {             
@@ -156,11 +162,18 @@ class AuthController extends Controller
             /** FIM ROLE ID 5  */
 
         $userLogin = User::where('email', $request->email)->first();
-
+        
+        
+        
         if ($userLogin->role_id == $id || $userLogin->role_id == 1) {  
-
-           
+            
+            
             $user = User::where('email', $request->email)->first();
+            $passwordVerication = Hash::check($request->password, $user->password);
+           
+            if(empty($user) || $passwordVerication == false ){
+                return response()->json(['status'=> 'error', 'message' => 'the login is wrong' ], 401  );
+            }
 
                 $token = auth()->login($user);
                 if ($token) {

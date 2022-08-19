@@ -153,8 +153,9 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/treatment/report/{uuid}/{atendimento}/{r_id}', [ExameController::class, 'principalReport']);
     
     Route::get('/treatment/exam/{uuid}/{atendimento}/{r_id}/{seqexame}', [ExameController::class, 'downloadExams']);
-
-
+    Route::post('/create/observation', [ExameController::class, 'createObservation']);
+    Route::get('/show/observation/{id}', [ExameController::class, 'getObservation']);
+    Route::post('/solicitation/exam', [ExameController::class, 'addExameSolicitation']);
 
     //Lista LOGS de um usuario
     Route::get('list/logs/user/{id}', [UserController::class, 'logsUser']);

@@ -1439,7 +1439,7 @@ class UserController extends Controller
             return response()->json(['error' => 'user not found'], 404);
         }else{
             $data = $user->email;
-
+           
             try{
     
                 $status = Password::sendResetLink(

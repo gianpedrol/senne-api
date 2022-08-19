@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SolicitationAddExam;
 use App\Models\Hospitais;
 use App\Models\LogsExames;
+use App\Models\ObservationsAttedance;
+use Illuminate\Support\Facades\Mail;
 use App\Models\UserLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Exception;
 
 class ExameController extends Controller
 {
@@ -398,4 +402,69 @@ class ExameController extends Controller
 
         return response()->json(['http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/laudo?Hash='. $r_id.'&SeqExame='.  $seqexame], 200);
     }
+
+    public function createObservation(Request $request){
+
+        if ($request->user()->role_id != 1) {
+                return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
+        }
+
+        $data = $request->only('numatendimento', 'observation');
+      //  dd($data['observation']);
+        try{
+            \DB::beginTransaction();
+
+                $observation = ObservationsAttedance::where('numatendimento', $data['numatendimento'])->get();
+
+
+                if(!empty($observation)){
+                    ObservationsAttedance::where('numatendimento', $data['numatendimento'])->delete();
+                }
+
+                $newObservation = new ObservationsAttedance();
+                $newObservation->numatendimento = $data['numatendimento'];
+                $newObservation->observation = $data['observation'];
+                $newObservation->save();
+                
+
+
+            \DB::commit();
+        } catch (\Throwable $th) {
+                dd($th->getMessage());
+                \DB::rollback();
+                return ['error' => 'Could not write data', 400];
+            }
+            return response()->json(['status' => 'ok' , 'message' => $newObservation], 200);
+    }
+
+    public function getObservation(Request $request, $id){
+
+        if ($request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 3)) {
+                return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
+            }
+        }
+
+        $observation = ObservationsAttedance::where('numatendimento', $id)->get();
+
+        if(count($observation) == 0){
+            return response()->json(['status' => 'error, dont exists' ], 404);
+        }
+
+        return response()->json(['status' => 'ok' , 'message' => $observation], 200);
+    }
+
+    public function addExameSolicitation(Request $request){
+
+        $data = $request->only('numatendimento', 'solicitation');
+        try {
+            /* Enviar e-mail para o usuário com sua senha de acesso */
+            Mail::to(['gian@mageda.digital', 'elson@mageda.digital'])->send(new SolicitationAddExam($data));
+            return response()->json(['status' => 'solicitation sended'], 200);
+        } catch (Exception $ex) {
+            dd($ex);
+            return response()->json(['error' => 'cannot be sended', $ex], 500);
+        }
+    }
+
 }

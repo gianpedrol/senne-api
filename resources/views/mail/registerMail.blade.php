@@ -20,7 +20,7 @@
 </head>
 
 <body topmargin="0" marginwidth="0" marginheight="0">
-    <table>
+    <table align="center">
         <tr>
             <td align="center" height="100">
                 <img src="https://teste-api-senne.mageda.com.br/uploads/logosenne.png" alt="Senne Liquor" width="138"
@@ -37,7 +37,7 @@
             </td>
         </tr>
     </table>
-    <table width="500">
+    <table align="center" width="500">
         <tr style=" font-family: Montserrat; color: #B8BD5A">
             <td align="left"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
             <td align="center">
@@ -46,7 +46,7 @@
             <td align="right"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
         </tr>
     </table>
-    <table width="500">
+    <table align="center" width="500">
         <tr style=" font-family: Montserrat; color: #343A40; font-weight: 500">
             <td align="center">
                 <p style="text-align:center; max-width: 350px;">O cadastro solicitado foi realizado
@@ -55,7 +55,7 @@
             </td>
         </tr>
     </table>
-    <table width="500" style="margin-top: 70px">
+    <table align="center" width="500" style="margin-top: 70px">
         <tr
             style="background-image: url('https://teste-api-senne.mageda.com.br/uploads/footer.png'); background-size: contain; background-repeat: 
             no-repeat;height: 80px;">

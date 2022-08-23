@@ -109,7 +109,7 @@ class ExameController extends Controller
             }
         }
 
-dd($request->PageSize);
+//dd($request->PageSize);
 
         $client = 'A2PsnYpypc_u66U0ANnzfQ..';
         $client_secret = 'M3nxpLJbYPNqkfnkR5tuqg..';

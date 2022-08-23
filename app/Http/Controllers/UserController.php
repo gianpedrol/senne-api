@@ -836,6 +836,8 @@ class UserController extends Controller
                 return $query->orderBy('name', $data['orderby']);
             })
             ->paginate($per_page);
+
+            //dd($allUsers);
         //$users = User::where('role_id', '!=', 1)->get();
 
 
@@ -882,7 +884,7 @@ class UserController extends Controller
         $all_users = $allUsers->toArray();
 
         //Construct paginate info
-        $paginate['first_page_url'] = $all_users['first_page_url'];
+       $paginate['first_page_url'] = $all_users['first_page_url'];
         $paginate['from'] = $all_users['from'];
         $paginate['last_page'] = $all_users['last_page'];
         $paginate['next_page_url'] = $all_users['next_page_url'];
@@ -892,8 +894,7 @@ class UserController extends Controller
         $paginate['to'] = $all_users['to'];
         $paginate['total'] = $all_users['total'];
 
-        return response()->json(
-            ['status' => 'success', 'Group' => $group, 'Users' => $retorno, 'pagination' => $paginate],
+        return response()->json(['status' => 'success', 'Group' => $group, 'Users' => $retorno, 'pagination' => $paginate],
             200
         );
     }

@@ -720,7 +720,7 @@ class UserController extends Controller
         $paginate['total'] = $all_users['total'];
 
         return response()->json(
-            ['status' => 'success', 'Users' => $retorno, 'pagination' => $paginate],
+            ['status' => 'success', 'Users' => $all_users],
             200
         );
     }

@@ -894,7 +894,7 @@ class UserController extends Controller
         $paginate['to'] = $all_users['to'];
         $paginate['total'] = $all_users['total'];
 
-        return response()->json(['status' => 'success', 'Group' => $group, 'Users' => $retorno, 'pagination' => $paginate],
+        return response()->json(['status' => 'success', 'Group' => $group, 'Users' => $allUsers],
             200
         );
     }

@@ -1317,18 +1317,20 @@ class UserController extends Controller
     public function printProtocol(Request $request)
     {
 
-        $data = $request->only(['login_protocol', 'passtemp','name', 'exams', 'numatendimento', 'namedoctor', 'colectdate', 'finaldate']);
 
+
+        $data = $request->only(['login_protocol', 'passtemp','r_id']);
+        $r_id = $request->r_id;
         $user = User::where('login_protocol', $data['login_protocol'])->first();
 
-        $files = glob('pdf/*.*');
+    /*    $files = glob('pdf/*.*');
 
         if (count($files) >= 10) {
             foreach ($files as $file) {
                 unlink($file);
             }
             DB::table('table_pdf_value')->delete();
-        }
+        } */
 
 
         $client = 'A2PsnYpypc_u66U0ANnzfQ..';
@@ -1375,7 +1377,7 @@ class UserController extends Controller
                 $newUser->save();
                                 
                
-                $pdf = PDF::loadView('pdf.protocol', compact('data', 'senha_md5'))->setPaper('a4');
+             /*   $pdf = PDF::loadView('pdf.protocol', compact('data', 'senha_md5'))->setPaper('a4');*/
 
             }else{
 
@@ -1384,7 +1386,7 @@ class UserController extends Controller
                 
                 $user->update(['password' =>  $senha_temp ]);
         
-                $pdf = PDF::loadView('pdf.protocol', compact('data', 'senha_md5'))->setPaper('a4');
+          /*      $pdf = PDF::loadView('pdf.protocol', compact('data', 'senha_md5'))->setPaper('a4');*/
 
             }
 
@@ -1395,10 +1397,10 @@ class UserController extends Controller
             return ['error' => 'Could not write data', 400];
         }
 
-        $numPDF = Str::random(9);
+    /*    $numPDF = Str::random(9);
         
         
-        $pdf->save(public_path('pdf/protocol' . $numPDF . '.pdf'));
+       $pdf->save(public_path('pdf/protocol' . $numPDF . '.pdf'));
 
         try {
             \DB::beginTransaction();
@@ -1410,22 +1412,23 @@ class UserController extends Controller
             dd($th->getMessage());
             \DB::rollback();
             return ['error' => 'Could not write data', 400];
-        }
-        if(!empty($newUser->email)){
+        }*/
+
+     if(!empty($newUser->email)){
             try {
                 /* Enviar e-mail para o usuário com sua senha de acesso */
                 Mail::to($newUser->email)->send(new emailProtocolMail($data));
                                 
-                $value =  StorePDF::where('pdf', 'protocol' . $numPDF . '.pdf')->first();
-                return response()->json([config('app.url') . 'pdf/' . $value->pdf], 200);
+              //  $value =  StorePDF::where('pdf', 'protocol' . $numPDF . '.pdf')->first();
+                return response()->json(['http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/protocolo?Hash='. $r_id], 200);
             } catch (Exception $ex) {
                 dd($ex);
                 return response()->json(['error' => 'cannot be sended', $ex], 500);
             }
         }else{
-            $value =  StorePDF::where('pdf', 'protocol' . $numPDF . '.pdf')->first();             
+          //  $value =  StorePDF::where('pdf', 'protocol' . $numPDF . '.pdf')->first();             
                 
-            return response()->json([config('app.url') . 'pdf/' . $value->pdf], 200);
+            return response()->json(['http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/protocolo?Hash='. $r_id], 200);
         }
 
     }

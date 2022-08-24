@@ -97,7 +97,7 @@ class AuthController extends Controller
 
         
         $user = User::where('email', $request->email)->first();
-        
+
         if(empty($user)){
             return response()->json(['status'=> 'error', 'message' => 'the login is wrong' ], 401  );
         }
@@ -106,7 +106,6 @@ class AuthController extends Controller
                 'message'   => 'The user is inativated',
             ], 404);
         }
-
         if ($user->status == 2) {
 
             $status = Password::sendResetLink(
@@ -119,11 +118,17 @@ class AuthController extends Controller
                     'status' => __($status),
                     'message'   => 'The user is not activated, check your email'
                 ], 400);
+            }else{
+                return response()->json([
+                    'message'   => 'The user is not activated, check your email'
+                ], 400);
             }
 
             throw ValidationException::withMessages([
                 'email' => [trans($status)],
             ]);
+
+
         }
 
         if ($user->status == 3) {

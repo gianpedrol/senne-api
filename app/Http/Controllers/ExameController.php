@@ -439,11 +439,11 @@ class ExameController extends Controller
 
     public function getObservation(Request $request, $id){
 
-        if ($request->user()->role_id != 1) {
+      /*  if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 3)) {
                 return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
             }
-        }
+        }*/
 
         $observation = ObservationsAttedance::where('numatendimento', $id)->get();
 

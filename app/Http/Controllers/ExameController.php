@@ -404,10 +404,10 @@ class ExameController extends Controller
     }
 
     public function createObservation(Request $request){
-
+/*
         if ($request->user()->role_id != 1) {
                 return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
-        }
+        }*/
 
         $data = $request->only('numatendimento', 'observation');
       //  dd($data['observation']);

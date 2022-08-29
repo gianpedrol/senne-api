@@ -233,9 +233,18 @@ class ExameController extends Controller
 
         $token = json_decode($resp->getBody());
         $bearer = $token->access_token;
-         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/lista_atendimentos?Acesso='.$uuid.'&Tipo='.$tipo.'&DataInicial='.$startdate.'&DataFinal='.$finaldate. '&PageNo='.$request->pageNo .'&Order='.$request->Order.'&PageSize='.$request->pageSize . '&NomePaciente='.$request->NomePaciente);
+
+        if($tipo == 5){
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $bearer
+            ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/lista_atendimentos?Acesso='.$uuid.'&Tipo='.$tipo.'&DataInicial='.$startdate.'&DataFinal='.$finaldate. '&PageNo='.$request->pageNo .'&Order='.$request->Order.'&PageSize='.$request->pageSize . '&NomePaciente='.$request->NomePaciente .'&FiltroProcedencia=' . $request->FiltroProcedencia);
+
+        }else{
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $bearer
+            ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/lista_atendimentos?Acesso='.$uuid.'&Tipo='.$tipo.'&DataInicial='.$startdate.'&DataFinal='.$finaldate. '&PageNo='.$request->pageNo .'&Order='.$request->Order.'&PageSize='.$request->pageSize . '&NomePaciente='.$request->NomePaciente);
+        }
+
         $hospital = Hospitais::where('uuid', $uuid)->first();
         
         //GERA LOG
@@ -410,7 +419,6 @@ class ExameController extends Controller
         }*/
 
         $data = $request->only('numatendimento', 'observation');
-      //  dd($data['observation']);
         try{
             \DB::beginTransaction();
 

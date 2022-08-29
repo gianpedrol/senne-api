@@ -169,7 +169,7 @@ class AuthController extends Controller
         
         
         
-        if ($userLogin->role_id == $id || $userLogin->role_id == 1) {  
+        if ($userLogin->role_id == $id) {  
             
             
             $user = User::where('email', $request->email)->first();
@@ -191,7 +191,7 @@ class AuthController extends Controller
 
             $saveLog = new UserLog();
             $saveLog->id_user = $log->id;
-            $saveLog->ip_user = $request->ip();
+            $saveLog->ip_user = $request->ip(); 
             $saveLog->id_log = 1;
             $saveLog->save();
 

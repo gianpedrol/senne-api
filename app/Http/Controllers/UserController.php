@@ -1319,7 +1319,7 @@ class UserController extends Controller
 
 
 
-        $data = $request->only(['login_protocol', 'passtemp','r_id']);
+        $data = $request->only(['login_protocol', 'passtemp','r_id', 'name']);
         $r_id = $request->r_id;
         $user = User::where('login_protocol', $data['login_protocol'])->first();
 

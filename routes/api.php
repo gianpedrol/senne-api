@@ -56,6 +56,7 @@ Route::post('auth/atendimento/login', [AuthController::class, 'loginAmbulatorial
 Route::post('auth/logout', [AuthController::class, 'logout']);
 
 
+
 // password reset
 Route::prefix('password')->group(function () {
     Route::post('create', [NewPasswordController::class, 'createPassword']);

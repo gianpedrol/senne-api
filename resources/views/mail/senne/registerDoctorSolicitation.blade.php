@@ -1,3 +1,4 @@
+
 <!--------------------------------------------------------------------------------------->
 <!DOCTYPE html>
 <html lang="en">
@@ -13,49 +14,47 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
-        @media only screen and (max-width: 600px) {
-            .inner-body {
-                width: 100% !important;
-            }
-
-            .footer {
-                width: 100% !important;
-            }
-        }
-
-        @media only screen and (max-width: 500px) {
-            .button {
-                width: 100% !important;
-                color: white;
-                text-decoration: none;
-                background-color: #EC6726;
-                padding: 8px;
-                border-radius: 3px;
-
-            }
+        tr.linha {
+            max-width: 500px !important;
         }
     </style>
 </head>
 
-<body bgcolor="#F0ECEB" topmargin="0" marginwidth="0" marginheight="0">
-    <table>
+<body topmargin="0" marginwidth="0" marginheight="0">
+    <table align="center">
         <tr>
-            <td align="left" height="100">
+            <td align="center" height="100">
                 <img src="https://teste-api-senne.mageda.com.br/uploads/logosenne.png" alt="Senne Liquor" width="138"
                     height="57">
             </td>
         </tr>
-        <tr>
-            <td height="20"></td>
-        </tr>
 
         <tr>
-            <td width="500" style="padding-left: 36px; font-family: Montserrat; color: #EC6726">
-                <h2 style="font-weight: bold">Solicitação de Cadastro para plataforma</h2>
+            <td align="center"
+                style="background-image: url('https://teste-api-senne.mageda.com.br/uploads/Frame.png'); background-size: cover
+            ; height: 170px; width: 500px;">
+                <img style="margin-top: 50px;" src="https://teste-api-senne.mageda.com.br/uploads/icon.png"
+                    alt="" srcset="">
             </td>
-
         </tr>
-
+    </table>
+    <table align="center" width="500">
+        <tr style=" font-family: Montserrat; color: #B8BD5A">
+            <td align="left"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
+            <td align="center">
+                <h2 style="font-size: 18px; font-weight: bold">Olá, tudo bem?</h2>
+            </td>
+            <td align="right"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
+        </tr>
+    </table>
+    <table align="center" width="550">
+        <tr style=" font-family: Montserrat; color: #343A40; font-weight: 500">
+            <td align="center">
+                <p style="text-align:center; max-width: 350px;">Solicitação de cadastro médico na plataforma
+                </p>
+            </td>
+        </tr>
+        
         <tr>
             <td width="350" style="padding-left: 36px; font-family: Montserrat;">
                 @if ($data['name'])
@@ -82,14 +81,17 @@
             </td>
 
         </tr>
+    </table>
+    <table align="center" width="500" style="margin-top: 70px">
+        <tr
+            style="background-image: url('https://teste-api-senne.mageda.com.br/uploads/footer.png'); background-size: contain; background-repeat: 
+            no-repeat;height: 80px;">
+            <td>
 
-        <tr>
-            <td style="padding-left: 36px;padding-top: 30px;font-family: Montserrat;">
-                <h3 style="color:#EC6726; font-size:14px ">Equipe Senne</h3>
             </td>
         </tr>
-
     </table>
+
 </body>
 
 </html>

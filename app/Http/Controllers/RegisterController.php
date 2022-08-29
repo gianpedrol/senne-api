@@ -186,7 +186,7 @@ class RegisterController extends Controller
     {
 
 
-        $data = $request->only(['name', 'crm', 'phone', 'email', 'especialidade', 'novidades', 'policy']);
+        $data = $request->only(['name', 'crm','cpf', 'phone', 'email', 'especialidade', 'novidades', 'policy']);
 
         $user = User::where('email', $data['email'])->first();
 
@@ -207,6 +207,7 @@ class RegisterController extends Controller
             $newUser = new User();
             $newUser->name = $data['name'];
             $newUser->email = $data['email'];;
+            $newUser->cpf = $data['cpf'];
             $newUser->crm = $data['crm'];
             $newUser->phone = $data['phone'];
             $newUser->especialidade = $data['especialidade'];
@@ -386,7 +387,6 @@ class RegisterController extends Controller
                 'email' => $user->email
             ];
         }
-
         try {
             /* Enviar e-mail para o usuário com sua senha de acesso */
             Mail::to(['gian@mageda.digital', 'elson@mageda.digital', 'gustavo@mageda.digital', 'ti@senneliquor.com.br'])->send(new emailRegisterPartner($data));

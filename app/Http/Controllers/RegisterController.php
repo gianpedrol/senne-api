@@ -211,7 +211,9 @@ class RegisterController extends Controller
             $newUser->crm = $data['crm'];
             $newUser->phone = $data['phone'];
             $newUser->especialidade = $data['especialidade'];
-            $newUser->news_email = $data['novidades'];
+            if(!empty($data['novidades'])){
+                $newUser->news_email = $data['novidades'];
+            }
             $newUser->status = 3;
             $newUser->policy = $data['policy'];
             $newUser->role_id = $role_id;

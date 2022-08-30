@@ -419,6 +419,10 @@ class ExameController extends Controller
         }*/
 
         $data = $request->only('numatendimento', 'observation');
+        $user = Auth::user();
+
+        
+
         try{
             \DB::beginTransaction();
 
@@ -432,7 +436,17 @@ class ExameController extends Controller
                 $newObservation = new ObservationsAttedance();
                 $newObservation->numatendimento = $data['numatendimento'];
                 $newObservation->observation = $data['observation'];
+                $newObservation->id_user = $user->id;
+                $newObservation->user = $user->name;
                 $newObservation->save();
+
+                $log = Auth::user();
+                $saveLog = new UserLog();
+                $saveLog->id_user = $log->id;
+                $saveLog->ip_user = $request->ip();
+                $saveLog->id_log = 13 ;
+                $saveLog->numatendimento = $data['numatendimento'];
+                $saveLog->save();
                 
 
 
@@ -454,7 +468,6 @@ class ExameController extends Controller
         }*/
 
         $observation = ObservationsAttedance::where('numatendimento', $id)->get();
-
         if(count($observation) == 0){
             return response()->json(['status' => 'error, dont exists' ], 404);
         }
@@ -465,7 +478,25 @@ class ExameController extends Controller
     public function addExameSolicitation(Request $request){
 
         $data = $request->only('numatendimento', 'solicitation');
+
+        $log = Auth::user();
+        $saveLog = new UserLog();
+        $saveLog->id_user = $log->id;
+        $saveLog->ip_user = $request->ip();
+        $saveLog->id_log = 13 ;
+        $saveLog->numatendimento = $data['numatendimento'];
+        $saveLog->save();
+        
         try {
+
+            $log = Auth::user();
+            $saveLog = new UserLog();
+            $saveLog->id_user = $log->id;
+            $saveLog->ip_user = $request->ip();
+            $saveLog->id_log = 15 ;
+            $saveLog->numatendimento = $data['numatendimento'];
+            $saveLog->save();
+            
             /* Enviar e-mail para o usuário com sua senha de acesso */
             Mail::to(['gian@mageda.digital', 'elson@mageda.digital'])->send(new SolicitationAddExam($data));
             return response()->json(['status' => 'solicitation sended'], 200);

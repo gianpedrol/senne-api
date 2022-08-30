@@ -1375,6 +1375,14 @@ class UserController extends Controller
                 $newUser->password = $senha_temp;
                 $newUser->cod_pf = $patientUuid;
                 $newUser->save();
+
+                $log = Auth::user();
+                $saveLog = new UserLog();
+                $saveLog->id_user = $log->id;
+                $saveLog->ip_user = $request->ip();
+                $saveLog->id_log = 14 ;
+                $saveLog->numatendimento = $data['numatendimento'];
+                $saveLog->save();
                                 
                
              /*   $pdf = PDF::loadView('pdf.protocol', compact('data', 'senha_md5'))->setPaper('a4');*/

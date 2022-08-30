@@ -110,19 +110,22 @@ class HospitalController extends Controller
 
         /*/* CASO NÃO TENHA NENHUM HOSPITAL CADASTRADO NO BANCO ELE IRÁ CRIAR*/
         foreach ($data as $save_proc) {
+
             if ($save_proc['codgrupo'] == null) {
                 $save_proc['codgrupo'] = 1;
             }
             $groups = Groups::where('codgroup', $save_proc['codgrupo'])->get();
-
+            
             foreach ($groups as $group){
                 $id_group = $group->id;
             }
             try {
                 \DB::beginTransaction();
 
-                Hospitais::updateOrCreate(['codprocedencia' => $save_proc['id_api'], 'name' => $save_proc['name'], 'grupo_id' =>$id_group, 'uuid' => $save_proc['uuid'],]);
+                 Hospitais::where('uuid', $save_proc['uuid'])->update(['name' => $save_proc['name']]); 
+                 Hospitais::updateOrCreate(['codprocedencia' => $save_proc['id_api']] ,  ['grupo_id' =>$id_group], ['uuid' => $save_proc['uuid']]);
 
+              
 
                 \DB::commit();
             } catch (\Throwable $th) {
@@ -135,10 +138,10 @@ class HospitalController extends Controller
         if(empty($request->paginate)){
             $request->paginate = 10;
         }
+
         /* LISTA TODOS OS HOSPITAIS APÓS CONSULTA E SALVAR NOVOS DADOS  */
         $hospitals = DB::table('hospitais')->paginate( $request->paginate);
 
-       
         if (count($hospitals) > 0) {
             foreach ($hospitals as $hospital) {
                 $procedencia[] = [

@@ -822,7 +822,7 @@ class UserController extends Controller
         $allUsers = User::from('users as user')
             ->select('user.id', 'user.name', 'user.email', 'user.role_id', 'user.status')
             ->where('user.role_id', '!=', 1)
-            ->where('us.role_id', '!=', 5)
+            ->where('user.role_id', '!=', 5)
             ->where('user.id', '!=', $authUser->id)
             ->when(!empty($request->name), function ($query) use ($data) {
                 return $query->where('user.name', 'like', '%' . $data['name'] . '%');

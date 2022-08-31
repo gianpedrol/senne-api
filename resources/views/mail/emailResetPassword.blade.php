@@ -17,7 +17,8 @@
     </style>
 </head>
 
-<body topmargin="0" marginwidth="0" marginheight="0">
+<body topmargin="0" marginwidth="0" marginheight="0"  style="max-width=600px">
+<table width="600">
     <table align="center">
         <tr>
             <td align="center" height="100">
@@ -73,6 +74,8 @@
             </td>
         </tr>
     </table>
+</table>
+    
 
 
 

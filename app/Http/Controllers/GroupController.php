@@ -152,10 +152,10 @@ class GroupController extends Controller
             }
         }
         /* LISTA TODOS OS GRUPOS APÓS CONSULTA E SALVAR NOVOS DADOS  */
-        if(empty($request->paginate)){
-            $request->paginate =10;
+        if(empty($request->per_page)){
+            $request->per_page =10;
         }
-        $groups =  DB::table('groups')->paginate($request->paginate);
+        $groups =  DB::table('groups')->paginate($request->per_page);
         //
         //
         if (count($groups) > 0) {

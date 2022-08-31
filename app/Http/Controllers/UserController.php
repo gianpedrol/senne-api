@@ -942,11 +942,12 @@ class UserController extends Controller
 
             $authUser = Auth::user();
             $hospital['users'] = UsersHospitals::from('users_hospitals as userhos')
-                ->select('us.name', 'us.id', 'us.email', 'us.status')
+                ->select('us.name', 'us.id', 'us.email', 'us.status','us.role_id')
                 ->join('users as us', 'us.id', '=', 'userhos.id_user')
                 ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
                 ->where('userhos.id_hospital', '=', $id)
                 ->where('us.role_id', '!=', 1)
+                ->where('us.role_id', '!=', 5)
                 ->where('us.id', '!=', $authUser->id)
                 ->when(!empty($request->name), function ($query) use ($data) {
                     return $query->where('user.name', 'like', '%' . $data['name'] . '%');

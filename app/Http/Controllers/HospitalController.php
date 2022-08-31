@@ -123,9 +123,7 @@ class HospitalController extends Controller
                 \DB::beginTransaction();
 
                  Hospitais::where('uuid', $save_proc['uuid'])->update(['name' => $save_proc['name']]); 
-                 Hospitais::updateOrCreate(['codprocedencia' => $save_proc['id_api']] ,  ['grupo_id' =>$id_group], ['uuid' => $save_proc['uuid']]);
-
-              
+                 Hospitais::updateOrCreate(['name' => $save_proc['name']],['codprocedencia' => $save_proc['id_api']] ,  ['grupo_id' =>$id_group], ['uuid' => $save_proc['uuid']]);              
 
                 \DB::commit();
             } catch (\Throwable $th) {

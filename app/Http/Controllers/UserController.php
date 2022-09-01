@@ -173,8 +173,8 @@ class UserController extends Controller
                         //Define nivel user Senne
                         $role_id = 2;
         
-                        $senha_md5= Str::random(8);//Descomentar após testes
-                      // $senha_md5 = '654321';
+                      //  $senha_md5= Str::random(8);//Descomentar após testes
+                       $senha_md5 = '654321';
                        $senha_temp = bcrypt($senha_md5);
         
                         $newUser = new User();
@@ -183,7 +183,7 @@ class UserController extends Controller
                         $newUser->cpf = $data['cpf'];
                         $newUser->phone = $data['phone'];
                         $newUser->crm = $data['crm'];
-                        $newUser->status = 2;
+                        $newUser->status = 1;
                         $newUser->role_id = $role_id;
                         $newUser->password = $senha_temp;
                         $newUser->save();

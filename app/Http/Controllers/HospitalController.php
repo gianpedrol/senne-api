@@ -122,7 +122,7 @@ class HospitalController extends Controller
             try {
                 \DB::beginTransaction();
                 
-                Hospitais::where('name', $save_proc['name'] )->first()->delete();
+              //  Hospitais::where('name', $save_proc['name'] )->first()->delete();
                  Hospitais::updateOrCreate(['name' => $save_proc['name']],['codprocedencia' => $save_proc['id_api']] ,  ['grupo_id' =>$id_group], ['uuid' => $save_proc['uuid']]);              
 
                 \DB::commit();

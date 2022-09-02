@@ -698,11 +698,11 @@ class UserController extends Controller
                 ->select('hos.id as id_hospital', 'hos.name as name', 'hos.uuid', 'hos.grupo_id', 'group.name as GroupName')
                 ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
                 ->join('groups as group', 'group.id', '=', 'hos.grupo_id')
-                ->where('id_user', $user_only['id'])
+                //->where('id_user', $user_only['id'])
                 ->when(!empty($request->procedencia), function ($query) use ($data) {
                     return $query->where('hos.name', 'like', '%' . $data['procedencia'] . '%');
                 })
-                ->get();
+                ->first();
             $retorno[] = $user_only;
         }
 
@@ -875,14 +875,14 @@ class UserController extends Controller
         //Rodamos o loop para trazer o ultimo log de cada usuário
         $retorno = [];
         foreach ($allUsers as $key1 => $user_only) {
+            
             $user_only['permissoes'] = UserPermissoes::where('id_user', $user_only['id'])->select('id_permissao as id')->get();
             $user_only['dateLogin'] = UserLog::where('id_user', $user_only['id'])->orderBy('id_log', 'DESC')->first('created_at');
             // $user_only['hospitais'] = UsersHospitals::where('id_user', $user_only['id'])->get();
             $user_only['hospitais'] = UsersHospitals::from('users_hospitals as userhos')
                 ->select('hos.id as id_hospital', 'hos.name as name', 'hos.uuid', 'hos.grupo_id')
                 ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
-                ->where('id_user', '=', $user_only['id'])
-                ->where('hos.grupo_id', $id)
+                  ->where('hos.grupo_id', $id)
                 ->when(!empty($request->procedencia), function ($query) use ($data) {
                     return $query->where('hos.name', 'like', '%' . $data['procedencia'] . '%');
                 })
@@ -894,6 +894,8 @@ class UserController extends Controller
         }
 
         $all_users = $allUsers->toArray();
+
+        
 
         //Construct paginate info
        $paginate['first_page_url'] = $all_users['first_page_url'];

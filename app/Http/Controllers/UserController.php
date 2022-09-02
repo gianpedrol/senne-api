@@ -803,11 +803,19 @@ class UserController extends Controller
         ->where('id_user', $user_auth->id)
         ->get();
 
-        foreach ($user_auth['hospitals'] as $userGroupId){
-            if ($userGroupId['grupo_id'] != $id ) {                
+
+        if ($request->user()->role_id != 1) {
+
+            foreach ($user_auth['hospitals'] as $userGroupId){
+                if ($userGroupId['grupo_id'] != $id ) {                
+                    return response()->json(['error' => "Unauthorized "], 401);
+                }
+            }
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
                 return response()->json(['error' => "Unauthorized "], 401);
             }
         }
+
 
         $user_group = UsersGroup::from('users_groups as usergroup')
             ->select('usergroup.id_group')
@@ -816,11 +824,7 @@ class UserController extends Controller
             ->first();
         
 
-        if ($request->user()->role_id != 1) {
-            if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Unauthorized "], 401);
-            }
-        }
+
 
         $data = $request->all();
 
@@ -932,23 +936,27 @@ class UserController extends Controller
      */
     public function getUsersHospital($id, Request $request)
     {
-        if ($request->user()->role_id != 1) {
-            if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Unauthorized Access not administrator"], 401);
-            }
-        }
+
         $user_auth = Auth::user();
         $user_auth['hospitals'] = UsersHospitals::from('users_hospitals as userhos')
         ->select('hos.id', 'hos.grupo_id', 'hos.name as name',  'hos.uuid')
         ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
         ->where('id_user', $user_auth->id)
         ->get();
-
-        foreach ($user_auth['hospitals'] as $userHospitalId){
-            if ($userHospitalId['id'] != $id ) {                
-                return response()->json(['error' => "Unauthorized "], 401);
+        
+        if ($request->user()->role_id != 1) {
+            foreach ($user_auth['hospitals'] as $userHospitalId){
+                if ($userHospitalId['id'] != $id ) {                
+                    return response()->json(['error' => "Unauthorized "], 401);
+                }
+            }
+    
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
+                return response()->json(['error' => "Unauthorized Access not administrator"], 401);
             }
         }
+
+
 
         $hospital = Hospitais::find($id);
 

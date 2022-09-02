@@ -46,7 +46,7 @@
         </tr>
     </table>
     <table align="center" width="500">
-        <tr style=" font-family: Montserrat; color: #343A40; font-weight: 500">
+        <tr style=" font-family: Montserrat; color: #343A40; font-weight: 500" width="500">
             <td align="center">
                 <p style="text-align:center; max-width: 350px; font-weight: bold;">Sua solicitação de redefinição de senha foi recebida com sucesso.</p>
 
@@ -56,7 +56,10 @@
 
                 <p style="text-align:center; max-width: 350px; margin-top: 30px;">Caso o botão não esteja funcionando,
                     clique no link abaixo ou copie e cole em seu navegador. </p>
-                <a href="{{ $url }}">{{ $url }}</a>
+                <p style="text-align:center; max-width: 350px; margin-top: 30px;">
+                    <a  href="{{ $url }}">{{ $url }}</a>
+                </p>
+               
 
                 <p style="text-align:center; max-width: 350px; font-weight: bold; font-size: 16px;">Caso não tenha sido
                     você, entre em contato conosco. </p>

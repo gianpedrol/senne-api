@@ -18,7 +18,7 @@
 
 <body topmargin="0" marginwidth="0" marginheight="0" style="width=600px">
     <table width="500">
-        <table>
+        <table width="500">
             <tr>
                 <td align="center" height="100">
                     <img src="https://teste-api-senne.mageda.com.br/uploads/logosenne.png" alt="Senne Liquor" width="138"
@@ -45,7 +45,7 @@
             </tr>
         </table>
         <table width="500">
-            <tr style=" font-family: Montserrat; color: #343A40; font-weight: 500">
+            <tr style=" font-family: Montserrat; color: #343A40; font-weight: 500" width="500">
                 <td align="center">
                     <p style="text-align:center; max-width: 350px; font-weight: bold; padding: 30px 0">Seja bem-vindo ao
                         portal<br>

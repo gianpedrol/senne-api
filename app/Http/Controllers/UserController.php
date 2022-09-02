@@ -173,8 +173,8 @@ class UserController extends Controller
                         //Define nivel user Senne
                         $role_id = 2;
         
-                      //  $senha_md5= Str::random(8);//Descomentar após testes
-                       $senha_md5 = '654321';
+                        $senha_md5= Str::random(8);//Descomentar após testes
+                      // $senha_md5 = '654321';
                        $senha_temp = bcrypt($senha_md5);
         
                         $newUser = new User();
@@ -183,7 +183,7 @@ class UserController extends Controller
                         $newUser->cpf = $data['cpf'];
                         $newUser->phone = $data['phone'];
                         $newUser->crm = $data['crm'];
-                        $newUser->status = 1;
+                        $newUser->status = 2;
                         $newUser->role_id = $role_id;
                         $newUser->password = $senha_temp;
                         $newUser->save();
@@ -797,12 +797,24 @@ class UserController extends Controller
     {
         $group = Groups::where('id', $id)->first();
         $user_auth = Auth::user();
+        $user_auth['hospitals'] = UsersHospitals::from('users_hospitals as userhos')
+        ->select('hos.id', 'hos.grupo_id', 'hos.name as name',  'hos.uuid')
+        ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
+        ->where('id_user', $user_auth->id)
+        ->get();
+
+        foreach ($user_auth['hospitals'] as $userGroupId){
+            if ($userGroupId['grupo_id'] != $id ) {                
+                return response()->json(['error' => "Unauthorized "], 401);
+            }
+        }
+
         $user_group = UsersGroup::from('users_groups as usergroup')
             ->select('usergroup.id_group')
             ->join('groups as group', 'group.id', '=', 'usergroup.id_group')
             ->where('usergroup.id_user', $user_auth->id)
             ->first();
-
+        
 
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
@@ -822,7 +834,7 @@ class UserController extends Controller
         $allUsers = User::from('users as user')
             ->select('user.id', 'user.name', 'user.email', 'user.role_id', 'user.status')
             ->where('user.role_id', '!=', 1)
-            ->where('user.role_id', '!=', 5)
+            ->where('user.role_id', '=', 2)
             ->where('user.id', '!=', $authUser->id)
             ->when(!empty($request->name), function ($query) use ($data) {
                 return $query->where('user.name', 'like', '%' . $data['name'] . '%');
@@ -894,7 +906,7 @@ class UserController extends Controller
         $paginate['prev_page_url'] = $all_users['prev_page_url'];
         $paginate['to'] = $all_users['to'];
         $paginate['total'] = $all_users['total'];
-
+        
         return response()->json(['status' => 'success', 'Group' => $group, 'Users' => $allUsers],
             200
         );

@@ -286,7 +286,7 @@ class AuthController extends Controller
             \DB::beginTransaction();
 
             //Define nivel user Senne
-            $role_id = 1;
+            $role_id = 1;  
 
             //$senha_md5= Str::random(8);//Descomentar após testes
             $senha_md5 = '%&yAXNF';

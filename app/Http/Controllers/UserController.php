@@ -826,7 +826,6 @@ class UserController extends Controller
 
         $data['status'] = explode(',', $request->status);
 
-
         $per_page = (isset($request->per_page) && $request->per_page > 0) ? $request->per_page : 10;
 
         $sort = (isset($request->per_page) && !empty($request->sort)) ? $request->sort : 'id';
@@ -906,7 +905,7 @@ class UserController extends Controller
         $paginate['prev_page_url'] = $all_users['prev_page_url'];
         $paginate['to'] = $all_users['to'];
         $paginate['total'] = $all_users['total'];
-        
+
         return response()->json(['status' => 'success', 'Group' => $group, 'Users' => $allUsers],
             200
         );
@@ -936,6 +935,18 @@ class UserController extends Controller
                 return response()->json(['error' => "Unauthorized Access not administrator"], 401);
             }
         }
+        $user_auth = Auth::user();
+        $user_auth['hospitals'] = UsersHospitals::from('users_hospitals as userhos')
+        ->select('hos.id', 'hos.grupo_id', 'hos.name as name',  'hos.uuid')
+        ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
+        ->where('id_user', $user_auth->id)
+        ->get();
+
+        foreach ($user_auth['hospitals'] as $userHospitalId){
+            if ($userHospitalId['id'] != $id ) {                
+                return response()->json(['error' => "Unauthorized "], 401);
+            }
+        }
 
         $hospital = Hospitais::find($id);
 
@@ -960,7 +971,7 @@ class UserController extends Controller
                 ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
                 ->where('userhos.id_hospital', '=', $id)
                 ->where('us.role_id', '!=', 1)
-                ->where('us.role_id', '!=', 5)
+                ->where('us.role_id', '=', 2)
                 ->where('us.id', '!=', $authUser->id)
                 ->when(!empty($request->name), function ($query) use ($data) {
                     return $query->where('user.name', 'like', '%' . $data['name'] . '%');

@@ -1416,7 +1416,6 @@ class UserController extends Controller
                 $saveLog->id_user = $log->id;
                 $saveLog->ip_user = $request->ip();
                 $saveLog->id_log = 14 ;
-                $saveLog->numatendimento = $data['numatendimento'];
                 $saveLog->save();
                                 
                

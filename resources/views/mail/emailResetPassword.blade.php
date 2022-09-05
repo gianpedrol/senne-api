@@ -53,21 +53,32 @@
 
                 <a style="color:white; text-decoration: none; background-color:#ABB056; padding: 10px 50px; border-radius: 40px;"
                     href="{{ $url }}" target="_blank" rel="noopener">Alterar Senha </a>
-
+        
+                </td>
+            </tr> 
+        </table>
+        
+    <table align="center" width="500">
+        <tr  width="500">
+            <td  width="500">
                 <p style="text-align:center; max-width: 350px; margin-top: 30px;">Caso o botão não esteja funcionando,
                     clique no link abaixo ou copie e cole em seu navegador. </p>
                 <p style="text-align:center; max-width: 350px; margin-top: 30px;">
-                    <a  href="{{ $url }}">{{ $url }}</a>
+                    {{ $url }}                   
                 </p>
                
-
+        
                 <p style="text-align:center; max-width: 350px; font-weight: bold; font-size: 16px;">Caso não tenha sido
                     você, entre em contato conosco. </p>
-
-
-            </td>
+            </td>            
         </tr>
+
     </table>
+
+                
+
+
+   
     <table align="center" width="500" style="margin-top: 70px">
         <tr
             style="background-image: url('https://teste-api-senne.mageda.com.br/uploads/footer.png'); background-size: contain; background-repeat: 

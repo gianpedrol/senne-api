@@ -107,6 +107,7 @@ class RegisterController extends Controller
             $newUser->phone = $data['phone'];
             $newUser->policy = $data['policy'];
             $newUser->status = 1;
+            $newUser->cod_pf = 'E2C2F72E90ED4552E053E600A8C0FE22';
             $newUser->role_id = $role_id;
             $newUser->password = $senha_temp;
             $newUser->save();

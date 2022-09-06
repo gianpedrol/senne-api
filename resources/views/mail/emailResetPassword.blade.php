@@ -40,7 +40,11 @@
         <tr style=" font-family: Montserrat; color: #B8BD5A">
             <td align="left"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
             <td align="center">
-                <h2 style="font-size: 18px; font-weight: bold; text-align: center">Olá, tudo bem?</h2>
+                @if (!empty($data['name']) )
+                <h2 style="font-size: 18px; font-weight: bold">Olá {{$data['name']}}, tudo bem?</h2>
+                @else
+                <h2 style="font-size: 18px; font-weight: bold">Olá, tudo bem?</h2>
+                @endif
             </td>
             <td align="right"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
         </tr>
@@ -59,12 +63,14 @@
         </table>
         
     <table align="center" width="500">
-        <tr  width="500">
-            <td  width="500">
+        <tr  width="500" align="center">
+            <td  width="500" align="center">
                 <p style="text-align:center; max-width: 350px; margin-top: 30px;">Caso o botão não esteja funcionando,
                     clique no link abaixo ou copie e cole em seu navegador. </p>
                 <p style="text-align:center; max-width: 350px; margin-top: 30px;">
-                    {{ $url }}                   
+                    <span style="text-align:center; max-width: 350px; margin-top: 30px;">
+                        {{ $url }}                   
+                    </span>
                 </p>
                
         

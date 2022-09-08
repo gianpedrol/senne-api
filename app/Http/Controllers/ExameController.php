@@ -288,11 +288,11 @@ class ExameController extends Controller
     public function listAttendanceDetails($uuid, $atendimento,  Request $request)
     {
 
-        if ($request->user()->role_id != 1  && $request->user()->role_id != 5) {
+       /* if ($request->user()->role_id != 1  && $request->user()->role_id != 5) {
             if (!$request->user()->permission_user($request->user()->id, 3)) {
                 return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
             }
-        }
+        }*/
 
 
         $client = 'A2PsnYpypc_u66U0ANnzfQ..';

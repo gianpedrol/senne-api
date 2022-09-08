@@ -199,11 +199,11 @@ class ExameController extends Controller
     public function listAttendanceDate($uuid,$startdate, $finaldate, Request $request)
     {
 
-        if ($request->user()->role_id != 1 && $request->user()->role_id != 5 ) {
+      /*  if ($request->user()->role_id != 1 && $request->user()->role_id != 5 ) {
             if (!$request->user()->permission_user($request->user()->id, 3)) {
                 return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
             }
-        }
+        }*/
 
         $client = 'A2PsnYpypc_u66U0ANnzfQ..';
         $client_secret = 'M3nxpLJbYPNqkfnkR5tuqg..';
@@ -227,6 +227,9 @@ class ExameController extends Controller
             $request->pageNo = 1;
         }
 
+        if($loggedUser->role_id == 3 ){
+            $tipo =5;
+        }  
         if($request->pageSize == null){ 
             $request->pageSize = 10;
         }
@@ -376,11 +379,11 @@ class ExameController extends Controller
     public function principalReport($uuid, $atendimento, $r_id, Request $request)
     {
 
-        if ($request->user()->role_id != 1  && $request->user()->role_id != 5) {
+       /* if ($request->user()->role_id != 1  && $request->user()->role_id != 5) {
             if (!$request->user()->permission_user($request->user()->id, 3)) {
                 return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
             }
-        }
+        }*/ 
         $log = Auth::user();
         $saveLog = new UserLog();
         $saveLog->id_user = $log->id;
@@ -398,11 +401,11 @@ class ExameController extends Controller
     {
 
 
-        if ($request->user()->role_id != 1  && $request->user()->role_id != 5) {
+      /*  if ($request->user()->role_id != 1  && $request->user()->role_id != 5) {
             if (!$request->user()->permission_user($request->user()->id, 3)) {
                 return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
             }
-        }
+        }*/
         $log = Auth::user();
         $saveLog = new UserLog();
         $saveLog->id_user = $log->id;

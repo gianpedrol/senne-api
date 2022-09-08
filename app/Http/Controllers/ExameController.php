@@ -315,6 +315,9 @@ class ExameController extends Controller
         if($loggedUser->role_id == 2 ){
             $tipo =1;
         }  
+        if($loggedUser->role_id == 3 ){
+            $tipo =5;
+        }  
         if($request->Order == null){ 
             $request->Order = 'DESC';
         }

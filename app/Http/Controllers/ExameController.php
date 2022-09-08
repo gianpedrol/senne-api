@@ -103,11 +103,11 @@ class ExameController extends Controller
     public function listAttendance($uuid, $atendimento,  Request $request)
     {
 
-        if ($request->user()->role_id != 1  && $request->user()->role_id != 5) {
+      /*  if ($request->user()->role_id != 1  && $request->user()->role_id != 5) {
             if (!$request->user()->permission_user($request->user()->id, 3)) {
                 return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
             }
-        }
+        }*/
 
 
         $client = 'A2PsnYpypc_u66U0ANnzfQ..';
@@ -132,6 +132,9 @@ class ExameController extends Controller
         if($request->pageNo == null){ 
             $request->pageNo = 1;
         }
+        if($loggedUser->role_id == 3 ){
+            $tipo =5;
+        }  
 
         if($request->pageSize == null){ 
             $request->pageSize = 250;

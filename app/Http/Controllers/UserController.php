@@ -884,8 +884,9 @@ class UserController extends Controller
             $user_only['dateLogin'] = UserLog::where('id_user', $user_only['id'])->orderBy('id_log', 'DESC')->first('created_at');
             // $user_only['hospitais'] = UsersHospitals::where('id_user', $user_only['id'])->get();
             $user_only['hospitais'] = UsersHospitals::from('users_hospitals as userhos')
-                ->select('hos.id as id_hospital', 'hos.name as name', 'hos.uuid', 'hos.grupo_id')
+                ->select('hos.id as id_hospital', 'hos.name as name', 'hos.uuid', 'hos.grupo_id', 'group.name as GroupName')
                 ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
+                ->join('groups as group', 'group.id', '=', 'hos.grupo_id')
                   ->where('hos.grupo_id', $id)
                 ->when(!empty($request->procedencia), function ($query) use ($data) {
                     return $query->where('hos.name', 'like', '%' . $data['procedencia'] . '%');

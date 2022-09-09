@@ -890,7 +890,7 @@ class UserController extends Controller
                 ->when(!empty($request->procedencia), function ($query) use ($data) {
                     return $query->where('hos.name', 'like', '%' . $data['procedencia'] . '%');
                 })
-                ->get();
+                ->first();
 
             if (count($user_only['hospitais']) > 0) {
                 $retorno[] = $user_only;

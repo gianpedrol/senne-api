@@ -28,6 +28,11 @@ class GroupController extends Controller
         if (!auth()->user()) {
             return response()->json(['error' => 'Unauthorized access'], 401);
         }
+
+        /* 1 = Administrador Senne | 2 = Usuario */
+        if (auth()->user()->role_id != 1) {
+            return response()->json(['error' => "Unauthorized"], 401);
+    }
     }
 
     //Salva Grupo no DB
@@ -92,9 +97,7 @@ class GroupController extends Controller
     {
         /* 1 = Administrador Senne | 2 = Usuario */
         if (auth()->user()->role_id != 1) {
-            if (!$request->user()->permission_user($request->user()->id, 1)) {
                 return response()->json(['error' => "Unauthorized"], 401);
-            }
         }
 
         $client = 'A2PsnYpypc_u66U0ANnzfQ..';

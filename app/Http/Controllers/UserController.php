@@ -892,9 +892,7 @@ class UserController extends Controller
                 })
                 ->first();
 
-            if (count($user_only['hospitais']) > 0) {
                 $retorno[] = $user_only;
-            }
         }
 
         $all_users = $allUsers->toArray();

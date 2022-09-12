@@ -158,7 +158,7 @@ class GroupController extends Controller
             }else{
                 Groups::create([ 'name' => $name['name'], 'codgroup',  $name['codgrupo']]);
             }
-
+           
         }
         /* LISTA TODOS OS GRUPOS APÓS CONSULTA E SALVAR NOVOS DADOS  */
         if(empty($request->per_page)){

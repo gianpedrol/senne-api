@@ -39,7 +39,7 @@ class UserSeeder extends Seeder
                 'id' => 3,
                 'name' => 'Marlene Aparecida Ferreira ',
                 'cpf' => '',
-                'role_id' => 3,
+                'role_id' => '3',
                 'status' => 1,
                 'email' => 'marlene@teste.com',
                 'password' => bcrypt('654321'),

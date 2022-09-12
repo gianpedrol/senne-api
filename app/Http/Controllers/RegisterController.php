@@ -490,7 +490,9 @@ class RegisterController extends Controller
                     $hospitalsCheck = true;
                 }
             }
+            dd('tenho dominio');
         }else{
+            dd('não tenho dominio');
             $hospitalsCheck = true;
         }
 

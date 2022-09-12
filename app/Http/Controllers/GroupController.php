@@ -154,7 +154,6 @@ class GroupController extends Controller
                 $groupCheck->updated(['name' => $name['name']]);
             }else{
                 Groups::create(['codgroup',  $name['codgrupo'], 'name' => $name['name']]);
-                dd('criou');
             }
 
         }

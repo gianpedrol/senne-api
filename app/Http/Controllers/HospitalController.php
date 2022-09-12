@@ -86,7 +86,7 @@ class HospitalController extends Controller
         }
 
         if($request->pageSize == null){ 
-            $request->pageSize = 250;
+            $request->pageSize = 550;
         }
 
         $bearer = $token->access_token;
@@ -123,7 +123,7 @@ class HospitalController extends Controller
                 \DB::beginTransaction();
                 
               //  Hospitais::where('name', $save_proc['name'] )->first()->delete();
-                 Hospitais::updateOrCreate(['name' => $save_proc['name'], 'codprocedencia' => $save_proc['id_api'] ,  'grupo_id' => $id_group, 'uuid' => $save_proc['uuid']]);              
+                 Hospitais::firstOrCreate(['name' => $save_proc['name'], 'codprocedencia' => $save_proc['id_api'] ,  'grupo_id' => $id_group, 'uuid' => $save_proc['uuid']]);              
 
                 \DB::commit();
             } catch (\Throwable $th) {

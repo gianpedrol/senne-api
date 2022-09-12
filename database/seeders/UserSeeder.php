@@ -35,7 +35,7 @@ class UserSeeder extends Seeder
                 'password' => bcrypt('%&yAXNF'),
                 'remember_token' => '',
             ],
-            [
+           /* [
                 'id' => 3,
                 'name' => 'Marlene Aparecida Ferreira ',
                 'cpf' => '',
@@ -45,7 +45,7 @@ class UserSeeder extends Seeder
                 'password' => bcrypt('654321'),
                 'cod_pf' => 'E2C2F72E90ED4552E053E600A8C0FE22',
                 'remember_token' => '',
-            ]
+            ]*/
                 
         ];
 

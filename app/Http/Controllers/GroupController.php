@@ -151,7 +151,7 @@ class GroupController extends Controller
             $groupCheck =  Groups::where('name',  $name['name'])->first();
             // dd(  $groupCheck);
             if($groupCheck){    
-                Groups::where('codgroup',  $name['codgrupo'])->update(['name' => $name['name'], 'codgroup' =>  $name['codgrupo'] ]);
+                $groupCheck->update(['name' => $name['name'], 'codgroup' =>  $name['codgrupo'] ]);
             }else{
                 Groups::create([ 'name' => $name['name'], 'codgroup',  $name['codgrupo']]);
             }

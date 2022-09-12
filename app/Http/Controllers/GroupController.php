@@ -148,12 +148,12 @@ class GroupController extends Controller
 
         /* CASO NÃO TENHA NENHUM GRUPO CADASTRADO NO BANCO ELE IRÁ CRIAR*/
         foreach ($data as $name) {
-            $groupCheck =  Groups::where('codgroup',  $name['codgrupo'])->first();
+            $groupCheck =  Groups::where('name',  $name['name'])->first();
             // dd(  $groupCheck);
             if($groupCheck){    
-                $groupCheck->update(['name' => $name['name'], 'codgroup' =>  $name['codgrupo'] ]);
+                Groups::where('codgroup',  $name['codgrupo'])->update(['name' => $name['name'], 'codgroup' =>  $name['codgrupo'] ]);
             }else{
-                Groups::create(['codgroup',  $name['codgrupo'], 'name' => $name['name']]);
+                Groups::create([ 'name' => $name['name'], 'codgroup',  $name['codgrupo']]);
             }
           //  Groups::create(['codgroup',  $name['codgrupo'], 'name' => $name['name']]);
 

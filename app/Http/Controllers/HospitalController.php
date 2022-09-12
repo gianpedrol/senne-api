@@ -108,6 +108,9 @@ class HospitalController extends Controller
             }
         }
 
+
+        dd($data);
+
         /*/* CASO NÃO TENHA NENHUM HOSPITAL CADASTRADO NO BANCO ELE IRÁ CRIAR*/
         foreach ($data as $save_proc) {
 
@@ -122,7 +125,7 @@ class HospitalController extends Controller
             try {
                 \DB::beginTransaction();
                 
-                $hospitalCheck =  Hospitais::where('uuid',  $save_proc['uuid'])->first();
+              //  $hospitalCheck =  Hospitais::where('uuid',  $save_proc['uuid'])->first();
 /*
                 if($hospitalCheck){    
                     $hospitalCheck->update(['name' => $save_proc['name']]);

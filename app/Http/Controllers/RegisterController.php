@@ -474,23 +474,35 @@ class RegisterController extends Controller
         $domainEmail = $dominio[1];
 
 
-
         $hospital = Hospitais::where('id', $hospitalsId)->first();
+        $hospitalsDomain = DomainHospital::from('domains_hospitals as domain')
+        ->select('hos.name', 'domain.domains')
+        ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
+        ->where('hos.id', '=', $hospital->id)
+        ->get()
+        ->toArray();
 
-        $hospitals = DomainHospital::from('domains_hospitals as domain')
+        if(!empty($hospitalsDomain)){
+            foreach($hospitalsDomain as $item){
+                if($item['domains'] != $domainEmail ){
+                    return response()->json(['error' => 'Seu e-mail é diferente do email do hospital'], 404);
+                }else{
+                    $hospitalsCheck = true;
+                }
+            }
+        }else{
+            $hospitalsCheck = true;
+        }
+
+        
+ /*        $hospitals = DomainHospital::from('domains_hospitals as domain')
         ->select('hos.name', 'domain.domains')
         ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
         ->where('hos.id', '=', $hospitalsId)
         ->where('domain.domains','=', $domainEmail)
         ->get()
         ->toArray();
-
-       
-        $hospital = Hospitais::where('id', $hospitalsId)->first();
-
-        if(empty($hospital)){
-            return response()->json(['error' => 'hospital cant be found'], 404);
-        }
+        
         
         $domain = [];
 
@@ -499,8 +511,10 @@ class RegisterController extends Controller
                 'email' => $hospital['domains']
             ];
         }
+        || empty($domain) == true
+        */
 
-                if ($hospitals == true || empty($domain) == true) {
+        if ($hospitalsCheck == true) {
             try {
                 \DB::beginTransaction();
 

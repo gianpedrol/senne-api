@@ -122,8 +122,15 @@ class HospitalController extends Controller
             try {
                 \DB::beginTransaction();
                 
+                $hospitalCheck =  Hospitais::where('uuid',  $save_proc['uuid'])->first();
+
+                if($hospitalCheck ){    
+                    $hospitalCheck->updated(['name' => $save_proc['name']]);
+                }else{
+                    Hospitais::create(['name' => $save_proc['name'], 'codprocedencia' => $save_proc['id_api'] ,  'grupo_id' => $id_group, 'uuid' => $save_proc['uuid']]);              
+                }
               //  Hospitais::where('name', $save_proc['name'] )->first()->delete();
-                 Hospitais::firstOrCreate(['name' => $save_proc['name'], 'codprocedencia' => $save_proc['id_api'] ,  'grupo_id' => $id_group, 'uuid' => $save_proc['uuid']]);              
+
 
                 \DB::commit();
             } catch (\Throwable $th) {

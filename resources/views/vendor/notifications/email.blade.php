@@ -59,7 +59,7 @@
         </table>
         <table width="500" align="center">
             <tr  width="500">
-                <td  width="500"> 
+                <td   width="500" align="center"> 
                     @isset($actionText) <?php
                     switch ($level) {
                         case 'success':

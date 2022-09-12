@@ -475,15 +475,15 @@ class RegisterController extends Controller
 
 
         $hospital = Hospitais::where('id', $hospitalsId)->first();
-        $hospitalsDomain = DomainHospital::from('domains_hospitals as domain')
+        $hospital['sDomain'] = DomainHospital::from('domains_hospitals as domain')
         ->select('hos.name', 'domain.domains')
         ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
         ->where('hos.id', '=', $hospital->id)
         ->get()
         ->toArray();
 
-        dd( $hospitalsDomain);
-        
+        dd($hospital);
+
         if(!empty($hospitalsDomain)){
             foreach($hospitalsDomain as $item){
                 if($item['domains'] != $domainEmail ){

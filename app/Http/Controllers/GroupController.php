@@ -150,12 +150,13 @@ class GroupController extends Controller
         foreach ($data as $name) {
             $groupCheck =  Groups::where('name',  $name['name'])->first();
             // dd(  $groupCheck);
-           /* if($groupCheck){    
+            if($groupCheck){    
                 Groups::where('codgroup',  $name['codgrupo'])->update(['name' => $name['name'], 'codgroup' =>  $name['codgrupo'] ]);
             }else{
                 Groups::create([ 'name' => $name['name'], 'codgroup',  $name['codgrupo']]);
-            }*/
-           Groups::create(['codgroup',  $name['codgrupo'], 'name' => $name['name']]);
+            }
+          //  dd($name['codgrupo']);
+         //  Groups::create([ 'name' => $name['name'], 'codgroup',  $name['codgrupo']]);
 
         }
         /* LISTA TODOS OS GRUPOS APÓS CONSULTA E SALVAR NOVOS DADOS  */

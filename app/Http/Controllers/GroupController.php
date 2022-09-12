@@ -154,6 +154,7 @@ class GroupController extends Controller
                 if($groupCheck->codgroup == null){
                     $groupCheck->update(['codgroup' => $name['codgrupo']]);
                 }
+                $groupCheck->update(['name' => $name['name']]);
             }else{
                 Groups::create([ 'name' => $name['name'], 'codgroup',  $name['codgrupo']]);
             }

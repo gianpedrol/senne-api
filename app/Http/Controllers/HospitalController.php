@@ -109,7 +109,7 @@ class HospitalController extends Controller
         }
 
 
-        dd($data);
+    
 
         /*/* CASO NÃO TENHA NENHUM HOSPITAL CADASTRADO NO BANCO ELE IRÁ CRIAR*/
         foreach ($data as $save_proc) {

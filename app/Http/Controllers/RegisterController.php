@@ -483,6 +483,7 @@ class RegisterController extends Controller
         ->toArray();
 
         dd( $hospitalsDomain);
+        
         if(!empty($hospitalsDomain)){
             foreach($hospitalsDomain as $item){
                 if($item['domains'] != $domainEmail ){

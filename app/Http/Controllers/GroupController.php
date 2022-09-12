@@ -152,16 +152,12 @@ class GroupController extends Controller
 
             if($groupCheck){    
                 $groupCheck->updated(['name' => $name['name']]);
+                dd('nao criou');
             }else{
                 Groups::create(['codgroup',  $name['codgrupo'], 'name' => $name['name']]);
+                dd('criou');
             }
 
-            Groups::where('codgroup',  $name['codgrupo'])->update(['name' => $name['name']]);
-           // Groups::firstOrCreate(['name' => $name['name'], 'codgroup' => $name['codgrupo']]);
-          /*  $groupNull =  Groups::where('codgroup',  $name['codgrupo'])->update(['name' => $name['name']]);
-            if (empty($groupNull)) {
-                Groups::firstOrCreate(['name' => $name['name'], 'codgroup' => $name['codgrupo']]);
-            }*/
         }
         /* LISTA TODOS OS GRUPOS APÓS CONSULTA E SALVAR NOVOS DADOS  */
         if(empty($request->per_page)){

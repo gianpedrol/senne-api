@@ -98,11 +98,11 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if(empty($user)){
-            return response()->json(['status'=> 'error', 'message' => 'the login is wrong' ], 401  );
+            return response()->json(['status'=> 'error', 'message' => 'Login inválido' ], 401  );
         }
         if ($user->status == 0) {
             return response()->json([
-                'message'   => 'The user is inativated',
+                'message'   => 'Usuário Inativado',
             ], 404);
         }
         if ($user->status == 2) {
@@ -115,11 +115,11 @@ class AuthController extends Controller
 
                 return response()->json([
                     'status' => __($status),
-                    'message'   => 'The user is not activated, check your email'
+                    'message'   => 'Conta precisa ser ativada, verifique seu email'
                 ], 400);
             }else{
                 return response()->json([
-                    'message'   => 'The user is not activated, check your email'
+                    'message'   => 'Conta precisa ser ativada, verifique seu email'
                 ], 400);
             }
 
@@ -132,7 +132,7 @@ class AuthController extends Controller
 
         if ($user->status == 3) {
             return response()->json([
-                'message'   => 'User is awaiting approval',
+                'message'   => 'Usuário aguardando aprovação',
             ], 404);
         }
          /**CASO SEJA ROLE ID 5 USUARIO DE ATENDIMENTO */
@@ -143,7 +143,7 @@ class AuthController extends Controller
             $passVerication = Hash::check($request->password,  $userProtocol->password);
 
             if(empty($userProtocol) ||  $passVerication == false){
-                return response()->json(['status'=> 'error', 'message' => 'the login is wrong' ], 401  );
+                return response()->json(['status'=> 'error', 'message' => 'Login inválido' ], 401  );
             }
             if ($userProtocol->role_id == 5) {             
                 
@@ -151,15 +151,15 @@ class AuthController extends Controller
                  if ($token) {
                      $array['token'] = $token;
                  } else {
-                     $array['message'] = 'Incorrect username or password';
+                     $array['message'] = 'Login inválido';
                  }
  
                  if (!$user) {
                      return response()->json([
-                         'message'   => 'The user can t be found',
+                         'message'   => 'Não foi possível encontrar esse Usuário',
                      ], 404);
                  } else {
-                     return response()->json(['message' => "User Logged in!", 'token' => $array['token'], 'user' => $userProtocol], 200);
+                     return response()->json(['message' => "Usuário Logado!", 'token' => $array['token'], 'user' => $userProtocol], 200);
                  }
              }             
             }
@@ -176,14 +176,14 @@ class AuthController extends Controller
             $passwordVerication = Hash::check($request->password, $user->password);
            
             if(empty($user) || $passwordVerication == false ){
-                return response()->json(['status'=> 'error', 'message' => 'the login is wrong' ], 401  );
+                return response()->json(['status'=> 'error', 'message' => 'Login inválido' ], 401  );
             }
 
                 $token = auth()->login($user);
                 if ($token) {
                     $array['token'] = $token;
                 } else {
-                    $array['message'] = 'Incorrect username or password';
+                    $array['message'] = 'Login inválido';
                 }
 
             $user = User::where('email', $user['email'])->first();
@@ -199,7 +199,7 @@ class AuthController extends Controller
             $user =  User::where('email', $request->email)->first();
                 if (!$user) {
                 return response()->json([
-                    'message'   => 'The user can t be found',
+                    'message'   => 'Não foi possível encontrar esse Usuário',
                 ], 404);
             } else {
                 $user['hospitals'] = UsersHospitals::from('users_hospitals as userhos')
@@ -210,11 +210,11 @@ class AuthController extends Controller
 
 
                 $user['permissoes'] = UserPermissoes::where('id_user', $user->id)->select('id_permissao as id')->get();
-                return response()->json(['message' => "User Logged in!", 'token' => $array['token'], 'user' => $user], 200);
+                return response()->json(['message' => "Usuário Logado!", 'token' => $array['token'], 'user' => $user], 200);
             }
         } else {
             return response()->json([
-                'message'   => 'The user cannot login at this route',
+                'message'   => 'Usuário não pode logar nesse local',
             ], 500);
         }
 
@@ -278,7 +278,7 @@ class AuthController extends Controller
         $user = User::where('email', $data['email'])->first();
 
         if (!empty($user)) {
-            return response()->json(['error' =>"User already exists!"], 400);
+            return response()->json(['error' =>"Uusário já existe!"], 400);
         }
 
 
@@ -308,7 +308,7 @@ class AuthController extends Controller
         } catch (\Throwable $th) {
             dd($th->getMessage());
             \DB::rollback();
-            return ['error' => 'Could not write data', 400];
+            return ['error' => 'Não foi possível salvar, verifique os campos', 400];
         }
         $status = Password::sendResetLink(
             $request->only('email'),
@@ -317,7 +317,7 @@ class AuthController extends Controller
         if ($status == Password::RESET_LINK_SENT) {
             return [
                 'status' => __($status),
-                'message' => "User registered successfully!", 'data' => $newUser
+                'message' => "Usuário registrado com sucesso!", 'data' => $newUser
             ];
         }
 
@@ -326,7 +326,7 @@ class AuthController extends Controller
         ]);
 
 
-        return response()->json(['message' => "User registered successfully!", 'data' => $newUser], 200);
+        return response()->json(['message' => "Usuário registrado com sucesso!", 'data' => $newUser], 200);
     }
 
     /**
@@ -373,12 +373,12 @@ class AuthController extends Controller
 
         Auth::logout();
 
-        return response()->json(['message' => 'Successfully logged out']);
+        return response()->json(['message' => 'Usuário deslogado']);
     }
 
 
     public function unauthorized()
     {
-        return response()->json(['error' => "Unauthorized user!"], 401);
+        return response()->json(['error' => "Usuário sem permissão !"], 401);
     }
 }

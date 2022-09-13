@@ -117,7 +117,7 @@ class RegisterController extends Controller
         } catch (\Throwable $th) {
             dd($th->getMessage());
             \DB::rollback();
-            return ['error' => 'Could not write data', 400];
+            return ['error' => 'Não foi possível salvar no banco de dados', 400];
         }
 
         $status = Password::sendResetLink(
@@ -127,7 +127,7 @@ class RegisterController extends Controller
         if ($status == Password::RESET_LINK_SENT) {
             return [
                 'status' => __($status),
-                'message' => "User registered successfully!", 'data' => $newUser
+                'message' => "Uusário registrado com sucesso!", 'data' => $newUser
             ];
         }
 
@@ -192,7 +192,7 @@ class RegisterController extends Controller
         $user = User::where('email', $data['email'])->first();
 
         if (!empty($user)) {
-            return response()->json(['error' =>"User already exists!"], 400);
+            return response()->json(['error' =>"Usuário já existe!"], 400);
         }
 
         try {
@@ -229,15 +229,15 @@ class RegisterController extends Controller
                 Mail::to($newUser->email)->send(new emailPendentRegister($data));
                 /* Enviar e-mail para Senne aprovar médico na plataforma */
                 Mail::to(['gian@mageda.digital', 'elson@mageda.digital', 'gustavo@mageda.digital', 'ti@senneliquor.com.br'])->send(new emailSolicitationDoctor($data));
-                return response()->json(['status' => 'solicitation sended', $newUser], 200);
+                return response()->json(['status' => 'Solicitação enviada', $newUser], 200);
             } catch (Exception $ex) {
                 dd($ex);
-                return response()->json(['error' => 'cannot be sended', $ex], 500);
+                return response()->json(['error' => 'Não foi possível enviar', $ex], 500);
             }
         } catch (\Throwable $th) {
-            dd($th->getMessage());
+          //  dd($th->getMessage());
             \DB::rollback();
-            return ['error' => 'Could not write data', 400];
+            return ['error' => 'Não foi possivel salvar no banco de dados', 'erro' => $th->getMessage(), 400];
         }
     }
 
@@ -393,10 +393,10 @@ class RegisterController extends Controller
         try {
             /* Enviar e-mail para o usuário com sua senha de acesso */
             Mail::to(['gian@mageda.digital', 'elson@mageda.digital', 'gustavo@mageda.digital', 'ti@senneliquor.com.br'])->send(new emailRegisterPartner($data));
-            return response()->json(['status' => 'solicitation sended'], 200);
+            return response()->json(['status' => 'Solicitação enviada'], 200);
         } catch (Exception $ex) {
-            dd($ex);
-            return response()->json(['error' => 'cannot be sended', $ex], 500);
+           // dd($ex);
+            return response()->json(['error' => 'Não foi possível enviar', $ex], 500);
         }
     }
 
@@ -568,22 +568,22 @@ class RegisterController extends Controller
                 try {
                     /* Enviar e-mail para o usuário com sua senha de acesso */
                     Mail::to($newUser->email)->send(new emailPendentRegister($data));
-                    return response()->json(['status' => 'solicitation sended', $newUser], 200);
+                    return response()->json(['status' => 'Solicitação enviada', $newUser], 200);
                 } catch (Exception $ex) {
                     dd($ex);
-                    return response()->json(['error' => 'cannot be sended', $ex], 500);
+                    return response()->json(['error' => 'Não foi póssível enviar a solicitação', $ex], 500);
                 }
             } catch (\Throwable $th) {
-                dd($th->getMessage());
+               // dd($th->getMessage());
                 \DB::rollback();
-                return ['error' => 'Could not write data', 400];
+                return ['error' => 'Não foi possivel salvar no banco de dados', 'erro' => $th->getMessage(), 400];
             }
 
             return response()->json([
-                'message' => "User registered successfully!", 'data' => $newUser
+                'message' => "Usuário registrado com sucesso!", 'data' => $newUser
             ], 200);
         } else {
-            return response()->json(['error' => 'Domain is invalid for this hospital'], 400);
+            return response()->json(['error' => 'O dominio é inválido para este hospital'], 400);
         }
     }
     /**

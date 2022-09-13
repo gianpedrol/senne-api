@@ -463,9 +463,9 @@ class ExameController extends Controller
         } catch (\Throwable $th) {
                 dd($th->getMessage());
                 \DB::rollback();
-                return ['error' => 'Could not write data', 400];
+                return ['error' => 'Não foi possível salvar no banco de dados', 400];
             }
-            return response()->json(['status' => 'ok' , 'message' => $newObservation], 200);
+            return response()->json(['status' => 'Sucesso!' , 'message' => $newObservation], 200);
     }
 
     public function getObservation(Request $request, $id){
@@ -478,7 +478,7 @@ class ExameController extends Controller
 
         $observation = ObservationsAttedance::where('numatendimento', $id)->get();
         if(count($observation) == 0){
-            return response()->json(['status' => 'error, dont exists' ], 404);
+            return response()->json(['status' => 'Observação não existe' ], 404);
         }
 
         return response()->json(['status' => 'ok' , 'message' => $observation], 200);
@@ -508,10 +508,10 @@ class ExameController extends Controller
             
             /* Enviar e-mail para o usuário com sua senha de acesso */
             Mail::to(['gian@mageda.digital', 'elson@mageda.digital'])->send(new SolicitationAddExam($data));
-            return response()->json(['status' => 'solicitation sended'], 200);
+            return response()->json(['status' => 'Solicitação enviada'], 200);
         } catch (Exception $ex) {
             dd($ex);
-            return response()->json(['error' => 'cannot be sended', $ex], 500);
+            return response()->json(['error' => 'Não foi possível enviar', $ex], 500);
         }
     }
 

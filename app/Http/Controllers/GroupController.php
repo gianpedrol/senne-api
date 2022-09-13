@@ -183,7 +183,7 @@ class GroupController extends Controller
             );
         } else {
             return response()->json(
-                ['status' => 'Groups is empty!'],
+                ['status' => 'Não foi possível encontrar o grupo!'],
                 404
             );
         }
@@ -199,9 +199,9 @@ class GroupController extends Controller
         }
 
         /* LISTA TODOS OS GRUPOS APÓS CONSULTA E SALVAR NOVOS DADOS  */
-        $groups =  DB::table('grooups')->orderBy('id')
+        $groups =  DB::table('groups')->orderBy('id')
         ->paginate(2);
-dd($groups);
+
         if (count($groups) > 0) {
             foreach ($groups as $group) {
 
@@ -217,7 +217,7 @@ dd($groups);
             );
         } else {
             return response()->json(
-                ['status' => 'Groups is empty!'],
+                ['status' => 'Não foi possível encontrar o Grupo!'],
                 404
             );
         }
@@ -234,14 +234,14 @@ dd($groups);
 
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Unauthorized "], 401);
+                return response()->json(['error' => "Não Autorizado "], 401);
             }
         }
 
         $data = $request->only(['cnpj', 'image', 'phone', 'email']);
 
         if (empty($data['cnpj'])) {
-            return response()->json(['error' => "cnpj cannot be null"], 200);
+            return response()->json(['error' => "Campo de cnpj não pode ser vazio"], 200);
         }
 
 
@@ -269,7 +269,7 @@ dd($groups);
         }
 
 
-        return response()->json(['msg' => "Edited Successfully!", $group], 200);
+        return response()->json(['msg' => "Uusário Editado com sucesso!", $group], 200);
     }
 
     public function getHospitalsGroup($id, Request $request)
@@ -283,7 +283,7 @@ dd($groups);
 
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Unauthorized not administrator"], 401);
+                return response()->json(['error' => "Não Autorizado"], 401);
             }
         }
 
@@ -292,13 +292,13 @@ dd($groups);
 
         if (!$group) {
             return response()->json([
-                'message'   => 'The Group can t be found',
+                'message'   => 'Grupo não encontrado!',
             ], 404);
         } else {
             $hospitals = $group->hospitals;
 
             return response()->json(
-                ['status' => 'success', $group],
+                ['status' => 'Sucesso!', $group],
                 200
             );
         }
@@ -314,7 +314,7 @@ dd($groups);
             ->first();
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Unauthorized not administrator"], 401);
+                return response()->json(['error' => "Não Autorizado"], 401);
             }
         }
 
@@ -322,7 +322,7 @@ dd($groups);
 
         if (!$group) {
             return response()->json([
-                'message'   => 'The Hospital can t be found',
+                'message'   => 'Grupo não encontrado!',
             ], 404);
         } else {
 
@@ -345,7 +345,7 @@ dd($groups);
     {
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Unauthorized "], 401);
+                return response()->json(['error' => "Não Autorizado "], 401);
             }
         }
         $array = ['error' => ''];
@@ -369,12 +369,12 @@ dd($groups);
             $group->image = $filename;
             $group->update();
             return response()->json(
-                ['status' => 'success', 'Image uploaded succesfully'],
+                ['status' => 'success', 'Imagemm enviada com Sucesso!'],
                 200
             );
         } else {
             return response()->json(
-                ['error' => 'User Not found'],
+                ['error' => 'Usuário não encontrado'],
                 404
             );
         }

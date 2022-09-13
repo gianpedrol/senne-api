@@ -240,12 +240,12 @@ class UserController extends Controller
                             'email' => [trans($status)],
                         ]);
                     } catch (\Throwable $th) {
-                        dd($th->getMessage());
+                        //dd($th->getMessage());
                         \DB::rollback();
-                        return ['error' => 'Could not write data', 400];
+                        return ['error' => 'Não foi possivel salvar no banco de dados', 'erro' => $th->getMessage(), 400];
                     }
                 } else {
-                    return response()->json(['error' => 'Domain is invalid for this hospital'], 400);
+                    return response()->json(['error' => 'Esse dominio é inválido para este hospital'], 400);
                 }
       
     }
@@ -314,7 +314,7 @@ class UserController extends Controller
     {
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Unauthorized 1"], 401);
+                return response()->json(['error' => "Não autorizado"], 401);
             }
         }
         $id = $request->id;
@@ -362,13 +362,13 @@ class UserController extends Controller
 
             \DB::commit();
         } catch (\Throwable $th) {
-            dd($th->getMessage());
+           // dd($th->getMessage());
             \DB::rollback();
-            return ['error' => 'Could not write data', 400];
+            return ['error' => 'Não foi possivel salvar no banco de dados', 'erro' => $th->getMessage(), 400];
         }
 
 
-        return response()->json(['message' => 'user updated']);
+        return response()->json(['message' => 'Uusário atualizado com sucesso!']);
     }
     /**
      * 
@@ -410,14 +410,14 @@ class UserController extends Controller
     {
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Unauthorized 1"], 401);
+                return response()->json(['error' => "Não Autorizado"], 401);
             }
         }
         $id = $request->id;
 
         try {
             $user = User::findOrFail($id)->delete();
-            return response()->json(['message' => 'user successfully deleted'], 200);
+            return response()->json(['message' => 'Usuário deletado'], 200);
             //GERA LOG
             $log = Auth::user();
             $saveLog = new UserLog();
@@ -426,7 +426,7 @@ class UserController extends Controller
             $saveLog->id_log = 5;
             $saveLog->save();
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Fail on delete a user'], 400);
+            return response()->json(['message' => 'Não foi possível deletar o usuário', $e], 400);
         }
     }
 
@@ -480,7 +480,7 @@ class UserController extends Controller
     {
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Unauthorized 1"], 401);
+                return response()->json(['error' => "Não Autorizado"], 401);
             }
         }
         $id = $request->id;
@@ -491,9 +491,9 @@ class UserController extends Controller
             if ($user) {
                 User::where('id', $id)->update(['status' => $status['status']]);
                 //  $user->update(['status' => $status['status']]);
-                return response()->json(['message' => 'user inactivated'], 200);
+                return response()->json(['message' => 'Usuário inativado com sucesso'], 200);
             } else {
-                return response()->json(['error' => 'user cannot be inactivated'], 400);
+                return response()->json(['error' => 'Não foi possível inativar usuário'], 400);
             }
 
             //GERA LOG
@@ -504,7 +504,7 @@ class UserController extends Controller
             $saveLog->id_log = 12;
             $saveLog->save();
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Fail on delete a user'], 400);
+            return response()->json(['message' => 'Não foi possível inativar usuário', $e], 400);
         }
     }
 
@@ -530,7 +530,7 @@ class UserController extends Controller
     {
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Unauthorized 1"], 401);
+                return response()->json(['error' => "Não Autorizado"], 401);
             }
         }
 
@@ -556,7 +556,7 @@ class UserController extends Controller
 
         if (!$user) {
             return response()->json([
-                'message'   => 'The User can t be found',
+                'message'   => 'Uusário não encontrado',
             ], 404);
         } else {
 
@@ -656,7 +656,7 @@ class UserController extends Controller
     public function listAllUser(Request $request)
     {
         if ($request->user()->role_id != 1) {
-            return response()->json(['error' => "Unauthorized "], 401);
+            return response()->json(['error' => "Não Autorizado"], 401);
         }
 
         $data = $request->all();
@@ -753,7 +753,7 @@ class UserController extends Controller
     {
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Unauthorized "], 401);
+                return response()->json(['error' => "Não Autorizado"], 401);
             }
         }
         $user = [];
@@ -761,7 +761,7 @@ class UserController extends Controller
 
         if (!$user) {
             return response()->json([
-                'message'   => 'The user can t be found',
+                'message'   => 'Não foi possível encontrar o usuario',
             ], 404);
         } else {
 
@@ -815,11 +815,11 @@ class UserController extends Controller
 
             foreach ($user_auth['hospitals'] as $userGroupId){
                 if ($userGroupId['grupo_id'] != $id ) {                
-                    return response()->json(['error' => "Unauthorized "], 401);
+                    return response()->json(['error' => " Não Autorizado "], 401);
                 }
             }
             if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Unauthorized "], 401);
+                return response()->json(['error' => " Não Autorizado "], 401);
             }
         }
 
@@ -953,12 +953,12 @@ class UserController extends Controller
         if ($request->user()->role_id != 1) {
             foreach ($user_auth['hospitals'] as $userHospitalId){
                 if ($userHospitalId['id'] != $id ) {                
-                    return response()->json(['error' => "Unauthorized "], 401);
+                    return response()->json(['error' => "Não Autorizado "], 401);
                 }
             }
     
             if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Unauthorized Access not administrator"], 401);
+                return response()->json(['error' => "Não Autorizado"], 401);
             }
         }
 
@@ -968,7 +968,7 @@ class UserController extends Controller
 
         if (!$hospital) {
             return response()->json([
-                'message'   => 'The Hospital can t be found',
+                'message'   => 'Hospital não encontrado',
             ], 404);
         } else {
             $data = $request->all();
@@ -1121,7 +1121,7 @@ class UserController extends Controller
     {
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Unauthorized "], 401);
+                return response()->json(['error' => "Não Autorizado"], 401);
             }
         }
         $array = ['error' => ''];
@@ -1147,12 +1147,12 @@ class UserController extends Controller
             $user->image = $filename;
             $user->update();
             return response()->json(
-                ['status' => 'success', 'Image uploaded succesfully'],
+                ['status' => 'success', 'Imagem atualizada com sucesso!'],
                 200
             );
         } else {
             return response()->json(
-                ['error' => 'User Not found'],
+                ['error' => 'Usuário não encontrado'],
                 404
             );
         }
@@ -1215,7 +1215,7 @@ class UserController extends Controller
     {
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Unauthorized not administrator"], 401);
+                return response()->json(['error' => "Não Autorizado"], 401);
             }
         }
             
@@ -1249,7 +1249,7 @@ class UserController extends Controller
                     Mail::to($data['email'])->send(new emailWelcome($data));
                     return [
                         'status' => __($status),
-                        'message' => "User approved successfully!",
+                        'message' => "Usuário aprovado com sucesso!",
                         'data' => $user
                     ];
                 }
@@ -1258,14 +1258,14 @@ class UserController extends Controller
                     'email' => [trans($status)],
                 ]);
             } catch (\Throwable $th) {
-                dd($th->getMessage());
+              //  dd($th->getMessage());
                 \DB::rollback();
-                return ['error' => 'Could not write data', 400];
+                return ['error' => 'Não foi possivel salvar no banco de dados', 'erro' => $th->getMessage(), 400];
             }
 
         }else{
             
-            return response()->json(['error' => 'user not found'],400);
+            return response()->json(['error' => 'Usuário não encontrado'],400);
         }
        
     }
@@ -1273,7 +1273,7 @@ class UserController extends Controller
     {
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Unauthorized not administrator"], 401);
+                return response()->json(['error' => "Não Autorizado"], 401);
             }
         }
         $codmedico = $request->codmedico;
@@ -1283,7 +1283,7 @@ class UserController extends Controller
         $user = User::where('id', $id)->first();
 
         if ($user->role_id != 4) {
-            return response()->json(['error' => "You cant approve the user in this route"], 401);
+            return response()->json(['error' => "Você não pode aprovar o usuário nessa rota"], 401);
         }
 
 
@@ -1304,9 +1304,8 @@ class UserController extends Controller
 
             \DB::commit();
         } catch (\Throwable $th) {
-            dd($th->getMessage());
             \DB::rollback();
-            return ['error' => 'Could not write data', 400];
+            return ['error' => 'Não foi possivel salvar no banco de dados', 'erro' => $th->getMessage(), 400];
         }
 
         $status = Password::sendResetLink(
@@ -1316,7 +1315,7 @@ class UserController extends Controller
         if ($status == Password::RESET_LINK_SENT) {
             return [
                 'status' => __($status),
-                'message' => "User approved successfully!",
+                'message' => "Usuário não aprovado!",
                 'data' => $user
             ];
         }
@@ -1440,9 +1439,9 @@ class UserController extends Controller
 
             \DB::commit();
         } catch (\Throwable $th) {
-            dd($th->getMessage());
+            //dd($th->getMessage());
             \DB::rollback();
-            return ['error' => 'Could not write data', 400];
+            return ['error' => 'Não foi possivel salvar no banco de dados', 'erro' => $th->getMessage(), 400];
         }
 
     /*    $numPDF = Str::random(9);
@@ -1470,8 +1469,8 @@ class UserController extends Controller
               //  $value =  StorePDF::where('pdf', 'protocol' . $numPDF . '.pdf')->first();
                 return response()->json(['http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/protocolo?Hash='. $r_id], 200);
             } catch (Exception $ex) {
-                dd($ex);
-                return response()->json(['error' => 'cannot be sended', $ex], 500);
+                //dd($ex);
+                return response()->json(['error' => 'Não foi possível enviar', $ex], 500);
             }
         }else{
           //  $value =  StorePDF::where('pdf', 'protocol' . $numPDF . '.pdf')->first();             
@@ -1488,7 +1487,7 @@ class UserController extends Controller
         $user = User::where('email', $email['email'])->first();
 
         if(empty($user)){
-            return response()->json(['error' => 'user not found'], 404);
+            return response()->json(['error' => 'Uusário não encontrado'], 404);
         }else{
             $data = $user->email;
            
@@ -1509,9 +1508,9 @@ class UserController extends Controller
                     'email' => [trans($status)],
                 ]);
             } catch (\Throwable $th) {
-                dd($th->getMessage());
+             //   dd($th->getMessage());
                 \DB::rollback();
-                return ['error' => 'Could not write data', 400];
+                return ['error' => 'Não foi possivel salvar no banco de dados', 'erro' => $th->getMessage(), 400];
             }
             
         }

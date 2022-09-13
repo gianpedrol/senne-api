@@ -137,7 +137,7 @@ class HospitalController extends Controller
             } catch (\Throwable $th) {
                 dd($th->getMessage());
                 \DB::rollback();
-                return ['error' => 'Could not write data', 400];
+                return ['error' => 'Não foi possível salvar no banco de dados', 400];
             }
         }
 
@@ -165,7 +165,7 @@ class HospitalController extends Controller
             );
         } else {
             return response()->json(
-                ['status' => 'hospital is empty!'],
+                ['status' => 'Hospital não encontrado!'],
                 404
             );
         }
@@ -237,19 +237,19 @@ class HospitalController extends Controller
     {
         /* 1 = Administrador Senne | 2 = Usuario */
         if (auth()->user()->role_id != 1) {
-            return response()->json(['error' => 'Unauthorized access'], 401);
+            return response()->json(['error' => 'Não Autorizado'], 401);
         }
         if (!$request->user()->permission_user($request->user()->id, 2)) {
-            return response()->json(['error' => "Unauthorized"], 401);
+            return response()->json(['error' => "Não Autorizado"], 401);
         }
         if (!$request->user()->permission_user($request->user()->id, 3)) {
-            return response()->json(['error' => "Unauthorized"], 401);
+            return response()->json(['error' => "Não Autorizado"], 401);
         }
 
         $data = $request->only('name', 'email', 'cnpj', 'image', 'phone', 'grupo_id');
 
         if (empty($data['name'])) {
-            return response()->json(['error' => "Name cannot be null"], 200);
+            return response()->json(['error' => "Verique os campos"], 200);
         }
         //atualizando o HOSPITAL
         $hospital = Hospitais::where('id', $id)->first();
@@ -264,9 +264,9 @@ class HospitalController extends Controller
             $saveLog->Log = 'Usuário Atualizou um Hospital';
             $saveLog->save();
 
-            return response()->json(['message' => "Edited Successfully!", $hospital], 200);
+            return response()->json(['message' => "Editado com Sucesso!", $hospital], 200);
         } else {
-            return response()->json(['error' => "The Hospital  can t be found"], 404);
+            return response()->json(['error' => "Hospital não encontrado!"], 404);
         }
     }
 }

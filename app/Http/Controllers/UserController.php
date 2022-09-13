@@ -141,31 +141,38 @@ class UserController extends Controller
         $domainEmail = $dominio[1];
 
         
-             
-        $hospitals = DomainHospital::from('domains_hospitals as domain')
+
+        $hospital = Hospitais::where('id', $hospitalsId)->first();
+        $hospital['sDomain'] = DomainHospital::from('domains_hospitals as domain')
         ->select('hos.name', 'domain.domains')
         ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
-        ->where('hos.id', '=', $hospitalsId)
-        ->where('domain.domains','=', $domainEmail)
+        ->where('hos.id', '=', $hospital->id)
         ->get()
         ->toArray();
 
-       
-        $hospital = Hospitais::where('id', $hospitalsId)->first();
-
-        if(empty($hospital)){
-            return response()->json(['error' => 'hospital cant be found'], 404);
+  
+        if(!empty($hospitalsDomain)){
+            foreach($hospitalsDomain as $item){
+                if($item['domains'] != $domainEmail ){
+                    return response()->json(['error' => 'Seu e-mail é diferente do email do hospital'], 404);
+                }else{
+                    $hospitalsCheck = true;
+                }
+            }
+        }
+        if(empty($hospitalsDomain)){
+            $hospitalsCheck = true;
         }
         
-        $domain = [];
+     /*   $domain = [];
 
         foreach ($hospitals as $hospital) {
             $domain = [
                 'email' => $hospital['domains']
             ];
-        }
+        } */
 
-                if ($hospitals == true || empty($domain) == true) {
+                if ($hospitalsCheck = true) {
 
                     try {
                         \DB::beginTransaction();

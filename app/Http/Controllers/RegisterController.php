@@ -482,8 +482,7 @@ class RegisterController extends Controller
         ->get()
         ->toArray();
 
-        dd($hospital);
-
+  
         if(!empty($hospitalsDomain)){
             foreach($hospitalsDomain as $item){
                 if($item['domains'] != $domainEmail ){
@@ -492,7 +491,6 @@ class RegisterController extends Controller
                     $hospitalsCheck = true;
                 }
             }
-            dd('tenho dominio');
         }
         if(empty($hospitalsDomain)){
             $hospitalsCheck = true;

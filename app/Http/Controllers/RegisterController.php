@@ -482,20 +482,28 @@ class RegisterController extends Controller
         ->get()
         ->toArray();
 
-        $hospital_Check = false;
         if(!empty($hospital['Domain'])){
-            foreach($hospital['Domain'] as $item){
-                if($item['domains'] != $domainEmail ){                  
-                    return response()->json(['error' => 'Seu e-mail é diferente do email do hospital'], 404);
-                }else {
-                    $hospital_Check = true; 
-                }                    
-            }
+            
+            $item = DomainHospital::from('domains_hospitals as domain')
+            ->select('hos.name', 'domain.domains')
+            ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
+            ->where('hos.id', '=', $hospital->id)
+            ->where('domain.domains', '=', $domainEmail )
+            ->get()
+            ->toArray();
+
+            if(empty($item) ){
+                   $hospital_Check = false;                 
+                   return response()->json(['error' => 'Seu e-mail é diferente do email do hospital'], 404);
+               }else {
+                   $hospital_Check = true; 
+               }  
+               
         }
+    
         if(empty($hospitalsDomain)){
             $domainEmailCheck = true;
-        }       
-
+        }
         if ($hospital_Check === true || $domainEmailCheck == true)  {
             try {
                 \DB::beginTransaction();

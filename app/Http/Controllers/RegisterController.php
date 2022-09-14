@@ -475,48 +475,28 @@ class RegisterController extends Controller
 
 
         $hospital = Hospitais::where('id', $hospitalsId)->first();
-        $hospital['sDomain'] = DomainHospital::from('domains_hospitals as domain')
+        $hospital['Domain'] = DomainHospital::from('domains_hospitals as domain')
         ->select('hos.name', 'domain.domains')
         ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
         ->where('hos.id', '=', $hospital->id)
         ->get()
         ->toArray();
 
-  
-        if(!empty($hospitalsDomain)){
-            foreach($hospitalsDomain as $item){
-                if($item['domains'] != $domainEmail ){
+        $hospital_Check = false;
+        if(!empty($hospital['Domain'])){
+            foreach($hospital['Domain'] as $item){
+                if($item['domains'] != $domainEmail ){                  
                     return response()->json(['error' => 'Seu e-mail é diferente do email do hospital'], 404);
-                }else{
-                    $hospitalsCheck = true;
-                }
+                }else {
+                    $hospital_Check = true; 
+                }                    
             }
         }
         if(empty($hospitalsDomain)){
-            $hospitalsCheck = true;
-        }
+            $domainEmailCheck = true;
+        }       
 
-        
- /*        $hospitals = DomainHospital::from('domains_hospitals as domain')
-        ->select('hos.name', 'domain.domains')
-        ->join('hospitais as hos', 'hos.codprocedencia', '=', 'domain.codprocedencia')
-        ->where('hos.id', '=', $hospitalsId)
-        ->where('domain.domains','=', $domainEmail)
-        ->get()
-        ->toArray();
-        
-        
-        $domain = [];
-
-        foreach ($hospitals as $hospital) {
-            $domain = [
-                'email' => $hospital['domains']
-            ];
-        }
-        || empty($domain) == true
-        */
-
-        if ($hospitalsCheck == true) {
+        if ($hospital_Check === true || $domainEmailCheck == true)  {
             try {
                 \DB::beginTransaction();
 

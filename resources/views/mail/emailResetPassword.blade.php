@@ -74,7 +74,7 @@
                 </p> --}}
                
         
-                <p style="text-align:center; max-width: 350px; font-weight: bold; font-size: 16px;">Caso não tenha sido
+                <p style="text-align:center; max-width: 350px; font-weight: bold; font-size: 16px; margin-top: 70px">Caso não tenha sido
                     você, entre em contato conosco. </p>
             </td>            
         </tr>

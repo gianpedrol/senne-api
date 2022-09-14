@@ -163,16 +163,7 @@ class UserController extends Controller
         if(empty($hospitalsDomain)){
             $hospitalsCheck = true;
         }
-        
-     /*   $domain = [];
-
-        foreach ($hospitals as $hospital) {
-            $domain = [
-                'email' => $hospital['domains']
-            ];
-        } */
-
-                if ($hospitalsCheck = true) {
+               if ( $hospitalsCheck = true) {
 
                     try {
                         \DB::beginTransaction();
@@ -232,7 +223,7 @@ class UserController extends Controller
                             Mail::to($request->only('email'))->send(new emailWelcome($data));
                             return [
                                 'status' => __($status),
-                                'message' => "User registered successfully!", 'data' => $newUser
+                                'message' => "Uusário registrado com sucesso!", 'data' => $newUser
                             ];
                         }
         

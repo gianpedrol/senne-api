@@ -65,13 +65,13 @@
     <table align="center" width="500">
         <tr  width="500" align="center">
             <td  width="500" align="center">
-                <p style="text-align:center; max-width: 350px; margin-top: 30px;">Caso o botão não esteja funcionando,
+         {{--       <p style="text-align:center; max-width: 350px; margin-top: 30px;">Caso o botão não esteja funcionando,
                     clique no link abaixo ou copie e cole em seu navegador. </p>
                 <p style="text-align:center; max-width: 350px; margin-top: 30px;">
                     <span style="text-align:center; max-width: 350px; margin-top: 30px;">
                         {{ $url }}                   
                     </span>
-                </p>
+                </p> --}}
                
         
                 <p style="text-align:center; max-width: 350px; font-weight: bold; font-size: 16px;">Caso não tenha sido

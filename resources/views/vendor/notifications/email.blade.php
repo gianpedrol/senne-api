@@ -73,9 +73,11 @@
     
     
                     @endisset
-                    <p style="text-align:center; max-width: 350px; margin-top: 30px;">Caso o botão não esteja funcionando,
+              {{--      <p style="text-align:center; max-width: 350px; margin-top: 30px;">Caso o botão não esteja funcionando,
                         clique no link abaixo ou copie e cole em seu navegador. </p>
                     <a style="width: 300px; font-size 14px" href="{{ $actionUrl }}">{{ $actionUrl }}</a>
+
+                    --}}
     
                 </td>
             </tr>

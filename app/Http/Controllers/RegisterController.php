@@ -456,7 +456,7 @@ class RegisterController extends Controller
     {
 
 
-        $data = $request->only(['name', 'cpf', 'phone', 'email', 'department', 'policy']);
+        $data = $request->only(['name', 'cpf', 'phone', 'ramal','celphone','email', 'department', 'policy']);
         $permissions = $request->permissions;
         $hospitalsId = $request->hospitals;
 
@@ -504,6 +504,7 @@ class RegisterController extends Controller
         if(empty($hospitalsDomain)){
             $domainEmailCheck = true;
         }
+
         if ($hospital_Check === true || $domainEmailCheck == true)  {
             try {
                 \DB::beginTransaction();
@@ -519,7 +520,15 @@ class RegisterController extends Controller
                 $newUser->name = $data['name'];
                 $newUser->email = $data['email'];
                 $newUser->cpf = $data['cpf'];
-                $newUser->phone = $data['phone'];
+                if(!empty($data['phone'])){
+                    $newUser->phone = $data['phone'];
+                 }
+                 if(!empty($data['ramal'])){
+                    $newUser->ramal = $data['ramal'];
+                 }
+                if(!empty($data['celphone'])){
+                    $newUser->phone = $data['celphone'];
+                }
                 $newUser->policy = $data['policy'];
                 $newUser->status = 3;
                 $newUser->role_id = $role_id;

@@ -42,7 +42,7 @@
             <td align="left"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
             <td align="center">
                 @if (!empty($data['name']) )
-                <h2 style="font-size: 18px; font-weight: bold">Olá {{$data['name']}}, tudo bem?</h2>
+                <h2 style="font-size: 18px; font-weight: bold">Olá {{$data['name']}}, <br>tudo bem?</h2>
                 @else
                 <h2 style="font-size: 18px; font-weight: bold">Olá, tudo bem?</h2>
                 @endif

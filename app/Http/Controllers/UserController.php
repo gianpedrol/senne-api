@@ -170,9 +170,9 @@ class UserController extends Controller
         }
     
         if(empty($hospitalsDomain)){
-            $domainEmailCheck = true;
+            $hospital_Check = true; 
         }   
-               if ( $hospital_Check === true || $domainEmailCheck == true) {
+               if ( $hospital_Check === true) {
 
                     try {
                         \DB::beginTransaction();

@@ -392,7 +392,7 @@ class RegisterController extends Controller
         }
         try {
             /* Enviar e-mail para o usuário com sua senha de acesso */
-            Mail::to(['gian@mageda.digital', 'elson@mageda.digital', 'gustavo@mageda.digital', 'ti@senneliquor.com.br'])->send(new emailRegisterPartner($data));
+            Mail::to(['gian@mageda.digital', 'elson@mageda.digital','ti@senneliquor.com.br'])->send(new emailRegisterPartner($data));
             return response()->json(['status' => 'Solicitação enviada'], 200);
         } catch (Exception $ex) {
            // dd($ex);
@@ -459,6 +459,7 @@ class RegisterController extends Controller
         $data = $request->only(['name', 'cpf', 'phone', 'ramal','celphone','email', 'department', 'policy']);
         $permissions = $request->permissions;
         $hospitalsId = $request->hospitals;
+        $name = $data['name'];
 
         $user = User::where('email', $data['email'])->first();
 
@@ -492,6 +493,8 @@ class RegisterController extends Controller
             ->get()
             ->toArray();
 
+        $hospital_Check = false; 
+
             if(empty($item) ){
                    $hospital_Check = false;                 
                    return response()->json(['error' => 'Seu e-mail é diferente do email do hospital'], 404);
@@ -502,10 +505,10 @@ class RegisterController extends Controller
         }
     
         if(empty($hospitalsDomain)){
-            $domainEmailCheck = true;
+            $hospital_Check = true;
         }
 
-        if ($hospital_Check === true || $domainEmailCheck == true)  {
+        if ($hospital_Check === true)  {
             try {
                 \DB::beginTransaction();
 

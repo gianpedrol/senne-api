@@ -40,7 +40,11 @@
             <tr style=" font-family: Montserrat; color: #B8BD5A">
                 <td align="left"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
                 <td align="center">
-                    <h2 style="font-size: 18px; font-weight: bold; text-align: center">Olá, tudo bem?</h2>
+                    @if (!empty($user['name']) )
+                    <h2 style="font-size: 14px; font-weight: bold">Olá {{$user['name']}},<br> tudo bem?</h2>
+                    @else
+                    <h2 style="font-size: 18px; font-weight: bold">Olá, tudo bem?</h2>
+                    @endif
                 </td>
                 <td align="right"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
             </tr>

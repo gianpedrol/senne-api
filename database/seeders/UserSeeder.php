@@ -35,10 +35,10 @@ class UserSeeder extends Seeder
                 'password' => bcrypt('%&yAXNF'),
                 'remember_token' => '',
             ],
-           /* [
+         /*  [
                 'id' => 3,
                 'name' => 'Marlene Aparecida Ferreira ',
-                'cpf' => '',
+                'cpf' => 'null',
                 'role_id' => '3',
                 'status' => 1,
                 'email' => 'marlene@teste.com',

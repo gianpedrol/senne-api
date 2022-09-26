@@ -87,7 +87,7 @@ class RegisterController extends Controller
         $user = User::where('email', $data['email'])->first();
 
         if (!empty($user)) {
-            return response()->json(['error' =>"User already exists!"], 400);
+            return response()->json(['message' =>"User already exists!"], 400);
         }
 
         try {
@@ -117,7 +117,7 @@ class RegisterController extends Controller
         } catch (\Throwable $th) {
             dd($th->getMessage());
             \DB::rollback();
-            return ['error' => 'Não foi possível salvar no banco de dados', 400];
+            return ['message' => 'Não foi possível salvar no banco de dados', 400];
         }
 
         $status = Password::sendResetLink(
@@ -192,7 +192,7 @@ class RegisterController extends Controller
         $user = User::where('email', $data['email'])->first();
 
         if (!empty($user)) {
-            return response()->json(['error' =>"Usuário já existe!"], 400);
+            return response()->json(['message' =>"Usuário já existe!"], 400);
         }
 
         try {
@@ -232,12 +232,12 @@ class RegisterController extends Controller
                 return response()->json(['status' => 'Solicitação enviada', $newUser], 200);
             } catch (Exception $ex) {
                 dd($ex);
-                return response()->json(['error' => 'Não foi possível enviar', $ex], 500);
+                return response()->json(['message' => 'Não foi possível enviar', $ex], 500);
             }
         } catch (\Throwable $th) {
           //  dd($th->getMessage());
             \DB::rollback();
-            return ['error' => 'Não foi possivel salvar no banco de dados', 'erro' => $th->getMessage(), 400];
+            return ['message' => 'Não foi possivel salvar no banco de dados', 'erro' => $th->getMessage(), 400];
         }
     }
 
@@ -396,7 +396,7 @@ class RegisterController extends Controller
             return response()->json(['status' => 'Solicitação enviada'], 200);
         } catch (Exception $ex) {
            // dd($ex);
-            return response()->json(['error' => 'Não foi possível enviar', $ex], 500);
+            return response()->json(['message' => 'Não foi possível enviar', $ex], 500);
         }
     }
 
@@ -464,7 +464,7 @@ class RegisterController extends Controller
         $user = User::where('email', $data['email'])->first();
 
         if (!empty($user)) {
-            return response()->json(['error' =>"User already exists!"], 400);
+            return response()->json(['message' =>"User already exists!"], 400);
         }
 
 
@@ -497,7 +497,7 @@ class RegisterController extends Controller
 
             if(empty($item) ){
                    $hospital_Check = false;                 
-                   return response()->json(['error' => 'Seu e-mail é diferente do email do hospital'], 404);
+                   return response()->json(['message' => 'Seu e-mail é diferente do email do hospital'], 404);
                }else {
                    $hospital_Check = true; 
                }  
@@ -571,19 +571,19 @@ class RegisterController extends Controller
                     return response()->json(['status' => 'Solicitação enviada', $newUser], 200);
                 } catch (Exception $ex) {
                     dd($ex);
-                    return response()->json(['error' => 'Não foi póssível enviar a solicitação', $ex], 500);
+                    return response()->json(['message' => 'Não foi póssível enviar a solicitação', $ex], 500);
                 }
             } catch (\Throwable $th) {
                // dd($th->getMessage());
                 \DB::rollback();
-                return ['error' => 'Não foi possivel salvar no banco de dados', 'erro' => $th->getMessage(), 400];
+                return ['message' => 'Não foi possivel salvar no banco de dados', 'erro' => $th->getMessage(), 400];
             }
 
             return response()->json([
                 'message' => "Usuário registrado com sucesso!", 'data' => $newUser
             ], 200);
         } else {
-            return response()->json(['error' => 'O dominio é inválido para este hospital'], 400);
+            return response()->json(['message' => 'O dominio é inválido para este hospital'], 400);
         }
     }
     /**

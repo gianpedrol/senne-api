@@ -98,7 +98,7 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if(empty($user)){
-            return response()->json(['status'=> 'error', 'message' => 'Login inválido' ], 401  );
+            return response()->json(['status'=> 'message', 'message' => 'Login inválido' ], 401  );
         }
         if ($user->status == 0) {
             return response()->json([
@@ -143,7 +143,7 @@ class AuthController extends Controller
             $passVerication = Hash::check($request->password,  $userProtocol->password);
 
             if(empty($userProtocol) ||  $passVerication == false){
-                return response()->json(['status'=> 'error', 'message' => 'Login inválido' ], 401  );
+                return response()->json(['status'=> 'message', 'message' => 'Login inválido' ], 401  );
             }
             if ($userProtocol->role_id == 5) {             
                 
@@ -176,7 +176,7 @@ class AuthController extends Controller
             $passwordVerication = Hash::check($request->password, $user->password);
            
             if(empty($user) || $passwordVerication == false ){
-                return response()->json(['status'=> 'error', 'message' => 'Login inválido' ], 401  );
+                return response()->json(['status'=> 'message', 'message' => 'Login inválido' ], 401  );
             }
 
                 $token = auth()->login($user);
@@ -278,7 +278,7 @@ class AuthController extends Controller
         $user = User::where('email', $data['email'])->first();
 
         if (!empty($user)) {
-            return response()->json(['error' =>"Uusário já existe!"], 400);
+            return response()->json(['message' =>"Uusário já existe!"], 400);
         }
 
 
@@ -308,7 +308,7 @@ class AuthController extends Controller
         } catch (\Throwable $th) {
             dd($th->getMessage());
             \DB::rollback();
-            return ['error' => 'Não foi possível salvar, verifique os campos', 400];
+            return ['message' => 'Não foi possível salvar, verifique os campos', 400];
         }
         $status = Password::sendResetLink(
             $request->only('email'),
@@ -379,6 +379,6 @@ class AuthController extends Controller
 
     public function unauthorized()
     {
-        return response()->json(['error' => "Usuário sem permissão !"], 401);
+        return response()->json(['message' => "Usuário sem permissão !"], 401);
     }
 }

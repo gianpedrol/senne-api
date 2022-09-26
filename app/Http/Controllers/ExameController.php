@@ -20,12 +20,12 @@ class ExameController extends Controller
         $this->middleware('auth:api');
         
         if (!auth()->user()) {
-            return response()->json(['error' => 'Unauthorized access'], 401);
+            return response()->json(['message' => 'Unauthorized access'], 401);
         }
 
         /* 1 = Administrador Senne | 2 = Usuario */
         /*   if (auth()->user()->role_id != 1) {
-            return response()->json(['error' => 'Unauthorized access'], 401);
+            return response()->json(['message' => 'Unauthorized access'], 401);
         }*/
     }
 
@@ -105,7 +105,7 @@ class ExameController extends Controller
 
       /*  if ($request->user()->role_id != 1  && $request->user()->role_id != 5) {
             if (!$request->user()->permission_user($request->user()->id, 3)) {
-                return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
+                return response()->json(['message' => "Unauthorized, Verify the user permission"], 401);
             }
         }*/
 
@@ -204,7 +204,7 @@ class ExameController extends Controller
 
       /*  if ($request->user()->role_id != 1 && $request->user()->role_id != 5 ) {
             if (!$request->user()->permission_user($request->user()->id, 3)) {
-                return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
+                return response()->json(['message' => "Unauthorized, Verify the user permission"], 401);
             }
         }*/
 
@@ -296,7 +296,7 @@ class ExameController extends Controller
 
        /* if ($request->user()->role_id != 1  && $request->user()->role_id != 5) {
             if (!$request->user()->permission_user($request->user()->id, 3)) {
-                return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
+                return response()->json(['message' => "Unauthorized, Verify the user permission"], 401);
             }
         }*/
 
@@ -384,7 +384,7 @@ class ExameController extends Controller
 
        /* if ($request->user()->role_id != 1  && $request->user()->role_id != 5) {
             if (!$request->user()->permission_user($request->user()->id, 3)) {
-                return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
+                return response()->json(['message' => "Unauthorized, Verify the user permission"], 401);
             }
         }*/ 
         $log = Auth::user();
@@ -406,7 +406,7 @@ class ExameController extends Controller
 
       /*  if ($request->user()->role_id != 1  && $request->user()->role_id != 5) {
             if (!$request->user()->permission_user($request->user()->id, 3)) {
-                return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
+                return response()->json(['message' => "Unauthorized, Verify the user permission"], 401);
             }
         }*/
         $log = Auth::user();
@@ -424,7 +424,7 @@ class ExameController extends Controller
     public function createObservation(Request $request){
 /*
         if ($request->user()->role_id != 1) {
-                return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
+                return response()->json(['message' => "Unauthorized, Verify the user permission"], 401);
         }*/
 
         $data = $request->only('numatendimento', 'observation');
@@ -463,7 +463,7 @@ class ExameController extends Controller
         } catch (\Throwable $th) {
                 dd($th->getMessage());
                 \DB::rollback();
-                return ['error' => 'Não foi possível salvar no banco de dados', 400];
+                return ['message' => 'Não foi possível salvar no banco de dados', 400];
             }
             return response()->json(['status' => 'Sucesso!' , 'message' => $newObservation], 200);
     }
@@ -472,7 +472,7 @@ class ExameController extends Controller
 
       /*  if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 3)) {
-                return response()->json(['error' => "Unauthorized, Verify the user permission"], 401);
+                return response()->json(['message' => "Unauthorized, Verify the user permission"], 401);
             }
         }*/
 
@@ -511,7 +511,7 @@ class ExameController extends Controller
             return response()->json(['status' => 'Solicitação enviada'], 200);
         } catch (Exception $ex) {
             dd($ex);
-            return response()->json(['error' => 'Não foi possível enviar', $ex], 500);
+            return response()->json(['message' => 'Não foi possível enviar', $ex], 500);
         }
     }
 

@@ -26,12 +26,12 @@ class GroupController extends Controller
         $this->middleware('auth:api');
 
         if (!auth()->user()) {
-            return response()->json(['error' => 'Unauthorized access'], 401);
+            return response()->json(['message' => 'Unauthorized access'], 401);
         }
 
         /* 1 = Administrador Senne | 2 = Usuario */
         if (auth()->user()->role_id != 1) {
-            return response()->json(['error' => "Unauthorized"], 401);
+            return response()->json(['message' => "Unauthorized"], 401);
     }
     }
 
@@ -40,7 +40,7 @@ class GroupController extends Controller
     {
         /* 1 = Administrador Senne | 2 = Usuario */
         if (auth()->user()->role_id != 1) {
-            return response()->json(['error' => 'Unauthorized access'], 401);
+            return response()->json(['message' => 'Unauthorized access'], 401);
         }
 
         $data = $request->only('name', 'cnpj', 'image', 'phone');
@@ -80,7 +80,7 @@ class GroupController extends Controller
         } catch (\Throwable $th) {
             dd($th->getMessage());
             \DB::rollback();
-            return ['error' => 'Could not write data', 400];
+            return ['message' => 'Could not write data', 400];
         }
 
 
@@ -97,7 +97,7 @@ class GroupController extends Controller
     {
         /* 1 = Administrador Senne | 2 = Usuario */
         if (auth()->user()->role_id != 1) {
-                return response()->json(['error' => "Unauthorized"], 401);
+                return response()->json(['message' => "Unauthorized"], 401);
         }
 
         $client = 'A2PsnYpypc_u66U0ANnzfQ..';
@@ -195,7 +195,7 @@ class GroupController extends Controller
             Função que chega se o user é usuario Senne ou Usuario comum
          */
         if (!$request->user()->role_id != 1) {
-            return response()->json(['error' => "Unauthorized"], 401);
+            return response()->json(['message' => "Unauthorized"], 401);
         }
 
         /* LISTA TODOS OS GRUPOS APÓS CONSULTA E SALVAR NOVOS DADOS  */
@@ -234,14 +234,14 @@ class GroupController extends Controller
 
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Não Autorizado "], 401);
+                return response()->json(['message' => "Não Autorizado "], 401);
             }
         }
 
         $data = $request->only(['cnpj', 'image', 'phone', 'email']);
 
         if (empty($data['cnpj'])) {
-            return response()->json(['error' => "Campo de cnpj não pode ser vazio"], 200);
+            return response()->json(['message' => "Campo de cnpj não pode ser vazio"], 200);
         }
 
 
@@ -265,7 +265,7 @@ class GroupController extends Controller
         } catch (\Throwable $th) {
             dd($th->getMessage());
             \DB::rollback();
-            return ['error' => 'Could not write data', 400];
+            return ['message' => 'Could not write data', 400];
         }
 
 
@@ -283,7 +283,7 @@ class GroupController extends Controller
 
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Não Autorizado"], 401);
+                return response()->json(['message' => "Não Autorizado"], 401);
             }
         }
 
@@ -314,7 +314,7 @@ class GroupController extends Controller
             ->first();
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Não Autorizado"], 401);
+                return response()->json(['message' => "Não Autorizado"], 401);
             }
         }
 
@@ -345,10 +345,10 @@ class GroupController extends Controller
     {
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
-                return response()->json(['error' => "Não Autorizado "], 401);
+                return response()->json(['message' => "Não Autorizado "], 401);
             }
         }
-        $array = ['error' => ''];
+        $array = ['message' => ''];
 
         $filename = '';
         $group = Groups::where('id', $request->id_group)->first();
@@ -374,7 +374,7 @@ class GroupController extends Controller
             );
         } else {
             return response()->json(
-                ['error' => 'Usuário não encontrado'],
+                ['message' => 'Usuário não encontrado'],
                 404
             );
         }

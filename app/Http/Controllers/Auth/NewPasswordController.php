@@ -50,7 +50,7 @@ class NewPasswordController extends Controller
                 'email' => [trans($status)],
             ]);
         } else {
-            return response()->json(['error' => "User Not found!"], 404);
+            return response()->json(['message' => "User Not found!"], 404);
         }
     }
 
@@ -115,10 +115,10 @@ class NewPasswordController extends Controller
                 return response()->json(['message' => "mail sended"], 200);
             } catch (Exception $ex) {
                 dd($ex);
-                return response()->json(['error' => 'cannot be sended', $ex], 500);
+                return response()->json(['message' => 'cannot be sended', $ex], 500);
             }
         } else {
-            return response()->json(['error' => "User Not found!"], 404);
+            return response()->json(['message' => "User Not found!"], 404);
         }
     }
 
@@ -137,7 +137,7 @@ class NewPasswordController extends Controller
 
             $userEmail = User::where('email', $decrypted)->first();
             if (empty($userEmail)) {
-                return response()->json(['error' => 'User not found'], 404);
+                return response()->json(['message' => 'User not found'], 404);
             }
 
             $status = Password::reset(
@@ -182,12 +182,12 @@ class NewPasswordController extends Controller
                 ->first();
 
             if (!$updatePassword) {
-                return response()->json(['error' => 'Invalid token!'], 404);
+                return response()->json(['message' => 'Invalid token!'], 404);
             }
             $user = User::where('email', $decrypted)->first();
 
             if ($user->status != 1) {
-                return response()->json(['error' => 'unathorized, check if you are active'], 400);
+                return response()->json(['message' => 'unathorized, check if you are active'], 400);
             }
 
             $user = User::where('email', $decrypted)

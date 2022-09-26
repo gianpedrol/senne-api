@@ -131,7 +131,7 @@ class UserController extends Controller
         $user = User::where('email', $data['email'])->first();
 
         if (!empty($user)) {
-            return response()->json(['message' =>"User already exists!"], 400);
+            return response()->json(['message' =>"Usuário já cadastrado!"], 400);
         }
 
         /* CHECAR SE EMAIL CONFERE COM DOMINIO */

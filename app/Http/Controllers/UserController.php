@@ -178,9 +178,9 @@ class UserController extends Controller
                         \DB::beginTransaction();
         
                         //Define nivel user Senne
-                        $role_id = 2;
+                       $role_id = 2;
         
-                      //  $senha_md5= Str::random(8);//Descomentar após testes
+                        //$senha_md5= Str::random(8);//Descomentar após testes
                        $senha_md5 = '654321';
                        $senha_temp = bcrypt($senha_md5);
         
@@ -232,7 +232,7 @@ class UserController extends Controller
                             Mail::to($request->only('email'))->send(new emailWelcome($data));
                             return [
                                 'status' => __($status),
-                                'message' => "Uusário registrado com sucesso!", 'data' => $newUser
+                                'message' => "Usuário registrado com sucesso!", 'data' => $newUser
                             ];
                         }
         
@@ -1490,6 +1490,7 @@ class UserController extends Controller
             return response()->json(['message' => 'Uusário não encontrado'], 404);
         }else{
             $data = $user->email;
+            $nameUser = $user->name;
            
             try{
     

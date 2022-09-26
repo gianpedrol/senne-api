@@ -46,7 +46,7 @@ class ResetPasswordNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Altere sua senha')
+            ->subject('Cadastre sua senha')
             //->line($this->user)
             ->action('Validar e-mail de cadastro', $this->url);
         //->line('Thank you for using our application!');

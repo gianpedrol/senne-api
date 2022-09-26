@@ -112,13 +112,12 @@ class NewPasswordController extends Controller
 
             try {
                 Mail::to($request->email)->send(new emailPasswordReset($user, $url));
-                return response()->json(['message' => "mail sended"], 200);
+                return response()->json(['message' => "Email Enviado"], 200);
             } catch (Exception $ex) {
-                dd($ex);
-                return response()->json(['message' => 'cannot be sended', $ex], 500);
+                return response()->json(['message' => 'Não foi possível enviar o email', $ex], 500);
             }
         } else {
-            return response()->json(['message' => "User Not found!"], 404);
+            return response()->json(['message' => "Uusário não encontrado!"], 404);
         }
     }
 
@@ -158,7 +157,7 @@ class NewPasswordController extends Controller
             if ($status == Password::PASSWORD_RESET) {
                 User::where('email', $request['email'])->update(['status' => 1]);
                 return response([
-                    'message' => 'Password reset successfully'
+                    'message' => 'Senha Alterada com sucesso!'
                 ]);
             }
 
@@ -187,7 +186,7 @@ class NewPasswordController extends Controller
             $user = User::where('email', $decrypted)->first();
 
             if ($user->status != 1) {
-                return response()->json(['message' => 'unathorized, check if you are active'], 400);
+                return response()->json(['message' => 'Não autorizado, vocês está inativo'], 400);
             }
 
             $user = User::where('email', $decrypted)
@@ -204,7 +203,7 @@ class NewPasswordController extends Controller
                     PasswordReset::where('email', $passwordEmail['email'])->delete();
                 }
                 //DB::table('password_resets')->where(['email' => $request->email])->delete();
-                return (['message', 'Your password has been changed!', 'user' => $user]);
+                return (['message', 'Sua senha foi alterada!', 'user' => $user]);
             }
         }
     }

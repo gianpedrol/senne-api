@@ -556,7 +556,7 @@ class UserController extends Controller
 
         if (!$user) {
             return response()->json([
-                'message'   => 'Uusário não encontrado',
+                'message'   => 'Usuário não encontrado',
             ], 404);
         } else {
 
@@ -1487,7 +1487,7 @@ class UserController extends Controller
         $user = User::where('email', $email['email'])->first();
 
         if(empty($user)){
-            return response()->json(['message' => 'Uusário não encontrado'], 404);
+            return response()->json(['message' => 'Usuário não encontrado'], 404);
         }else{
             $data = $user->email;
             $nameUser = $user->name;

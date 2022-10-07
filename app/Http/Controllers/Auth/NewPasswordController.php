@@ -117,7 +117,7 @@ class NewPasswordController extends Controller
                 return response()->json(['message' => 'Não foi possível enviar o email', $ex], 500);
             }
         } else {
-            return response()->json(['message' => "Uusário não encontrado!"], 404);
+            return response()->json(['message' => "Usuário não encontrado!"], 404);
         }
     }
 

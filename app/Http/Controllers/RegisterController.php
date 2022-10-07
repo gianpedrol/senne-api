@@ -82,7 +82,7 @@ class RegisterController extends Controller
      */
     public function registerPatient(Request $request)
     {
-        $data = $request->only(['name', 'cpf', 'phone', 'email', 'policy']);
+        $data = $request->only(['name', 'cpf', 'phone','ramal', 'celphone', 'email', 'policy']);
 
         $user = User::where('email', $data['email'])->first();
 
@@ -104,9 +104,17 @@ class RegisterController extends Controller
             $newUser->name = $data['name'];
             $newUser->email = $data['email'];
             $newUser->cpf = $data['cpf'];
-            $newUser->phone = $data['phone'];
+            if(!empty($data['phone'])){
+                $newUser->phone = $data['phone'];
+             }
+             if(!empty($data['ramal'])){
+                $newUser->ramal = $data['ramal'];
+             }
+            if(!empty($data['celphone'])){
+                $newUser->phone = $data['celphone'];
+            }
             $newUser->policy = $data['policy'];
-            $newUser->status = 1;
+            $newUser->status = 3;
           //  $newUser->cod_pf = 'E2C2F72E90ED4552E053E600A8C0FE22'; 
             $newUser->role_id = $role_id;
             $newUser->password = $senha_temp;
@@ -127,7 +135,7 @@ class RegisterController extends Controller
         if ($status == Password::RESET_LINK_SENT) {
             return [
                 'status' => __($status),
-                'message' => "Uusário registrado com sucesso!", 'data' => $newUser
+                'message' => "Usuário registrado com sucesso!", 'data' => $newUser
             ];
         }
 
@@ -187,7 +195,7 @@ class RegisterController extends Controller
     {
 
 
-        $data = $request->only(['name', 'crm','cpf', 'phone', 'email', 'especialidade', 'novidades', 'policy']);
+        $data = $request->only(['name', 'crm','cpf', 'phone','ramal','celphone', 'email', 'especialidade', 'novidades', 'policy']);
 
         $user = User::where('email', $data['email'])->first();
 
@@ -210,7 +218,15 @@ class RegisterController extends Controller
             $newUser->email = $data['email'];;
             $newUser->cpf = $data['cpf'];
             $newUser->crm = $data['crm'];
-            $newUser->phone = $data['phone'];
+            if(!empty($data['phone'])){
+                $newUser->phone = $data['phone'];
+             }
+             if(!empty($data['ramal'])){
+                $newUser->ramal = $data['ramal'];
+             }
+            if(!empty($data['celphone'])){
+                $newUser->phone = $data['celphone'];
+            }
             $newUser->especialidade = $data['especialidade'];
             if(!empty($data['novidades'])){
                 $newUser->news_email = $data['novidades'];

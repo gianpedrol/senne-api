@@ -10,9 +10,13 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat, Calibri:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
+                body{
+            text-align: center;
+            font-family: 'Montserrat, Calibri', 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
         tr.linha {
             max-width: 500px !important;
         }
@@ -38,7 +42,7 @@
         </tr>
     </table>
     <table align="center" width="500">
-        <tr style=" font-family: Montserrat; color: #B8BD5A">
+        <tr style=" font-family: Montserrat, Calibri; color: #B8BD5A">
             <td align="left"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
             <td align="center">
                 @if (!empty($data['name']) )
@@ -51,7 +55,7 @@
         </tr>
     </table>
     <table align="center" width="550">
-        <tr style=" font-family: Montserrat; color: #343A40; font-weight: 500">
+        <tr style=" font-family: Montserrat, Calibri; color: #343A40; font-weight: 500">
             <td align="center">
                 <p style="text-align:center; max-width: 350px;">Foi impresso um protocolo, para acessar seus resultados de exame use seu login cadastrado.
                 </p>

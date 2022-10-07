@@ -10,9 +10,13 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat, Calibri:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
+                body{
+            text-align: center;
+            font-family: 'Montserrat, Calibri', 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
         @media only screen and (max-width: 600px) {
             .inner-body {
                 width: 100% !important;
@@ -51,14 +55,14 @@
         </tr>
 
         <tr>
-            <td width="500" style="padding-left: 36px; font-family: Montserrat; color: #EC6726">
+            <td width="500" style="padding-left: 36px; font-family: Montserrat, Calibri; color: #EC6726">
                 <h2 style="font-weight: bold">Solicitação de Cadastro para plataforma</h2>
             </td>
 
         </tr>
 
         <tr>
-            <td width="350" style="padding-left: 36px; font-family: Montserrat;">
+            <td width="350" style="padding-left: 36px; font-family: Montserrat, Calibri;">
                 @if ($data['name'])
                     <p>Nome: {{ $data['name'] }}</p>
                 @endif
@@ -103,7 +107,7 @@
         </tr>
 
         <tr>
-            <td style="padding-left: 36px;padding-top: 30px;font-family: Montserrat;">
+            <td style="padding-left: 36px;padding-top: 30px;font-family: Montserrat, Calibri;">
                 <h3 style="color:#EC6726; font-size:14px ">Equipe Senne</h3>
             </td>
         </tr>

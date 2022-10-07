@@ -10,7 +10,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat, Calibri:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
         @media only screen and (max-width: 600px) {
@@ -50,11 +50,11 @@
         </tr>
 
         <tr>
-            <td width="500" style="padding-left: 36px; font-family: Montserrat; color: #EC6726">
+            <td width="500" style="padding-left: 36px; font-family: Montserrat, Calibri; color: #EC6726">
                 <h2 style="font-weight: bold">Olá,</h2>
                 <h3>TROQUE A SENHA!!!!</h3>
             </td>
-            <td style="padding-left: 36px;padding-top: 30px;font-family: Montserrat; color:white; font-weight: 500;">
+            <td style="padding-left: 36px;padding-top: 30px;font-family: Montserrat, Calibri; color:white; font-weight: 500;">
 
                 @isset($actionText) <?php
                 switch ($level) {
@@ -73,7 +73,7 @@
         </tr>
 
         <tr>
-            <td style="padding-left: 36px;padding-top: 30px;font-family: Montserrat;">
+            <td style="padding-left: 36px;padding-top: 30px;font-family: Montserrat, Calibri;">
                 <h3 style="color:#EC6726; font-size:14px ">Equipe Senne</h3>
             </td>
         </tr>
@@ -95,7 +95,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat, Calibri:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
 
@@ -121,7 +121,7 @@
         </tr>
     </table>
     <table width="500">
-        <tr style=" font-family: Montserrat; color: #B8BD5A">
+        <tr style=" font-family: Montserrat, Calibri; color: #B8BD5A">
             <td align="left"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
             <td align="center">
                 <h2 style="font-size: 18px; font-weight: bold; text-align: center">Olá, tudo bem?</h2>
@@ -130,7 +130,7 @@
         </tr>
     </table>
     <table width="500">
-        <tr style=" font-family: Montserrat; color: #343A40; font-weight: 500">
+        <tr style=" font-family: Montserrat, Calibri; color: #343A40; font-weight: 500">
             <td align="center">
                 <p style="text-align:center; max-width: 350px; font-weight: bold;">Seja bem-vindo ao portal
                     Senne Liquor.</p>

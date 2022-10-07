@@ -9,7 +9,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat, Calibri:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
 
@@ -37,7 +37,7 @@
         </table>
 
         <table  width="500" align="center">
-            <tr style=" font-family: Montserrat; color: #B8BD5A">
+            <tr style=" font-family: Montserrat, Calibri; color: #B8BD5A">
                 <td align="left"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
                 <td align="center">
                     @if (!empty($user['name']) )
@@ -50,7 +50,7 @@
             </tr>
         </table>
         <table width="500" align="center">
-            <tr style=" font-family: Montserrat; color: #343A40; font-weight: 500" width="500">
+            <tr style=" font-family: Montserrat, Calibri; color: #343A40; font-weight: 500" width="500">
                 <td align="center">
                     <p style="text-align:center; max-width: 350px; font-weight: bold; padding: 30px 0">Seja bem-vindo ao
                         portal<br>

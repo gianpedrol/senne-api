@@ -262,8 +262,18 @@ class ExameController extends Controller
         $saveLog->uuid_hospital_atendimento = $uuid;
         $saveLog->save();
 
+        $return = json_decode($response->getBody());
+        
+        foreach ($return->Atendimentos as $item){
+            if(empty($item->lista_atendimento)){  
+                return ['message' => 'Não foram encontrados dados para essas datas', 404];         
+                
+           }else{
+            return $response;
+           }
+        }
 
-        return $response;
+
     }
     /**
      * @OA\Get(

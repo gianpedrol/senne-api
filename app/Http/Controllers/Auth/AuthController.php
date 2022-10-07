@@ -278,7 +278,7 @@ class AuthController extends Controller
         $user = User::where('email', $data['email'])->first();
 
         if (!empty($user)) {
-            return response()->json(['message' =>"Uusário já existe!"], 400);
+            return response()->json(['message' =>"Usuário já existe!"], 400);
         }
 
 

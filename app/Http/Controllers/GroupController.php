@@ -269,7 +269,7 @@ class GroupController extends Controller
         }
 
 
-        return response()->json(['msg' => "Uusário Editado com sucesso!", $group], 200);
+        return response()->json(['msg' => "Usuário Editado com sucesso!", $group], 200);
     }
 
     public function getHospitalsGroup($id, Request $request)

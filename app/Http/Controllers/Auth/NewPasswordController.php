@@ -157,7 +157,7 @@ class NewPasswordController extends Controller
             if ($status == Password::PASSWORD_RESET) {
                 User::where('email', $request['email'])->update(['status' => 1]);
                 return response([
-                    'message' => 'Senha criada com sucesso!'
+                    'message' => 'Senha cadastrada com sucesso!'
                 ]);
             }
 

@@ -549,7 +549,7 @@ class RegisterController extends Controller
                     $newUser->phone = $data['celphone'];
                 }
                 $newUser->policy = $data['policy'];
-                $newUser->status = 3;
+                $newUser->status = 1;
                 $newUser->role_id = $role_id;
                 $newUser->password = $senha_temp;
                 $newUser->save();

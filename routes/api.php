@@ -100,7 +100,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('upload/group/image', [GroupController::class, 'updateImageGroup']);
     //LISTA HOSPITAIS DE UM GRUPO
     Route::get('list/hospitals/group/{id}', [GroupController::class, 'getHospitalsGroup']);
-
+    Route::get('show/hospitals/{id}', [HospitalController::class, 'getHospitalID']);
 
     /**GRUPO DE ROTAS USUARIO GROUP */
     Route::prefix('group/user')->group(function () {

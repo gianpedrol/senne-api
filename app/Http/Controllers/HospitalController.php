@@ -225,7 +225,7 @@ class HospitalController extends Controller
     }
 
     /* RETORNA APENAS HOSPITAL SELECIONADO */
-    public function getHospital($id)
+    public function getHospitalID($id)
     {
         $hospital = Hospitais::where('id', $id)->first();
 

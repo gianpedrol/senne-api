@@ -272,7 +272,7 @@ class HospitalController extends Controller
 
     public function updateImageHospital(Request $request)
     {
-        dd($request->all());
+    
         if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
                 return response()->json(['message' => "Não Autorizado "], 401);

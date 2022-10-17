@@ -206,11 +206,11 @@ class HospitalController extends Controller
             $newHospital->save();
 
             //GERA LOG
-           /* $log = Auth::user();
+            $log = Auth::user();
             $saveLog = new UserLog();
             $saveLog->id_user = $log->id;
-            $saveLog->id_log = 'Usuário Criou um Hospital';
-            $saveLog->save();*/
+            $saveLog->Log = 'Usuário Criou um Hospital';
+            $saveLog->save();
 
             \DB::commit();
         } catch (\Throwable $th) {
@@ -251,11 +251,11 @@ class HospitalController extends Controller
             $hospital->update($data);
 
             //GERA LOG
-            $log = Auth::user();
+            /*$log = Auth::user();
             $saveLog = new UserLog();
             $saveLog->id_user = $log->id;
             $saveLog->Log = 'Usuário Atualizou um Hospital';
-            $saveLog->save();
+            $saveLog->save();*/
 
             return response()->json(['message' => "Editado com Sucesso!", $hospital], 200);
         } else {

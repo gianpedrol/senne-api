@@ -239,12 +239,6 @@ class HospitalController extends Controller
         if (auth()->user()->role_id != 1) {
             return response()->json(['message' => 'Não Autorizado'], 401);
         }
-        if (!$request->user()->permission_user($request->user()->id, 2)) {
-            return response()->json(['message' => "Não Autorizado"], 401);
-        }
-        if (!$request->user()->permission_user($request->user()->id, 3)) {
-            return response()->json(['message' => "Não Autorizado"], 401);
-        }
 
         $data = $request->only('name', 'email', 'cnpj', 'image', 'phone', 'grupo_id');
 

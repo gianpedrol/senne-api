@@ -206,11 +206,11 @@ class HospitalController extends Controller
             $newHospital->save();
 
             //GERA LOG
-            $log = Auth::user();
+           /* $log = Auth::user();
             $saveLog = new UserLog();
             $saveLog->id_user = $log->id;
-            $saveLog->Log = 'Usuário Criou um Hospital';
-            $saveLog->save();
+            $saveLog->id_log = 'Usuário Criou um Hospital';
+            $saveLog->save();*/
 
             \DB::commit();
         } catch (\Throwable $th) {

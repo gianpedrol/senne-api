@@ -269,4 +269,44 @@ class HospitalController extends Controller
             return response()->json(['message' => "Hospital não encontrado!"], 404);
         }
     }
+
+    public function updateImageHospital(Request $request)
+    {
+        dd($request->all());
+        if ($request->user()->role_id != 1) {
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
+                return response()->json(['message' => "Não Autorizado "], 401);
+            }
+        }
+        $array = ['message' => ''];
+
+        $filename = '';
+        $hospital = Hospitais::where('id', $request->id_hospital)->first();
+        if ($request->hasFile('image')) {
+
+            $file = $request->file('image');
+            $file_name = time() . '-' . $file->getClientOriginalName();
+            $file_path = 'uploads/';
+
+            $file->move($file_path, $file_name);
+
+            if ($request->hasFile('image') != "") {
+                $filename = $file_name;
+            }
+        }
+
+        if ($hospital) {
+            $hospital->image = $filename;
+            $hospital->update();
+            return response()->json(
+                ['status' => 'success', 'Imagem enviada com Sucesso!'],
+                200
+            );
+        } else {
+            return response()->json(
+                ['message' => 'Usuário não encontrado'],
+                404
+            );
+        }
+    }
 }

@@ -30,4 +30,10 @@ class Hospitais extends Model
     {
         return $this->hasMany(DomainHospital::class, 'codprocedencia');
     }
+    public function getImageAttribute($value)
+    {
+        if ($value) {
+            return config('app.url') . 'uploads/' . $value;
+        }
+    }
 }

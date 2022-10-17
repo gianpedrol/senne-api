@@ -175,7 +175,7 @@ class UserController extends Controller
                if ( $hospital_Check === true) {
 
                     try {
-                        \DB::beginTransaction();
+                         \DB::beginTransaction();
         
                         //Define nivel user Senne
                        $role_id = 2;

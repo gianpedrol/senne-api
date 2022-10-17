@@ -126,7 +126,8 @@ Route::middleware('auth:api')->group(function () {
     Route::put('hospital/{id}', [HospitalController::class, 'updateHospital']);
     //Lista procedencias vindo da api
     Route::get('list/procedencia', [HospitalController::class, 'getProcedencia']);
-
+   //upload Imagem Group
+   Route::post('upload/hospital/image', [HospitalController::class, 'updateImageHospital']);
     Route::prefix('hospital/user')->group(function () {
         //cria usuarios hospital
         Route::post('/store', [UserHospitalController::class, 'storeUserHospital']);
@@ -137,6 +138,7 @@ Route::middleware('auth:api')->group(function () {
         //Rota de edição do Usuário do Hospital
         Route::put('edit/{id}', [UserHospitalController::class, 'updateUserHospital']);
     });
+
 
 
     /*EXAMES E RESULTADOS */

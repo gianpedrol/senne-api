@@ -239,12 +239,11 @@ class HospitalController extends Controller
         if (auth()->user()->role_id != 1) {
             return response()->json(['message' => 'Não Autorizado'], 401);
         }
+        $data = $request->only('email', 'cnpj', 'phone');
 
-        $data = $request->only('name', 'email', 'cnpj', 'image', 'phone', 'grupo_id');
-
-        if (empty($data['name'])) {
+      /*  if (empty($data['name'])) {
             return response()->json(['message' => "Verique os campos"], 200);
-        }
+        }*/
         //atualizando o HOSPITAL
         $hospital = Hospitais::where('id', $id)->first();
         if ($hospital) {

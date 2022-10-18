@@ -85,7 +85,7 @@ class RegisterController extends Controller
         $data = $request->only(['name', 'cpf', 'phone','ramal', 'celphone', 'email', 'policy']);
 
         $user = User::where('email', $data['email'])->first();
-
+        
         if (!empty($user)) {
             return response()->json(['message' =>"Usuário já cadastrado!"], 400);
         }

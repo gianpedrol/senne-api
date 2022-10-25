@@ -38,19 +38,7 @@ class HospitalController extends Controller
         $this->groupsModel = $grupo;
     }
 
-    /*
-        RECEBE API E SALVA NO BANCO    
-    */
-    /**
-     * @OA\Get(
-     *   tags={"List All Hospitals "},
-     *   path="/api/list/procedencia",
-     *   summary="Summary",  
-     *   @OA\Response(response=200, description="OK"),
-     *   @OA\Response(response=401, description="Unauthorized"),
-     *   @OA\Response(response=404, description="Not Found")
-     * )
-     */
+  
     public function getProcedencia(Request $request)
     {
 
@@ -135,7 +123,6 @@ class HospitalController extends Controller
 
                 \DB::commit();
             } catch (\Throwable $th) {
-                dd($th->getMessage());
                 \DB::rollback();
                 return ['message' => 'Não foi possível salvar no banco de dados', 400];
             }
@@ -250,13 +237,7 @@ class HospitalController extends Controller
 
             $hospital->update($data);
 
-            //GERA LOG
-            /*$log = Auth::user();
-            $saveLog = new UserLog();
-            $saveLog->id_user = $log->id;
-            $saveLog->Log = 'Usuário Atualizou um Hospital';
-            $saveLog->save();*/
-
+ 
             return response()->json(['message' => "Editado com Sucesso!", $hospital], 200);
         } else {
             return response()->json(['message' => "Hospital não encontrado!"], 404);

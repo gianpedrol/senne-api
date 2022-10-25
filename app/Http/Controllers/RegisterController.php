@@ -38,48 +38,7 @@ ROLE ID
 
 class RegisterController extends Controller
 {
-    /**
-     * @OA\Post(
-     * path="/api/patient/register",
-     * operationId="Register Patient",
-     * tags={"Register Patient"},
-     * summary="Register Patient",
-     * description="Register Patient ",
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(),
-     *         @OA\MediaType(
-     *            mediaType="multipart/form-data",
-     *            @OA\Schema(
-     *               type="object",
-     *               required={"email"},
-     *               @OA\Property(property="name", type="text"),
-     *               @OA\Property(property="email", type="email"),
-     *               @OA\Property(property="cpf", type="text"),
-     *               @OA\Property(property="cnpj", type="text"),
-     *               @OA\Property(property="phone", type="text")
-     *            ),
-     *        ),
-     *    ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="User registered successfully!",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="User registered successfully!",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(response=400, description="Bad request"),
-     *      @OA\Response(response=401, description="Unauthorized"),
-     *      @OA\Response(response=404, description="Resource Not Found"),
-     * )
-     */
+
     public function registerPatient(Request $request)
     {
         $data = $request->only(['name', 'cpf', 'phone','ramal', 'celphone', 'email', 'policy']);
@@ -144,53 +103,7 @@ class RegisterController extends Controller
         ]);
     }
 
-    /**
-     * 
-     * 
-     * @OA\Post(
-     * path="/api/doctor/register",
-     * operationId="Register Doctor",
-     * tags={"Register Doctor"},
-     * summary="Register Doctor",
-     * description="Register Doctor ",
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(),
-     *         @OA\MediaType(
-     *            mediaType="multipart/form-data",
-     *            @OA\Schema(
-     *               type="object",
-     *               required={"email"},
-     *               @OA\Property(property="name", type="text"),
-     *               @OA\Property(property="email", type="email"),
-     *               @OA\Property(property="cpf", type="text"),
-     *                @OA\Property(property="crm", type="text"),
-     *               @OA\Property(property="phone", type="text"),
-     *               @OA\Property(property="especialidade", type="text"),
-     *               @OA\Property(property="novidades", type="boolean")             
-     *               
-     *            ),
-     *        ),
-     *    ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="User registered successfully!",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="User registered successfully!",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(response=400, description="Bad request"),
-     *      @OA\Response(response=401, description="Unauthorized"),
-     *      @OA\Response(response=404, description="Resource Not Found"),
-     * )
-     */
+
     public function registerDoctor(Request $request)
     {
 
@@ -257,16 +170,7 @@ class RegisterController extends Controller
         }
     }
 
-    /**
-     * @OA\Get(
-     *   tags={"List Speciality "},
-     *   path="/api/doctor/speciality",
-     *   summary="Summary",
-     *   @OA\Response(response=200, description="OK"),
-     *   @OA\Response(response=401, description="Unauthorized"),
-     *   @OA\Response(response=404, description="Not Found")
-     * )
-     */
+  
     public function getSpeciality(Request $request)
     {
         $client = 'A2PsnYpypc_u66U0ANnzfQ..';
@@ -287,28 +191,10 @@ class RegisterController extends Controller
         ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/especialidade');
 
         $medical_specility = json_decode($response->getBody());
-        //dd($medical_specility);
+       
         return response()->json([$medical_specility]);
     }
 
-    /**
-     * @OA\Get(
-     *   tags={"List Hospitals "},
-     *   path="/api/hospital/list/{id}",
-     *   summary="Summary",
-     *      @OA\Parameter(
-     *      name="id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *   @OA\Response(response=200, description="OK"),
-     *   @OA\Response(response=401, description="Unauthorized"),
-     *   @OA\Response(response=404, description="Not Found")
-     * )
-     */
     public function getHospitalId(Request $request, $id)
     {
 
@@ -327,16 +213,7 @@ class RegisterController extends Controller
         return response()->json($hospitals);
     }
 
-    /**
-     * @OA\Get(
-     *   tags={"List Hospitals "},
-     *   path="/api/hospital/list",
-     *   summary="Summary",
-     *   @OA\Response(response=200, description="OK"),
-     *   @OA\Response(response=401, description="Unauthorized"),
-     *   @OA\Response(response=404, description="Not Found")
-     * )
-     */
+  
     public function getHospital()
     {
 
@@ -344,56 +221,7 @@ class RegisterController extends Controller
 
         return response()->json($hospitals);
     }
-    /**
-     * @OA\Post(
-     * path="/api/partner/register",
-     * operationId="Register Partner",
-     * tags={"Register Partner"},
-     * summary="Register Partner",
-     * description="Register Partner ",
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(),
-     *         @OA\MediaType(
-     *            mediaType="multipart/form-data",
-     *            @OA\Schema(
-     *               type="object",
-     *               required={"email"},
-     *               @OA\Property(property="name", type="text"),
-     *               @OA\Property(property="email", type="email"),
-     *               @OA\Property(property="cpf", type="text"),
-     *               @OA\Property(property="phone", type="text"),         
-     *               @OA\Property(property="nameempresa", type="text"),         
-     *               @OA\Property(property="razaosocial", type="text"),         
-     *               @OA\Property(property="cnpj", type="text"),         
-     *               @OA\Property(property="classification", type="text"),         
-     *               @OA\Property(property="uf", type="text"),         
-     *               @OA\Property(property="cep", type="text"),         
-     *               @OA\Property(property="city", type="text"),         
-     *               @OA\Property(property="addres", type="text")       
-     *               
-     *            ),
-     *        ),
-     *    ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="solicitation sended",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="solicitation sended",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(response=400, description="Bad request"),
-     *      @OA\Response(response=401, description="Unauthorized"),
-     *      @OA\Response(response=404, description="Resource Not Found"),
-     * )
-     ***/
+    
     public function registerPartner(Request $request)
     {
         $data = $request->only(['name', 'cpf', 'phone', 'email', 'nameempresa', 'razaosocial', 'cnpj', 'classification', "uf", "cep", "city", "address", "number", 'policy']);
@@ -416,58 +244,7 @@ class RegisterController extends Controller
         }
     }
 
-    /**
-     * @OA\Post(
-     * path="/api/user/hospital/register",
-     * operationId="Register User Hospital",
-     * tags={"Register User Hospital"},
-     * summary="Register User Hospital",
-     * description="Register User Hospital ",
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(),
-     *            @OA\MediaType(
-     *            mediaType="multipart/form-data",
-     *            @OA\Schema(
-     *               type="object",
-     *               required={"email"},
-     *               @OA\Property(property="name", type="text"),
-     *               @OA\Property(property="email", type="email"),
-     *               @OA\Property(property="cpf", type="text"),
-     *               @OA\Property(property="phone", type="text"),
-     *               @OA\Property(property="department", type="text"),        
-     *               @OA\Property(
-     *                 property="hospitals",
-     *                 type="array",
-     *                 @OA\Items()
-     *               ), 
-     *               @OA\Property(
-     *                 property="permissions",
-     *                 type="array",
-     *                 @OA\Items()
-     *               ),      
-     *            ),
-     *           )
-     *        ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="User registered successfully!",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="User registered successfully!",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(response=400, description="Bad request"),
-     *      @OA\Response(response=401, description="Unauthorized"),
-     *      @OA\Response(response=404, description="Resource Not Found"),
-     * )
-     */
+  
     public function RegisterUserHospital(Request $request)
     {
 
@@ -487,7 +264,7 @@ class RegisterController extends Controller
         /* CHECAR SE EMAIL CONFERE COM DOMINIO */
         $userEmail = $data['email'];
         $dominio = explode('@', $userEmail);
-        //dd($dominio[1]);
+        
         $domainEmail = $dominio[1];
 
 
@@ -555,10 +332,6 @@ class RegisterController extends Controller
                 $newUser->save();
 
 
-                /* if (!empty($hospitals)) {
-                    UsersHospitals::create(['id_hospital' =>  $hospitalsId, 'id_user' => $newUser->id]);
-                }*/
-
                 /* Salva mais de um hospital ao usuário*/
                 if (!empty($hospitalsId)) {
                     foreach ($hospitalsId  as $id_hospital) {
@@ -566,13 +339,7 @@ class RegisterController extends Controller
                     }
                 }
 
-                /* Salva mais de um hospital ao usuário*/
-                /*  if (!empty($hospitals)) {
-               dd($hospitals);
-               $info_hospital = Hospitais::where('id', $hospitals[0])->first();
-               UsersGroup::create(['id_group' => $info_hospital->grupo_id, 'id_user' => $newUser->id]);
-           }*/
-
+ 
                 /* Salva permissões do Usuário */
                 if (!empty($permissions)) {
                     foreach ($permissions as $id_permission) {
@@ -590,7 +357,7 @@ class RegisterController extends Controller
                     return response()->json(['message' => 'Não foi póssível enviar a solicitação', $ex], 500);
                 }
             } catch (\Throwable $th) {
-               // dd($th->getMessage());
+
                 \DB::rollback();
                 return ['message' => 'Não foi possivel salvar no banco de dados', 'erro' => $th->getMessage(), 400];
             }
@@ -602,27 +369,7 @@ class RegisterController extends Controller
             return response()->json(['message' => 'O dominio é inválido para este hospital'], 400);
         }
     }
-    /**
-     * @OA\Get(
-     *   tags={"List Hospitals "},
-     *   path="api/hospitals/domain/list",
-     *   summary="Summary",
-     *        @OA\RequestBody(
-     *         @OA\JsonContent(),
-     *         @OA\MediaType(
-     *            mediaType="multipart/form-data",
-     *            @OA\Schema(
-     *               type="object",
-     *               required={"email"},
-     *               @OA\Property(property="email", type="email"),
-     *            ),
-     *        ),
-     *    ),
-     *   @OA\Response(response=200, description="OK"),
-     *   @OA\Response(response=401, description="Unauthorized"),
-     *   @OA\Response(response=404, description="Not Found")
-     * )
-     */
+ 
     public function getHospitalDomain(Request $request)
     {
         $domain = $request->domain;

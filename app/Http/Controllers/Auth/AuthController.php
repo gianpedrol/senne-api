@@ -45,53 +45,6 @@ class AuthController extends Controller
 {
 
 
-
-    /**
-     * @OA\Post(
-     * path="/api/login/{role_id}",
-     * operationId="authLogin",
-     * tags={"Login"},
-     * summary="User Login",
-     * description="Login User Here",
-     *      @OA\Parameter(
-     *      name="role_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(),
-     *         @OA\MediaType(
-     *            mediaType="multipart/form-data",
-     *            @OA\Schema(
-     *               type="object",
-     *               required={"email", "password"},
-     *               @OA\Property(property="email", type="email"),
-     *               @OA\Property(property="password", type="password")
-     *            ),
-     *        ),
-     *    ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="Login Successfully",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="Login Successfully",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(response=400, description="Bad request"),
-     *      @OA\Response(response=404, description="Resource Not Found"),
-     * )
-     */
     public function login(Request $request, $id)
     {
         
@@ -135,6 +88,7 @@ class AuthController extends Controller
                 'message'   => 'Usuário aguardando aprovação',
             ], 404);
         }
+
          /**CASO SEJA ROLE ID 5 USUARIO DE ATENDIMENTO */
          if($id == 5){
             $credentialsProtocol = $request->only('login_protocol', 'password');
@@ -165,8 +119,7 @@ class AuthController extends Controller
             }
             /** FIM ROLE ID 5  */
 
-        $userLogin = User::where('email', $request->email)->first();
-        
+        $userLogin = User::where('email', $request->email)->first();       
         
         
         if ($userLogin->role_id == $id) {  
@@ -221,50 +174,7 @@ class AuthController extends Controller
     }
 
     
-    /**
-     * @OA\Post(
-     * path="/api/auth/login/{id}",
-     * operationId="authRegister",
-     * tags={"RegisterUserMaster"},
-     * summary="Register User Master",
-     * description="Create the User Master Here",
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(),
-     *         @OA\MediaType(
-     *            mediaType="multipart/form-data",
-     *            @OA\Schema(
-     *               type="object",
-     *               required={"email"},
-     *               @OA\Property(property="name", type="text"),
-     *               @OA\Property(property="email", type="email"),
-     *               @OA\Property(property="cpf", type="text"),
-     *               @OA\Property(property="cnpj", type="text"),
-     *               @OA\Property(property="phone", type="text")
-     * 
-     *            ),
-     *        ),
-     *    ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="User Master Created Successfully",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="User Master Created Successfully",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(response=400, description="Bad request"),
-     * @OA\Response(response=401, description="Unauthorized"),
-     *      @OA\Response(response=404, description="Resource Not Found"),
-     * )
-     */
-
+    
     public function create(Request $request)
     {
 
@@ -334,33 +244,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    /**
-     * @OA\Post(
-     * path="/api/auth/logout",
-     * operationId="Logout",
-     * tags={"Logout"},
-     * summary="Logout",
-     * description="Logout",
- 
-     *      @OA\Response(
-     *          response=201,
-     *          description="Logged out Successfully",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=200,
-     *          description= "Logged out  Successfully",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(response=400, description="Bad request"),
-     *      @OA\Response(response=404, description="Resource Not Found"),
-     * )
-     */
+    
     public function logout(Request $request)
     {
 

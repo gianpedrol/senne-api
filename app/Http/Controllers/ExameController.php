@@ -23,20 +23,12 @@ class ExameController extends Controller
             return response()->json(['message' => 'Unauthorized access'], 401);
         }
 
-        /* 1 = Administrador Senne | 2 = Usuario */
-        /*   if (auth()->user()->role_id != 1) {
-            return response()->json(['message' => 'Unauthorized access'], 401);
-        }*/
+
     }
 
     public function listExame()
     {
     /*    /* CONSULTA API DE SISTEMA DA SENNE */
-    /*    $response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/exame');
-
-        $items = json_decode($response->getBody());
-
-        return $items;*/
 
         $client = 'A2PsnYpypc_u66U0ANnzfQ..';
         $client_secret = 'M3nxpLJbYPNqkfnkR5tuqg..';
@@ -51,11 +43,7 @@ class ExameController extends Controller
         $token = json_decode($resp->getBody());
 
         $bearer = $token->access_token;
-     /*   $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/lista_atendimentos?Acesso='.$uuid.'&Tipo=3&DataInicial='.$startdate.'&DataFinal='.$finaldate);
-*/
-            $response = Http::withHeaders([
+        $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $bearer
             ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/medicos');
             return $response;
@@ -74,41 +62,9 @@ class ExameController extends Controller
         return $items;
     }
 
-    /**
-     * @OA\Get(
-     *   tags={"List Attedance"},
-     *   path="/api/treatment/exams/{uuid}/{numatendimento}",
-     *   summary="Summary",
-     *      @OA\Parameter(
-     *      name="uuid",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *     @OA\Parameter(
-     *      name="numatendimento",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),    
-     *   @OA\Response(response=200, description="OK"),
-     *   @OA\Response(response=401, description="Unauthorized"),
-     *   @OA\Response(response=404, description="Not Found")
-     * )
-     */
+
     public function listAttendance($uuid, $atendimento,  Request $request)
     {
-
-      /*  if ($request->user()->role_id != 1  && $request->user()->role_id != 5) {
-            if (!$request->user()->permission_user($request->user()->id, 3)) {
-                return response()->json(['message' => "Unauthorized, Verify the user permission"], 401);
-            }
-        }*/
-
 
         $client = 'A2PsnYpypc_u66U0ANnzfQ..';
         $client_secret = 'M3nxpLJbYPNqkfnkR5tuqg..';
@@ -145,8 +101,6 @@ class ExameController extends Controller
             'Authorization' => 'Bearer ' . $bearer
         ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/atend_exames?Tipo='.$tipo.'&NumAtendimento='.$atendimento.'&Acesso='. $uuid. '&Tipo='.$tipo. '&PageNo='. $request->pageNo .'&Order='.$request->Order.'&PageSize='. $request->pageSize .'&NomeExame='.$request->NomeExame .'&NomeMedico='.$request->NomeMedico.'&NomePaciente='.$request->NomePaciente
     );
-    /* CONSULTA API DE SISTEMA DA SENNE */
-    //$response = Http::get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio/atendimento/' . $uuid . '/' . $atendimento);
     
     $hospital = Hospitais::where('uuid', $uuid)->first();
     
@@ -165,48 +119,10 @@ class ExameController extends Controller
         return $items;
     }
 
-    /**
-     * @OA\Get(
-     *   tags={"List Attedance Hospital - Date"},
-     *   path="/api/treatment/exams/{uuid}/{startdate}/{finaldate}",
-     *   summary="Summary",
-     *      @OA\Parameter(
-     *      name="uuid",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *     @OA\Parameter(
-     *      name="startdate",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *     @OA\Parameter(
-     *      name="finaldate",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),       
-     *   @OA\Response(response=200, description="OK"),
-     *   @OA\Response(response=401, description="Unauthorized"),
-     *   @OA\Response(response=404, description="Not Found")
-     * )
-     */
     public function listAttendanceDate($uuid,$startdate, $finaldate, Request $request)
     {
 
-      /*  if ($request->user()->role_id != 1 && $request->user()->role_id != 5 ) {
-            if (!$request->user()->permission_user($request->user()->id, 3)) {
-                return response()->json(['message' => "Unauthorized, Verify the user permission"], 401);
-            }
-        }*/
+
 
         $client = 'A2PsnYpypc_u66U0ANnzfQ..';
         $client_secret = 'M3nxpLJbYPNqkfnkR5tuqg..';
@@ -275,40 +191,9 @@ class ExameController extends Controller
 
 
     }
-    /**
-     * @OA\Get(
-     *   tags={"List Attedance Details"},
-     *   path="/api/treatment/details/{uuid}/{atendimento}",
-     *   summary="Summary",
-     *      @OA\Parameter(
-     *      name="uuid",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *     @OA\Parameter(
-     *      name="atendimento",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),     
-     *   @OA\Response(response=200, description="OK"),
-     *   @OA\Response(response=401, description="Unauthorized"),
-     *   @OA\Response(response=404, description="Not Found")
-     * )
-     */
+
     public function listAttendanceDetails($uuid, $atendimento,  Request $request)
     {
-
-       /* if ($request->user()->role_id != 1  && $request->user()->role_id != 5) {
-            if (!$request->user()->permission_user($request->user()->id, 3)) {
-                return response()->json(['message' => "Unauthorized, Verify the user permission"], 401);
-            }
-        }*/
 
 
         $client = 'A2PsnYpypc_u66U0ANnzfQ..';
@@ -363,40 +248,11 @@ class ExameController extends Controller
         $items = $response->getBody();
         return $items;
     }
-    /**
-     * @OA\Get(
-     *   tags={"List Principal Report"},
-     *   path="/api/treatment/report/{uuid}/{r_id}",
-     *   summary="Summary",
-     *      @OA\Parameter(
-     *      name="uuid",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *     @OA\Parameter(
-     *      name="r_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),       
-     *   @OA\Response(response=200, description="OK"),
-     *   @OA\Response(response=401, description="Unauthorized"),
-     *   @OA\Response(response=404, description="Not Found")
-     * )
-     */
+
     public function principalReport($uuid, $atendimento, $r_id, Request $request)
     {
 
-       /* if ($request->user()->role_id != 1  && $request->user()->role_id != 5) {
-            if (!$request->user()->permission_user($request->user()->id, 3)) {
-                return response()->json(['message' => "Unauthorized, Verify the user permission"], 401);
-            }
-        }*/ 
+
         $log = Auth::user();
         $saveLog = new UserLog();
         $saveLog->id_user = $log->id;
@@ -414,11 +270,7 @@ class ExameController extends Controller
     {
 
 
-      /*  if ($request->user()->role_id != 1  && $request->user()->role_id != 5) {
-            if (!$request->user()->permission_user($request->user()->id, 3)) {
-                return response()->json(['message' => "Unauthorized, Verify the user permission"], 401);
-            }
-        }*/
+
         $log = Auth::user();
         $saveLog = new UserLog();
         $saveLog->id_user = $log->id;
@@ -432,10 +284,6 @@ class ExameController extends Controller
     }
 
     public function createObservation(Request $request){
-/*
-        if ($request->user()->role_id != 1) {
-                return response()->json(['message' => "Unauthorized, Verify the user permission"], 401);
-        }*/
 
         $data = $request->only('numatendimento', 'observation');
         $user = Auth::user();
@@ -471,8 +319,7 @@ class ExameController extends Controller
 
             \DB::commit();
         } catch (\Throwable $th) {
-                dd($th->getMessage());
-                \DB::rollback();
+               \DB::rollback();
                 return ['message' => 'Não foi possível salvar no banco de dados', 400];
             }
             return response()->json(['status' => 'Sucesso!' , 'message' => $newObservation], 200);
@@ -480,11 +327,7 @@ class ExameController extends Controller
 
     public function getObservation(Request $request, $id){
 
-      /*  if ($request->user()->role_id != 1) {
-            if (!$request->user()->permission_user($request->user()->id, 3)) {
-                return response()->json(['message' => "Unauthorized, Verify the user permission"], 401);
-            }
-        }*/
+
 
         $observation = ObservationsAttedance::where('numatendimento', $id)->get();
         if(count($observation) == 0){

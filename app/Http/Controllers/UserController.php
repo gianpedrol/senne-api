@@ -62,59 +62,7 @@ ROLE ID
 class UserController extends Controller
 {
 
-    /**
-     * @OA\Post(
-     * path="/api/user/create",
-     * operationId="Register User Hospital - Inside Platform",
-     * tags={"Register User Hospital - Inside Platform"},
-     * summary="Register User Hospital - Inside Platform",
-     * description="Register User Hospital - Inside Platform ",
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(),
-     *            @OA\MediaType(
-     *            mediaType="multipart/form-data",
-     *            @OA\Schema(
-     *               type="object",
-     *               required={"email"},
-     *               @OA\Property(property="name", type="text"),
-     *               @OA\Property(property="email", type="email"),
-     *               @OA\Property(property="cpf", type="text"),
-     *               @OA\Property(property="crm", type="text"),
-     *               @OA\Property(property="phone", type="text"),
-     *               @OA\Property(property="department", type="text"),        
-     *               @OA\Property(
-     *                 property="hospitals",
-     *                 type="array",
-     *                 @OA\Items()
-     *               ), 
-     *               @OA\Property(
-     *                 property="permissions",
-     *                 type="array",
-     *                 @OA\Items()
-     *               ),      
-     *            ),
-     *           )
-     *        ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="User registered successfully!",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="User registered successfully!",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(response=400, description="Bad request"),
-     *      @OA\Response(response=401, description="Unauthorized"),
-     *      @OA\Response(response=404, description="Resource Not Found"),
-     * )
-     */
+
     public function createUser(Request $request)
     {
 
@@ -137,7 +85,7 @@ class UserController extends Controller
         /* CHECAR SE EMAIL CONFERE COM DOMINIO */
         $userEmail = $data['email'];
         $dominio = explode('@', $userEmail);
-        //dd($dominio[1]);
+       
         $domainEmail = $dominio[1];
 
         
@@ -250,66 +198,6 @@ class UserController extends Controller
       
     }
 
-    /**
-     * @OA\Put(
-     * path="edit/user/{id}",
-     * operationId="Update User Hospital",
-     * tags={"Update User Hospital"},
-     * summary="Update User Hospital",
-     * description="Update User Hospital ",
-     *      @OA\Parameter(
-     *      name="id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(),
-     *            @OA\MediaType(
-     *            mediaType="multipart/form-data",
-     *            @OA\Schema(
-     *               type="object",
-     *               required={"email"},
-     *               @OA\Property(property="name", type="text"),
-     *               @OA\Property(property="email", type="email"),
-     *               @OA\Property(property="cpf", type="text"),
-     *               @OA\Property(property="phone", type="text"),
-     *               @OA\Property(property="department", type="text"),        
-     *               @OA\Property(
-     *                 property="hospitals",
-     *                 type="array",
-     *                 @OA\Items()
-     *               ), 
-     *               @OA\Property(
-     *                 property="permissions",
-     *                 type="array",
-     *                 @OA\Items()
-     *               ),      
-     *            ),
-     *           )
-     *        ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="User registered successfully!",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="User registered successfully!",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(response=400, description="Bad request"),
-     *      @OA\Response(response=401, description="Unauthorized"),
-     *      @OA\Response(response=404, description="Resource Not Found"),
-     * )
-     */
     public function update(Request $request)
     {
         if ($request->user()->role_id != 1) {
@@ -318,7 +206,7 @@ class UserController extends Controller
             }
         }
         $id = $request->id;
-        $data = $request->only('name', 'phone', 'cpf', 'email');
+        $data = $request->only('name', 'phone', 'cpf', 'email', 'crm');
         $permissions = $request->permissions;
         $hospitals = $request->hospitals;
 
@@ -370,42 +258,45 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Usuário atualizado com sucesso!']);
     }
-    /**
-     * 
-     * @OA\Del(
-     * path="delete/user/{id}",
-     * operationId="Delete User",
-     * tags={"Delete User"},
-     * summary="Delete User",
-     * description="Delete User ",
-     *      @OA\Parameter(
-     *      name="id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   )
-     *      @OA\Response(
-     *          response=201,
-     *          description="user successfully deleted",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="user successfully deleted",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(response=400, description="Bad request"),
-     *      @OA\Response(response=401, description="Unauthorized"),
-     *      @OA\Response(response=404, description="Resource Not Found"),
-     * )
-     */
+
+    public function updateDoctor(Request $request)
+    {
+        if ($request->user()->role_id != 1 ) {
+            if (!$request->user()->permission_user($request->user()->id, 1)) {
+                return response()->json(['message' => "Não autorizado"], 401);
+            }
+        }
+        $id = $request->id;
+        $data = $request->only('name', 'phone', 'email', 'crm');
+
+        //Validar se email existe!
+
+
+        try {
+            \DB::beginTransaction();
+            //atualizando o HOSPITAL
+
+            User::where('id', $id)->update(['name' => $data['name'], 'email' => $data['email'], 'crm' => $data['crm'], 'phone' => $data['phone']]);
+
+            //GERA LOG
+            $log = Auth::user();
+            $saveLog = new UserLog();
+            $saveLog->id_user = $log->id;
+            $saveLog->ip_user = $request->ip();
+            $saveLog->id_log = 3;
+            $saveLog->save();
+
+            \DB::commit();
+        } catch (\Throwable $th) {
+           // dd($th->getMessage());
+            \DB::rollback();
+            return ['message' => 'Não foi possivel salvar no banco de dados', 'erro' => $th->getMessage(), 400];
+        }
+
+
+        return response()->json(['message' => 'Usuário atualizado com sucesso!']);
+    }
+
     public function delete(Request $request)
     {
         if ($request->user()->role_id != 1) {
@@ -430,52 +321,7 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * @OA\Put(
-     * path="/api/inactivate/user/{id}",
-     * operationId="Inactive User ",
-     * tags={"Inactive User "},
-     * summary="Inactive User ",
-     * description="Inactive User  ",
-     *      @OA\Parameter(
-     *      name="id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(),
-     *            @OA\MediaType(
-     *            mediaType="multipart/form-data",
-     *            @OA\Schema(
-     *               type="object",
-     *               required={"status"},
-     *               @OA\Property(property="status", type="number"),
-     *           )
-     *          )
-     *        ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="User inactivated successfully!",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="User inactivated successfully!",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(response=400, description="Bad request"),
-     *      @OA\Response(response=401, description="Unauthorized"),
-     *      @OA\Response(response=404, description="Resource Not Found"),
-     * )
-     */
+
     public function inactivateUser($id, Request $request)
     {
         if ($request->user()->role_id != 1) {
@@ -508,24 +354,7 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * @OA\Get(
-     *   tags={"Logs User "},
-     *   path="list/logs/user/{id}",
-     *   summary="Summary",
-     *      @OA\Parameter(
-     *      name="id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *   @OA\Response(response=200, description="OK"),
-     *   @OA\Response(response=401, description="Unauthorized"),
-     *   @OA\Response(response=404, description="Not Found")
-     * )
-     */
+
     public function logsUser(Request $request)
     {
         if ($request->user()->role_id != 1) {
@@ -584,23 +413,14 @@ class UserController extends Controller
             );
         }
     }
-    /**
-     * @OA\Get(
-     *   tags={"All Logs Users "},
-     *   path="list/logs/users",
-     *   summary="Summary",
-     *   @OA\Response(response=200, description="OK"),
-     *   @OA\Response(response=401, description="Unauthorized"),
-     *   @OA\Response(response=404, description="Not Found")
-     * )
-     */
+
     public function logsUserAll(Request $request)
     {
         if ($request->user()->role_id != 1) {
             return response()->json(['message' => "Unauthorized "], 401);
         }
 
-        // dd($request->limit);
+   
 
 
         $data = $request->all();
@@ -643,16 +463,7 @@ class UserController extends Controller
             200
         );
     }
-    /**
-     * @OA\Get(
-     *   tags={"All Users "},
-     *   path="list/users",
-     *   summary="Summary",
-     *   @OA\Response(response=200, description="OK"),
-     *   @OA\Response(response=401, description="Unauthorized"),
-     *   @OA\Response(response=404, description="Not Found")
-     * )
-     */
+
     public function listAllUser(Request $request)
     {
         if ($request->user()->role_id != 1) {
@@ -662,7 +473,6 @@ class UserController extends Controller
         $data = $request->all();
         //$status = explode(',', $request->status);
         $data['status'] = explode(',', $request->status);
-
 
         $per_page = (isset($request->per_page) && $request->per_page > 0) ? $request->per_page : 10;
 
@@ -693,9 +503,6 @@ class UserController extends Controller
                 return $query->orderBy('name', $data['orderby']);
             })
             ->paginate($per_page);
-
-        //dd($all_users);
-
 
         //Rodamos o loop para trazer o ultimo log de cada usuário
         $retorno = [];
@@ -731,24 +538,7 @@ class UserController extends Controller
             200
         );
     }
-    /**
-     * @OA\Get(
-     *   tags={"User Information "},
-     *   path="/api/show/user/{id}",
-     *   summary="Summary",
-     *      @OA\Parameter(
-     *      name="id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),   
-     *   @OA\Response(response=200, description="OK"),
-     *   @OA\Response(response=401, description="Unauthorized"),
-     *   @OA\Response(response=404, description="Not Found")
-     * )
-     */
+
     public function showUser(Request $request)
     {
         if ($request->user()->role_id != 1) {
@@ -782,24 +572,7 @@ class UserController extends Controller
             );
         }
     }
-    /**
-     * @OA\Get(
-     *   tags={"All Users of Group "},
-     *   path="/api/list/group/user/{id}",
-     *   summary="Summary",
-     *      @OA\Parameter(
-     *      name="id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),   
-     *   @OA\Response(response=200, description="OK"),
-     *   @OA\Response(response=401, description="Unauthorized"),
-     *   @OA\Response(response=404, description="Not Found")
-     * )
-     */
+
     public function listUserGroups($id, Request $request)
     {
         $group = Groups::where('id', $id)->first();
@@ -860,28 +633,7 @@ class UserController extends Controller
             })
             ->paginate($per_page);
 
-            //dd($allUsers);
-        //$users = User::where('role_id', '!=', 1)->get();
-
-
-
-        // Trazemos usuarios que não possui vinculo com hospitais
-        /* $user_db = [];
-        foreach ($users as $key => $user) {
-            // dd($user);
-            $user_nothos = UsersHospitals::where('id_user', $user->id)->first();
-
-            if (empty($user_nothos)) {
-                return response()->json(
-                    ['status' => 'message', 'User dont belongs to group'],
-                    400
-                );
-            }
-        }*/
-
-
-        // Juntamos os usuários em uma só array
-        // $all_users = array_merge($allUsers);
+ 
 
         //Rodamos o loop para trazer o ultimo log de cada usuário
         $retorno = [];
@@ -918,28 +670,8 @@ class UserController extends Controller
         $paginate['to'] = $all_users['to'];
         $paginate['total'] = $all_users['total'];
 
-        return response()->json(['status' => 'success', 'Group' => $group, 'Users' => $allUsers],
-            200
-        );
+        return response()->json(['status' => 'success', 'Group' => $group, 'Users' => $allUsers],200);
     }
-    /**
-     * @OA\Get(
-     *   tags={"All Users of Hospital "},
-     *   path="/api/hospital/user/list/{id}",
-     *   summary="Summary",
-     *      @OA\Parameter(
-     *      name="id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),   
-     *   @OA\Response(response=200, description="OK"),
-     *   @OA\Response(response=401, description="Unauthorized"),
-     *   @OA\Response(response=404, description="Not Found")
-     * )
-     */
     public function getUsersHospital($id, Request $request)
     {
 
@@ -1078,45 +810,7 @@ class UserController extends Controller
         );
     }
 
-    /**
-     * @OA\Post(
-     * path="/api/upload/user/image",
-     * operationId="Upload User Image",
-     * tags={"Upload User Image"},
-     * summary="Upload User Image",
-     * description="Upload User Image ",
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(),
-     *            @OA\MediaType(
-     *            mediaType="multipart/form-data",
-     *            @OA\Schema(
-     *               type="object",
-     *               required={"image", "id_user"},
-     *               @OA\Property(property="image", type="text"),
-     *               @OA\Property(property="id_user", type="number"),         
-     *            ),
-     *           )
-     *        ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="Image registered successfully!",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="Image registered successfully!",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(response=400, description="Bad request"),
-     *      @OA\Response(response=401, description="Unauthorized"),
-     *      @OA\Response(response=404, description="Resource Not Found"),
-     * )
-     */
+
     public function updateImageUser(Request $request)
     {
         if ($request->user()->role_id != 1) {
@@ -1126,7 +820,6 @@ class UserController extends Controller
         }
         $array = ['message' => ''];
 
-        //dd($request->all());
         $filename = '';
         $user = User::where('id', $request->id_user)->first();
         if ($request->hasFile('image')) {
@@ -1158,59 +851,6 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * @OA\Post(
-     * path="/api/approve/user/{id}",
-     * operationId="Approve User",
-     * tags={"Approve User"},
-     * summary="Approve User",
-     * description="Approve User ",
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(),
-     *            @OA\MediaType(
-     *            mediaType="multipart/form-data",
-     *            @OA\Schema(
-     *               type="object",
-     *               required={"email"},
-     *               @OA\Property(property="name", type="text"),
-     *               @OA\Property(property="email", type="email"),
-     *               @OA\Property(property="cpf", type="text"),
-     *               @OA\Property(property="crm", type="text"),
-     *               @OA\Property(property="phone", type="text"),
-     *               @OA\Property(property="department", type="text"),        
-     *               @OA\Property(
-     *                 property="hospitals",
-     *                 type="array",
-     *                 @OA\Items()
-     *               ), 
-     *               @OA\Property(
-     *                 property="permissions",
-     *                 type="array",
-     *                 @OA\Items()
-     *               ),      
-     *            ),
-     *           )
-     *        ),
-     *      @OA\Response(
-     *          response=201,
-     *          description="User registered successfully!",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="User registered successfully!",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Unprocessable Entity",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(response=400, description="Bad request"),
-     *      @OA\Response(response=401, description="Unauthorized"),
-     *      @OA\Response(response=404, description="Resource Not Found"),
-     * )
-     */
     public function approveUser($id, Request $request)
     {
         if ($request->user()->role_id != 1) {
@@ -1363,15 +1003,6 @@ class UserController extends Controller
         $r_id = $request->r_id;
         $user = User::where('login_protocol', $data['login_protocol'])->first();
 
-    /*    $files = glob('pdf/*.*');
-
-        if (count($files) >= 10) {
-            foreach ($files as $file) {
-                unlink($file);
-            }
-            DB::table('table_pdf_value')->delete();
-        } */
-
 
         $client = 'A2PsnYpypc_u66U0ANnzfQ..';
         $client_secret = 'M3nxpLJbYPNqkfnkR5tuqg..';
@@ -1423,8 +1054,6 @@ class UserController extends Controller
                 $saveLog->id_log = 14 ;
                 $saveLog->save();
                                 
-               
-             /*   $pdf = PDF::loadView('pdf.protocol', compact('data', 'senha_md5'))->setPaper('a4');*/
 
             }else{
 
@@ -1433,8 +1062,6 @@ class UserController extends Controller
                 
                 $user->update(['password' =>  $senha_temp ]);
         
-          /*      $pdf = PDF::loadView('pdf.protocol', compact('data', 'senha_md5'))->setPaper('a4');*/
-
             }
 
             \DB::commit();
@@ -1444,22 +1071,7 @@ class UserController extends Controller
             return ['message' => 'Não foi possivel salvar no banco de dados', 'erro' => $th->getMessage(), 400];
         }
 
-    /*    $numPDF = Str::random(9);
-        
-        
-       $pdf->save(public_path('pdf/protocol' . $numPDF . '.pdf'));
 
-        try {
-            \DB::beginTransaction();
-
-            StorePDF::create(['pdf' => 'protocol' . $numPDF . '.pdf']);
-
-            \DB::commit();
-        } catch (\Throwable $th) {
-            dd($th->getMessage());
-            \DB::rollback();
-            return ['message' => 'Could not write data', 400];
-        }*/
 
      if(!empty($newUser->email)){
             try {

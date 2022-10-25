@@ -170,7 +170,7 @@ Route::middleware('auth:api')->group(function () {
     //Edita Usuário
     Route::put('edit/user/{id}', [UserController::class, 'update']);
         //Edita Usuário
-        Route::put('edit/user/doctor/{id}', [UserController::class, 'updateDoctor']);
+        Route::post('edit/user/doctor/{id}', [UserController::class, 'updateDoctor']);
     //Edita Usuário
     Route::post('upload/user/image', [UserController::class, 'updateImageUser']);
     //Lista Usuário e Hospital

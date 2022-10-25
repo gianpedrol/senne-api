@@ -69,8 +69,8 @@ class RegisterController extends Controller
              if(!empty($data['ramal'])){
                 $newUser->ramal = $data['ramal'];
              }
-            if(!empty($data['celphone'])){
-                $newUser->phone = $data['celphone'];
+             if(!empty($data['celphone'])){
+                $user->cellphone = $data['celphone'];
             }
             $newUser->policy = $data['policy'];
             $newUser->status = 3;
@@ -137,8 +137,8 @@ class RegisterController extends Controller
              if(!empty($data['ramal'])){
                 $newUser->ramal = $data['ramal'];
              }
-            if(!empty($data['celphone'])){
-                $newUser->phone = $data['celphone'];
+             if(!empty($data['celphone'])){
+                $user->cellphone = $data['celphone'];
             }
             $newUser->especialidade = $data['especialidade'];
             if(!empty($data['novidades'])){
@@ -322,8 +322,8 @@ class RegisterController extends Controller
                  if(!empty($data['ramal'])){
                     $newUser->ramal = $data['ramal'];
                  }
-                if(!empty($data['celphone'])){
-                    $newUser->phone = $data['celphone'];
+                 if(!empty($data['celphone'])){
+                    $user->cellphone = $data['celphone'];
                 }
                 $newUser->policy = $data['policy'];
                 $newUser->status = 3;

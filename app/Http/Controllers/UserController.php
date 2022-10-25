@@ -261,13 +261,13 @@ class UserController extends Controller
 
     public function updateDoctor(Request $request)
     {
-        if ($request->user()->role_id != 1 ) {
+        if ($request->user()->role_id != 1) {
             if (!$request->user()->permission_user($request->user()->id, 1)) {
                 return response()->json(['message' => "Não autorizado"], 401);
             }
         }
         $id = $request->id;
-        $data = $request->only('name', 'phone', 'email', 'crm');
+        $data = $request->only('name', 'phone', 'cellphone','email', 'crm');
 
         //Validar se email existe!
 
@@ -275,8 +275,22 @@ class UserController extends Controller
         try {
             \DB::beginTransaction();
             //atualizando o HOSPITAL
+            $user = User::findOrFail($id);
+            $user->name = $data['name'];
+            $user->email = $data['email'];;
+            $user->crm = $data['crm'];
+            if(!empty($data['phone'])){
+                $user->phone = $data['phone'];
+             }
+             if(!empty($data['ramal'])){
+                $user->ramal = $data['ramal'];
+             }
+            if(!empty($data['cellphone'])){
+                $user->cellphone = $data['cellphone'];
+            }
 
-            User::where('id', $id)->update(['name' => $data['name'], 'email' => $data['email'], 'crm' => $data['crm'], 'phone' => $data['phone']]);
+            $user->save();
+
 
             //GERA LOG
             $log = Auth::user();

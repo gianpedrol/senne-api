@@ -12,6 +12,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\LaborController;
 use App\Http\Controllers\HospitalController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\UserHospitalController;
 use App\Http\Provider\ServiceProviderApi;
@@ -196,4 +197,7 @@ Route::middleware('auth:api')->group(function () {
 
     /** ROTA IMPRIMIR PROTOCOLO / CRIAR USUARIO AMBULATORIAL */
     Route::post('print/user/protocol', [UserController::class, 'printProtocol']);
+
+    /** Rotas de agendamento integradas ao Tasy */
+    Route::get('schedule/search/user', [ScheduleController::class, 'scheduleSearchUser']);
 });

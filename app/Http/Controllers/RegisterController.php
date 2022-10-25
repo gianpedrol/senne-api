@@ -85,7 +85,7 @@ class RegisterController extends Controller
         $data = $request->only(['name', 'cpf', 'phone','ramal', 'celphone', 'email', 'policy']);
 
         $user = User::where('email', $data['email'])->first();
-        
+
         if (!empty($user)) {
             return response()->json(['message' =>"Usuário já cadastrado!"], 400);
         }
@@ -549,7 +549,7 @@ class RegisterController extends Controller
                     $newUser->phone = $data['celphone'];
                 }
                 $newUser->policy = $data['policy'];
-                $newUser->status = 3;
+                $newUser->status = 1;
                 $newUser->role_id = $role_id;
                 $newUser->password = $senha_temp;
                 $newUser->save();

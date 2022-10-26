@@ -206,7 +206,7 @@ class UserController extends Controller
             }
         }
         $id = $request->id;
-        $data = $request->only('name', 'phone', 'cpf', 'email', 'crm');
+        $data = $request->only('name', 'phone','cellphone','cpf', 'email','ramal');
         $permissions = $request->permissions;
         $hospitals = $request->hospitals;
 
@@ -214,15 +214,26 @@ class UserController extends Controller
 
 
         try {
+
             \DB::beginTransaction();
             //atualizando o HOSPITAL
-            $user = User::where('id', $id)->first();
-            if ($user) {
-                $user->update($data);
+            $user = User::findOrFail($id);
+            $user->name = $data['name'];
+            $user->email = $data['email'];;
+            $user->cpf = $data['cpf'];
+            if(!empty($data['phone'])){
+                $user->phone = $data['phone'];
+             }
+             if(!empty($data['ramal'])){
+                $user->ramal = $data['ramal'];
+             }
+            if(!empty($data['cellphone'])){
+                $user->cellphone = $data['cellphone'];
             }
 
+            $user->save();
 
-            /* Salva mais de um hospital ao usuário*/
+             /* Salva mais de um hospital ao usuário*/
             UsersHospitals::where('id_user', $user->id)->delete(); //Deleta os registros
             if (!empty($hospitals)) {
                 foreach ($hospitals as $id_hospital) {

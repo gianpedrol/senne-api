@@ -233,7 +233,8 @@ class UserController extends Controller
 
             $user->save();
 
-             /* Salva mais de um hospital ao usuário*/
+ 
+            /* Salva mais de um hospital ao usuário*/
             UsersHospitals::where('id_user', $user->id)->delete(); //Deleta os registros
             if (!empty($hospitals)) {
                 foreach ($hospitals as $id_hospital) {
@@ -884,7 +885,7 @@ class UserController extends Controller
             }
         }
             
-        $user = User::where('id', $request->id)->first();
+        $user = User::where('id', $id)->first();
         if ($user) {
              try {
                 \DB::beginTransaction();
@@ -1153,4 +1154,31 @@ class UserController extends Controller
             
         }
     }    
+
+    public function testeEmail(Request $request){
+
+        $data = $request->only(['name', 'email']);
+        $user = User::where('email', $data['email'])->first();
+        try{
+    
+            $status = Password::sendResetLink(
+                $request->only('email')
+            );
+
+            if ($status == Password::RESET_LINK_SENT) {
+                Mail::to($request->only('email'))->send(new emailWelcome($data));
+                return [
+                    'status' => __($status),
+                    ];
+            }
+
+            throw ValidationException::withMessages([
+                'email' => [trans($status)],
+            ]);
+        } catch (\Throwable $th) {
+         //   dd($th->getMessage());
+            \DB::rollback();
+            return ['message' => 'Não foi possivel salvar no banco de dados', 'erro' => $th->getMessage(), 400];
+        }
+    }
 }

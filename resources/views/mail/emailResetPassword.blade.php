@@ -43,6 +43,7 @@
         <tr style=" font-family: Montserrat, Calibri; color: #B8BD5A">
             <td align="left"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
             <td align="center">
+                
                 @if (!empty($user['name']) )
                 <h2 style="font-size: 14px; font-weight: bold">Olá {{$user['name']}},<br> tudo bem?</h2>
                 @else

@@ -41,11 +41,11 @@
             </td>
         </tr>
     </table>
-    <table align="center" width="500">
+    <table align="center" width="600">
         <tr style=" font-family: Montserrat, Calibri; color: #B8BD5A">
             <td align="left"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
             <td align="center">
-                <h2 style="font-size: 18px; font-weight: bold">Olá {{$data['name']}}, <br>tudo bem?</h2>
+                <h2 style="font-size: 14px; font-weight: bold">Olá {{$data['name']}}, <br>tudo bem?</h2>
             </td>
             <td align="right"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
         </tr>

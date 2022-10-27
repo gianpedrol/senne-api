@@ -288,12 +288,12 @@ class RegisterController extends Controller
 
         $hospital_Check = false; 
 
-            if(empty($item) ){
+    /*        if(empty($item) ){
                    $hospital_Check = false;                 
                    return response()->json(['message' => 'Seu e-mail é diferente do email do hospital'], 404);
                }else {
                    $hospital_Check = true; 
-               }  
+               }  */
                
         }
     

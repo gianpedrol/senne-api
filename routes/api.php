@@ -16,6 +16,7 @@ use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\UserHospitalController;
 use App\Http\Provider\ServiceProviderApi;
+use App\Models\UsersLabors;
 use Faker\Core\Uuid;
 use PHPUnit\TextUI\XmlConfiguration\Group;
 
@@ -42,6 +43,8 @@ Route::get('/ping', function () {
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('teste/email', [UserController::class, 'testeEmail']);
 
 Route::post('email/verification-notification', [EmailVerificationController::class, 'sendVerificationEmail'])->middleware('auth:sanctum');
 Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify')->middleware('auth:sanctum');

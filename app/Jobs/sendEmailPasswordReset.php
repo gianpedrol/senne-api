@@ -38,7 +38,7 @@ class sendEmailPasswordReset implements ShouldQueue
      */
     public function handle()
     {
-        //dd($this->user);
+       
         Mail::queue(new emailPasswordReset($this->user, $this->url));
     }
 }

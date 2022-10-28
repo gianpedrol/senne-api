@@ -609,6 +609,7 @@ class UserController extends Controller
         ->where('id_user', $user_auth->id)
         ->get();
 
+        $hospitalGroup = Hospitais::where('grupo_id', $group->id)->first();
 
         if ($request->user()->role_id != 1) {
 
@@ -623,14 +624,6 @@ class UserController extends Controller
         }
 
 
-        $user_group = UsersGroup::from('users_groups as usergroup')
-            ->select('usergroup.id_group')
-            ->join('groups as group', 'group.id', '=', 'usergroup.id_group')
-            ->where('usergroup.id_user', $user_auth->id)
-            ->first();
-        
-
-
 
         $data = $request->all();
 
@@ -638,13 +631,17 @@ class UserController extends Controller
 
         $per_page = (isset($request->per_page) && $request->per_page > 0) ? $request->per_page : 10;
 
+        $per_page = (isset($request->per_page) && $request->per_page > 0) ? $request->per_page : 10;
+
         $sort = (isset($request->per_page) && !empty($request->sort)) ? $request->sort : 'id';
-        $authUser = Auth::user();
-        $allUsers = User::from('users as user')
-            ->select('user.id', 'user.name', 'user.email', 'user.role_id', 'user.status')
-            ->where('user.role_id', '!=', 1)
-            ->where('user.role_id', '=', 2)
-            ->where('user.id', '!=', $authUser->id)
+
+        $allUsers = UsersHospitals::from('users_hospitals as userhos')
+            ->select('us.name', 'us.id', 'us.email', 'us.status','us.role_id')
+            ->join('users as us', 'us.id', '=', 'userhos.id_user')
+            ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
+            ->where('userhos.id_hospital', '=', $hospitalGroup->id)
+            ->where('us.role_id', '!=', 1)
+            ->where('us.role_id', '=', 2)
             ->when(!empty($request->name), function ($query) use ($data) {
                 return $query->where('user.name', 'like', '%' . $data['name'] . '%');
             })

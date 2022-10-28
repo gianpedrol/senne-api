@@ -40,7 +40,10 @@
             <tr style=" font-family: Montserrat, Calibri; color: #B8BD5A">
                 <td align="left"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
                 <td align="center">
-                                        <h2 style="font-size: 14px; font-weight: bold">Olá,{{}}<br> tudo bem?</h2>
+                    @component('mail::layout')                        
+                    <h2 style="font-size: 14px; font-weight: bold">Olá,{{ $this->user }}<br> tudo bem?</h2>
+                    @endcomponent
+
                 </td>
                 <td align="right"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
             </tr>

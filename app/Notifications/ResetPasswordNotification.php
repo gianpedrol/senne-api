@@ -21,9 +21,14 @@ class ResetPasswordNotification extends Notification
      *
      * @return void
      */
-    public function __construct(string $url)
+    public function __construct(string $url, string $user)
     {
+
+        
         $this->url = $url;
+
+        $this->user = $user;
+
     }
 
     /**
@@ -45,10 +50,11 @@ class ResetPasswordNotification extends Notification
      */
     public function toMail($notifiable)
     {
+       
         return (new MailMessage)
             ->subject('Cadastre sua senha')
-            //->line($this->user)
-            ->action('Validar e-mail de cadastro', $this->url);
+            ->action('Validar e-mail de cadastro', $this->url)
+            ->markdown('mail.emailResetPassword', ['url' => $this->url, 'user' => $this->user]);
         //->line('Thank you for using our application!');
     }
 

@@ -1,3 +1,3 @@
 @component('mail::layout')
-    {{ $this->line }}
+    {{ $this->user }}
 @endcomponent

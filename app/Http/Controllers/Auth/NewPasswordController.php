@@ -33,6 +33,7 @@ class NewPasswordController extends Controller
         $email = $request->email;
         $user = User::where('email', $email)->first();
 
+       
 
         if ($user) {
 

@@ -70,11 +70,14 @@ class User extends Authenticatable implements JWTSubject
     public function sendPasswordResetNotification($token)
     {
         $email = $this->email;
-        $encrypted = Crypt::encryptString($email);
+        $user = User::where('email', $email)->first();
+        $user = $user['name'];
+
+                $encrypted = Crypt::encryptString($email);
 
         $url = 'https://app.senneliquor.com.br/reset-password?token=' . $token . '&key=' . $encrypted . '&status=' . 1;
 
-        $this->notify(new ResetPasswordNotification($url));
+        $this->notify(new ResetPasswordNotification($url, $user));
     }
 
     public function sendPasswordLink($user)

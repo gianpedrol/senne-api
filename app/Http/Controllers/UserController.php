@@ -1174,8 +1174,8 @@ class UserController extends Controller
             ]);
         } catch (\Throwable $th) {
          //   dd($th->getMessage());
-            \DB::rollback();
-            return ['message' => 'Não foi possivel salvar no banco de dados', 'erro' => $th->getMessage(), 400];
+
+            return ['erro' => $th->getMessage(), 400];
         }
     }
 }

@@ -176,8 +176,9 @@ class UserController extends Controller
                             $request->only('email'),
                         );
         
+                        $user = $user->name;
                         if ($status == Password::RESET_LINK_SENT) {
-                            Mail::to($request->only('email'))->send(new emailWelcome($data));
+                            Mail::to($request->only('email'))->send(new emailWelcome($data, $user));
                             return [
                                 'status' => __($status),
                                 'message' => "Usuário registrado com sucesso!", 'data' => $newUser
@@ -907,9 +908,9 @@ class UserController extends Controller
                     'email'  =>  $user->email,
                     ]
                 );
-    
+                $user = $user->name;
                 if ($status == Password::RESET_LINK_SENT) {
-                    Mail::to($data['email'])->send(new emailWelcome($data));
+                    Mail::to($data['email'])->send(new emailWelcome($data, $user));
                     return [
                         'status' => __($status),
                         'message' => "Usuário aprovado com sucesso!",
@@ -1125,8 +1126,8 @@ class UserController extends Controller
             return response()->json(['message' => 'Usuário não encontrado'], 404);
         }else{
             $data = $user->email;
-            $nameUser = $user->name;
-           
+            $user = User::where('email', $data['email'])->first();
+            $user = $user->name;
             try{
     
                 $status = Password::sendResetLink(
@@ -1134,7 +1135,7 @@ class UserController extends Controller
                 );
     
                 if ($status == Password::RESET_LINK_SENT) {
-                    Mail::to($request->only('email'))->send(new emailWelcome($data));
+                    Mail::to($request->only('email'))->send(new emailWelcome($data, $user));
                     return [
                         'status' => __($status),
                         ];
@@ -1156,6 +1157,7 @@ class UserController extends Controller
 
         $data = $request->only(['name', 'email']);
         $user = User::where('email', $data['email'])->first();
+        $user = $user->name;
         try{
     
             $status = Password::sendResetLink(
@@ -1163,7 +1165,7 @@ class UserController extends Controller
             );
 
             if ($status == Password::RESET_LINK_SENT) {
-                Mail::to($request->only('email'))->send(new emailWelcome($data));
+                Mail::to($request->only('email'))->send(new emailWelcome($data, $user));
                 return [
                     'status' => __($status),
                     ];

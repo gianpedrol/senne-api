@@ -16,10 +16,10 @@ class emailWelcome extends Mailable
      *
      * @return void
      */
-    public function __construct($data)
+    public function __construct($data, $user)
     {
         $this->data = $data;
-        
+        $this->user = $user;
     }
 
     /**
@@ -30,6 +30,6 @@ class emailWelcome extends Mailable
     public function build()
     {
         
-        return $this->subject('Bem Vindo!')->markdown('mail.emailWelcome')->with(['data' => $this->data]);
+        return $this->subject('Bem Vindo!')->markdown('mail.emailWelcome')->with(['data' => $this->data, 'user' => $this->user]);
     }
 }

@@ -946,6 +946,8 @@ class UserController extends Controller
         //Validar se email existe!
         $user = User::where('id', $id)->first();
 
+        dd($user);
+
         if ($user->role_id != 4) {
             return response()->json(['message' => "Você não pode aprovar o usuário nessa rota"], 401);
         }

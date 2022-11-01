@@ -176,7 +176,7 @@ class UserController extends Controller
                             $request->only('email'),
                         );
         
-                      //  $user = $user->name;
+                       $user =  $data['name'];
                         if ($status == Password::RESET_LINK_SENT) {
                             Mail::to($request->only('email'))->send(new emailWelcome($data, $user));
                             return [
@@ -908,7 +908,7 @@ class UserController extends Controller
                     'email'  =>  $user->email,
                     ]
                 );
-              //  $user = $user->name;
+                $user = $data['name'];
                 if ($status == Password::RESET_LINK_SENT) {
                     Mail::to($data['email'])->send(new emailWelcome($data, $user));
                     return [
@@ -955,7 +955,7 @@ class UserController extends Controller
         try {
             \DB::beginTransaction();
 
-            $user = User::where('id', $id)->first()->update(['status' => 2, 'cod_doctor' => $codmedico, 'uuid_doc' => $uuidmedico]);
+            $user = User::where('id', $id)->update(['status' => 2, 'cod_doctor' => $codmedico, 'uuid_doc' => $uuidmedico]);
 
 
             //GERA LOG
@@ -987,6 +987,8 @@ class UserController extends Controller
         throw ValidationException::withMessages([
             'email' => [trans($status)],
         ]);
+
+        return response()->json(['message' => "Médico Aprovado"], 200);
     }
 
     public function listDoctorUserApi(Request $request)

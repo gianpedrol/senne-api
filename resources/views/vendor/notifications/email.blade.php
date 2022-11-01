@@ -40,9 +40,8 @@
             <tr style=" font-family: Montserrat, Calibri; color: #B8BD5A">
                 <td align="left"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
                 <td align="center">
-                    @component('mail::layout')                        
-                    <h2 style="font-size: 14px; font-weight: bold">Olá,<br> tudo bem?</h2>
-                    @endcomponent
+                     <h2 style="font-size: 14px; font-weight: bold">Olá,{{ $user }}<br> tudo bem?</h2>
+       
 
                 </td>
                 <td align="right"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
@@ -60,31 +59,28 @@
 
                 
         </table>
-        <table width="500" align="center">
-            <tr  width="500">
-                <td   width="500" align="center"> 
-                    @isset($actionText) <?php
-                    switch ($level) {
-                        case 'success':
-                        case 'error':
-                            $color = $level;
-                            break;
-                    }
-                    ?>
-                        @component('mail::button', ['url' => $actionUrl])
-                        @endcomponent
-    
-    
-                    @endisset
-              {{--      <p style="text-align:center; max-width: 350px; margin-top: 30px;">Caso o botão não esteja funcionando,
-                        clique no link abaixo ou copie e cole em seu navegador. </p>
-                    <a style="width: 300px; font-size 14px" href="{{ $actionUrl }}">{{ $actionUrl }}</a>
-
-                    --}}
-    
+        <table class="action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+            <tr>
+                <td align="center">
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
+                        <tr>
+                            <td align="center">
+                                <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+                                    <tr>
+                                        <td align="center">
+                                            <a style="color:white; text-decoration: none; background-color:#ABB056; padding: 10px 30px; border-radius: 40px;"
+                                                href="{{ $url }}" target="_blank" rel="noopener">Cadastre sua senha
+                                            </a>
+        
+        
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
-
         </table>
         <table width="500"  align="center" style="margin-top: 70px">
             <tr

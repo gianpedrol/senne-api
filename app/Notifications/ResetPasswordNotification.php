@@ -54,7 +54,7 @@ class ResetPasswordNotification extends Notification
         return (new MailMessage)
             ->subject('Cadastre sua senha')
             ->action('Validar e-mail de cadastro', $this->url)
-            ->markdown('mail.emailResetPassword', ['url' => $this->url, 'user' => $this->user]);
+            ->markdown('vendor.notifications.email', ['url' => $this->url, 'user' => $this->user]);
         //->line('Thank you for using our application!');
     }
 

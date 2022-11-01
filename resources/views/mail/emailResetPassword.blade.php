@@ -45,7 +45,7 @@
             <td align="center">
                 
                 @if (!empty($user) )
-                <h2 style="font-size: 14px; font-weight: bold">Olá ,<br> tudo bem?</h2>
+                <h2 style="font-size: 14px; font-weight: bold">Olá {{$user}} ,<br> tudo bem?</h2>
                 @else
                 <h2 style="font-size: 18px; font-weight: bold">Olá, tudo bem?</h2>
                 @endif

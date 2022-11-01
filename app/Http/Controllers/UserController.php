@@ -967,8 +967,6 @@ class UserController extends Controller
             $saveLog->id_log = 11;
             $saveLog->save();
 
-            \DB::commit();
-
             $status = Password::sendResetLink(
                 $request->only('email'),
             );
@@ -984,6 +982,10 @@ class UserController extends Controller
             throw ValidationException::withMessages([
                 'email' => [trans($status)],
             ]);
+
+            \DB::commit();
+
+
 
         } catch (\Throwable $th) {
             \DB::rollback();

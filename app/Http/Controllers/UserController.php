@@ -940,6 +940,7 @@ class UserController extends Controller
                 return response()->json(['message' => "Não Autorizado"], 401);
             }
         }
+        $data = $request->only('codmedico', 'hash_medico');
         $codmedico = $request->codmedico;
         $uuidmedico = $request->hash_medico;
 
@@ -950,43 +951,43 @@ class UserController extends Controller
         if ($user->role_id != 4) {
             return response()->json(['message' => "Você não pode aprovar o usuário nessa rota"], 401);
         }
-
-
-
         try {
             \DB::beginTransaction();
 
-            $user = User::where('id', $id)->update(['status' => 2, 'cod_doctor' => $codmedico, 'uuid_doc' => $uuidmedico]);
+            User::where('id', $id)->update(['status' => 2, 'cod_doctor' => $codmedico, 'uuid_doc' => $uuidmedico]);
+            
+                //GERA LOG
+                $log = Auth::user();
+                $saveLog = new UserLog();
+                $saveLog->id_user = $log->id;
+                $saveLog->ip_user = $request->ip();
+                $saveLog->id_log = 11;
+                $saveLog->save();
 
 
-            //GERA LOG
-            $log = Auth::user();
-            $saveLog = new UserLog();
-            $saveLog->id_user = $log->id;
-            $saveLog->ip_user = $request->ip();
-            $saveLog->id_log = 11;
-            $saveLog->save();
 
+
+            \DB::commit();
             $status = Password::sendResetLink(
-                $request->only('email'),
-            );
-    
-            if ($status == Password::RESET_LINK_SENT) {
-                return [
-                    'status' => __($status),
-                    'message' => "Médico Aprovado",
-                    'data' => $user
-                ];
-            }
+                [
+                  'email'  =>  $user->email,
+                  ]
+              );
+            
+
+              if ($status == Password::RESET_LINK_SENT) {
+                  return [
+                      'status' => __($status),
+                      'message' => "Usuário aprovado com sucesso!",
+                      'data' => $user
+                  ];
+              }
     
             throw ValidationException::withMessages([
                 'email' => [trans($status)],
             ]);
 
-            \DB::commit();
-
-
-
+     
         } catch (\Throwable $th) {
             \DB::rollback();
             return ['message' => 'Não foi possivel salvar no banco de dados', 'erro' => $th->getMessage(), 400];

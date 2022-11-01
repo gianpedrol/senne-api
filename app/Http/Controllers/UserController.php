@@ -138,7 +138,7 @@ class UserController extends Controller
                         $newUser->cpf = $data['cpf'];
                         $newUser->phone = $data['phone'];
                         $newUser->crm = $data['crm'];
-                        $newUser->status = 2;
+                        $newUser->status = 1;
                         $newUser->role_id = $role_id;
                         $newUser->password = $senha_temp;
                         $newUser->save();

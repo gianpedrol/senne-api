@@ -41,7 +41,7 @@
                 <td align="left"><img src="https://teste-api-senne.mageda.com.br/uploads/border.png" alt=""></td>
                 <td align="center">
                     @component('mail::layout')                        
-                    <h2 style="font-size: 14px; font-weight: bold">Olá,{{ $this->user }}<br> tudo bem?</h2>
+                    <h2 style="font-size: 14px; font-weight: bold">Olá,<br> tudo bem?</h2>
                     @endcomponent
 
                 </td>

@@ -176,7 +176,7 @@ class UserController extends Controller
                             $request->only('email'),
                         );
         
-                        $user = $user->name;
+                      //  $user = $user->name;
                         if ($status == Password::RESET_LINK_SENT) {
                             Mail::to($request->only('email'))->send(new emailWelcome($data, $user));
                             return [
@@ -908,7 +908,7 @@ class UserController extends Controller
                     'email'  =>  $user->email,
                     ]
                 );
-                $user = $user->name;
+              //  $user = $user->name;
                 if ($status == Password::RESET_LINK_SENT) {
                     Mail::to($data['email'])->send(new emailWelcome($data, $user));
                     return [

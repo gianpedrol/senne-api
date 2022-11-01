@@ -946,7 +946,6 @@ class UserController extends Controller
         //Validar se email existe!
         $user = User::where('id', $id)->first();
 
-        dd($user);
 
         if ($user->role_id != 4) {
             return response()->json(['message' => "Você não pode aprovar o usuário nessa rota"], 401);
@@ -969,28 +968,31 @@ class UserController extends Controller
             $saveLog->save();
 
             \DB::commit();
+
+            $status = Password::sendResetLink(
+                $request->only('email'),
+            );
+    
+            if ($status == Password::RESET_LINK_SENT) {
+                return [
+                    'status' => __($status),
+                    'message' => "Médico Aprovado",
+                    'data' => $user
+                ];
+            }
+    
+            throw ValidationException::withMessages([
+                'email' => [trans($status)],
+            ]);
+
         } catch (\Throwable $th) {
             \DB::rollback();
             return ['message' => 'Não foi possivel salvar no banco de dados', 'erro' => $th->getMessage(), 400];
         }
 
-        $status = Password::sendResetLink(
-            $request->only('email'),
-        );
 
-        if ($status == Password::RESET_LINK_SENT) {
-            return [
-                'status' => __($status),
-                'message' => "Usuário não aprovado!",
-                'data' => $user
-            ];
-        }
 
-        throw ValidationException::withMessages([
-            'email' => [trans($status)],
-        ]);
-
-        return response()->json(['message' => "Médico Aprovado"], 200);
+       // return response()->json(['message' => "Médico Aprovado"], 200);
     }
 
     public function listDoctorUserApi(Request $request)

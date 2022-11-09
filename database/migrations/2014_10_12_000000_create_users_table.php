@@ -33,7 +33,7 @@ class CreateUsersTable extends Migration
             $table->string('image')->nullable();
             $table->string('phone')->nullable();
             $table->tinyinteger('status')->default(1)->comment('0 => Inativo, 1 => Ativo');
-            $table->integer('role_id')->comment('1 => Usuário master, 2 => Usuário Grupo');
+            $table->integer('role_id');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

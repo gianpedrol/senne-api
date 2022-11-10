@@ -514,7 +514,7 @@ class UserController extends Controller
                 'user.email',
                 'user.status',
                 'user.crm',
-                'user.role_id',
+                'user.role_id'
             )
             ->where('user.role_id', '!=', 1)
             ->when(!empty($request->name), function ($query) use ($data) {
@@ -539,7 +539,7 @@ class UserController extends Controller
                 ->select('hos.id as id_hospital', 'hos.name as name', 'hos.uuid', 'hos.grupo_id', 'group.name as GroupName')
                 ->join('hospitais as hos', 'userhos.id_hospital', '=', 'hos.id')
                 ->join('groups as group', 'group.id', '=', 'hos.grupo_id')
-                //->where('id_user', $user_only['id'])
+                ->where('id_user', $user_only['id'])
                 ->when(!empty($request->procedencia), function ($query) use ($data) {
                     return $query->where('hos.name', 'like', '%' . $data['procedencia'] . '%');
                 })

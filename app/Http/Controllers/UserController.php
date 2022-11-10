@@ -514,7 +514,9 @@ class UserController extends Controller
                 'user.email',
                 'user.status',
                 'user.crm',
-                'user.role_id'
+                'user.role_id',
+                'user.cod_pf',
+                'user.uuid_doc'
             )
             ->where('user.role_id', '!=', 1)
             ->when(!empty($request->name), function ($query) use ($data) {

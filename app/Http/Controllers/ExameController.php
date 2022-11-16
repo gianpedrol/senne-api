@@ -180,8 +180,14 @@ class ExameController extends Controller
 
         $return = json_decode($response->getBody());
         
-
-        return $return;
+        foreach ($return->Atendimentos as $item){
+            if(empty($item->lista_atendimento)){  
+                return ['message' => 'Não foram encontrados dados para essas datas', 404];         
+                
+           }else{
+            return $response;
+           }
+        }
 
 
     }

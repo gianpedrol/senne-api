@@ -108,7 +108,7 @@ class RegisterController extends Controller
     {
 
 
-        $data = $request->only(['name', 'crm','cpf', 'phone','ramal','celphone', 'email', 'especialidade', 'novidades', 'policy']);
+        $data = $request->only('name', 'crm','cpf', 'phone','ramal','celphone', 'email', 'especialidade', 'novidades', 'policy');
 
         $user = User::where('email', $data['email'])->first();
 

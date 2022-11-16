@@ -73,6 +73,9 @@
                 @if ($data['phone'])
                     <p>Telefone: {{ $data['phone'] }}</p>
                 @endif
+                @if ($data['celphone'])
+                <p>Telefone: {{ $data['celphone'] }}</p>
+                @endif
                 @if ($data['email'])
                     <p>Email: {{ $data['email'] }}</p>
                 @endif

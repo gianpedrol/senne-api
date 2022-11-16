@@ -158,7 +158,7 @@ class RegisterController extends Controller
                 Mail::to($newUser->email)->send(new emailPendentRegister($data));
                 /* Enviar e-mail para Senne aprovar médico na plataforma */
                 Mail::to(['gian@mageda.digital', 'elson@mageda.digital', 'gustavo@mageda.digital', 'ti@senneliquor.com.br'])->send(new emailSolicitationDoctor($data));
-                return response()->json(['status' => 'Solicitação enviada', $newUser], 200);
+                return response()->json(['status' => 'Solicitação enviada','message' =>'Usuário registrado com sucesso!', $newUser], 200);
             } catch (Exception $ex) {
                 dd($ex);
                 return response()->json(['message' => 'Não foi possível enviar', $ex], 500);
@@ -237,7 +237,7 @@ class RegisterController extends Controller
         try {
             /* Enviar e-mail para o usuário com sua senha de acesso */
             Mail::to(['gian@mageda.digital', 'elson@mageda.digital','ti@senneliquor.com.br'])->send(new emailRegisterPartner($data));
-            return response()->json(['status' => 'Solicitação enviada'], 200);
+            return response()->json(['status' => 'Solicitação enviada', 'message' =>'Solicitação enviada com sucesso!'], 200);
         } catch (Exception $ex) {
            // dd($ex);
             return response()->json(['message' => 'Não foi possível enviar', $ex], 500);
@@ -351,7 +351,7 @@ class RegisterController extends Controller
                 try {
                     /* Enviar e-mail para o usuário com sua senha de acesso */
                     Mail::to($newUser->email)->send(new emailPendentRegister($data));
-                    return response()->json(['status' => 'Solicitação enviada', $newUser], 200);
+                    return response()->json(['status' => 'Solicitação enviada','message' =>'Usuário registrado com sucesso!', $newUser], 200);
                 } catch (Exception $ex) {
                     dd($ex);
                     return response()->json(['message' => 'Não foi póssível enviar a solicitação', $ex], 500);

@@ -9,15 +9,28 @@ class ScheduleController extends Controller
 {
     public function scheduleSearchUser(){
 
+        $client = 'A2PsnYpypc_u66U0ANnzfQ..';
+        $client_secret = 'M3nxpLJbYPNqkfnkR5tuqg..';
+        $resp = Http::withBasicAuth($client, $client_secret)->asForm()->post(
+            'http://sistemas.senneliquor.com.br:8804/ords/gateway/oauth/token',
+            [
+                'grant_type' => 'client_credentials',
 
-      
-      $response = Http::get('https://sistemas.senneliquor.com.br:8808/ords/gateway/apoio_teste/agenda_busca_paciente?Hash=DD1793AAC882C34BE053E600A8C0C7AE&NomePaciente=F');
+            ]
+        );
+
+        $token = json_decode($resp->getBody());
+
+        $bearer = $token->access_token;
+
+              
+      $response = Http:: withHeaders([
+        'Authorization' => 'Bearer ' . $bearer
+    ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/agenda_busca_paciente?Hash=DD1793AAC82EC34BE053E600A8C0C7AE&NomePaciente=Paciente');
         
-       $return = json_decode($response->getBody());
-
-       dd($return->paciente);
-       if(empty($return->atendimento)){
-       }
+        $return = json_decode($response->getBody());
+        
+        return $return;
     }
 
     public function scheduleCIDs(){
@@ -37,13 +50,11 @@ class ScheduleController extends Controller
 
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $bearer
-        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/atend_detalhe?Hash=&NomePacientes=');
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/agenda_cid?PageNo=10&PageSize=10&pesquisa=paciente');
 
        $return = json_decode($response->getBody());
 
-       if(empty($return->atendimento)){
-           dd('vazio');
-       }
+       return $return;
     }
 
     public function scheduleConvenios(){
@@ -67,11 +78,7 @@ class ScheduleController extends Controller
 
        $return = json_decode($response->getBody());
 
-       if(empty($return->atendimento)){
-           dd('vazio');
-       }
+       return $return;
     }
-
-
 
 }

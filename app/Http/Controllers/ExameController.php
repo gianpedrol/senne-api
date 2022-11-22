@@ -182,13 +182,10 @@ class ExameController extends Controller
         
         foreach ($return->Atendimentos as $item){
             if(empty($item->lista_atendimento)){  
-                return response()->json([
-                        'status' => 'Hospital não encontrado!',
+                return response()->json(['status' => 'Hospital não encontrado!',
                         'message' => 'Não foram encontrados dados para essas datas'
                 
-                ],
-                    404
-                );         
+                ],404);         
                 
            }else{
             return $response;

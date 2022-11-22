@@ -205,4 +205,6 @@ Route::middleware('auth:api')->group(function () {
 
     /** Rotas de agendamento integradas ao Tasy */
     Route::get('schedule/search/user', [ScheduleController::class, 'scheduleSearchUser']);
+    Route::get('schedule/cids', [ScheduleController::class, 'scheduleCIDs']);
+    Route::get('schedule/convenios', [ScheduleController::class, 'scheduleConvenios']);
 });

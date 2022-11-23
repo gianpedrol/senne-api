@@ -1057,10 +1057,11 @@ class UserController extends Controller
             'Authorization' => 'Bearer ' . $bearer
         ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/valida_senha_paciente?UsuarioPaciente='.$data['login_protocol'].'&SenhaPaciente='. $data['passtemp']);
 
-       
         $items = json_decode($response->getBody());
 
-        $patientUuid = $items->Hash;
+        foreach($items->DadosUsuario as $i){
+            $patientUuid = $i->hash;
+        }
 
         try {
             \DB::beginTransaction();

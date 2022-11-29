@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Svg\Tag\Rect;
 
 class ScheduleController extends Controller
 {
@@ -111,4 +112,97 @@ class ScheduleController extends Controller
        return $return;
     }
 
+    public function freeSchedule(Request $request){
+
+        $client = 'A2PsnYpypc_u66U0ANnzfQ..';
+        $client_secret = 'M3nxpLJbYPNqkfnkR5tuqg..';
+        $resp = Http::withBasicAuth($client, $client_secret)->asForm()->post(
+            'http://sistemas.senneliquor.com.br:8804/ords/gateway/oauth/token',
+            [
+                'grant_type' => 'client_credentials',
+
+            ]
+        );
+
+        $token = json_decode($resp->getBody());
+
+        $bearer = $token->access_token;
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $bearer
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/agenda_horarios_livres?Procedencia=' . $request->Procedencia . '&DataAgenda='. $request->Data);
+
+       $return = json_decode($response->getBody());
+
+       return $return;
+
+    }
+
+    public function scheduleHospital(Request $request){
+        $client = 'A2PsnYpypc_u66U0ANnzfQ..';
+        $client_secret = 'M3nxpLJbYPNqkfnkR5tuqg..';
+        $resp = Http::withBasicAuth($client, $client_secret)->asForm()->post(
+            'http://sistemas.senneliquor.com.br:8804/ords/gateway/oauth/token',
+            [
+                'grant_type' => 'client_credentials',
+
+            ]
+        );
+
+        $token = json_decode($resp->getBody());
+
+        $bearer = $token->access_token;
+
+        $loggedUser = Auth::user();
+        $tipo = $loggedUser->role_id;  
+        
+        if($loggedUser->role_id == 2 ){
+            $tipo =1;
+        }  
+        if($loggedUser->role_id == 3 ){
+            $tipo =5;
+        }  
+        if($request->Order == null){ 
+            $request->Order = 'DESC';
+        }
+        if($request->pageNo == null){ 
+            $request->pageNo = 1;
+        }
+
+        if($request->pageSize == null){ 
+            $request->pageSize = 10;
+        }
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $bearer
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/agenda_procedencia?Hash=' . $request->uuid . '&PageNo='. $request->pageNo . '&Tipo=' . $tipo);
+
+       $return = json_decode($response->getBody());
+
+       return $return;
+    }
+
+    public function anticoag(Request $request){
+        $client = 'A2PsnYpypc_u66U0ANnzfQ..';
+        $client_secret = 'M3nxpLJbYPNqkfnkR5tuqg..';
+        $resp = Http::withBasicAuth($client, $client_secret)->asForm()->post(
+            'http://sistemas.senneliquor.com.br:8804/ords/gateway/oauth/token',
+            [
+                'grant_type' => 'client_credentials',
+
+            ]
+        );
+
+        $token = json_decode($resp->getBody());
+
+        $bearer = $token->access_token;
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $bearer
+        ])->get('http://sistemas.senneliquor.com.br:8804/ords/gateway/apoio_teste/anticoag');
+
+       $return = json_decode($response->getBody());
+
+       return $return;
+    }
 }

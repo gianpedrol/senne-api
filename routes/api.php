@@ -207,4 +207,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('schedule/search/user', [ScheduleController::class, 'scheduleSearchUser']);
     Route::get('schedule/cids', [ScheduleController::class, 'scheduleCIDs']);
     Route::get('schedule/convenios', [ScheduleController::class, 'scheduleConvenios']);
+    Route::get('schedule/schedule/date', [ScheduleController::class, 'freeSchedule']);
+    Route::get('schedule/hospital/schedule', [ScheduleController::class, 'scheduleHospital']);
+    Route::get('anticoag', [ScheduleController::class, 'anticoag']);
+    
 });

@@ -136,7 +136,8 @@ class GroupController extends Controller
 
         $items = json_decode($response->getBody());
 
-
+        //dd($items);
+        
         foreach ($items->Procedencia as $item) {
             foreach ($item->procedencia as $item) {
                 $data[] = [
